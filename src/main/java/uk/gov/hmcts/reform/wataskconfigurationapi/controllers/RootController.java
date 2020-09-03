@@ -13,11 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class RootController {
 
-    private final String testProperty;
-
-    public RootController(@Value("${testProperty}") String testProperty) {
-        this.testProperty = testProperty;
-    }
+    @Value("${testProperty}") private static String testProperty;
 
     /**
      * Root GET endpoint.
