@@ -1,8 +1,9 @@
 package uk.gov.hmcts.reform.wataskconfigurationapi;
 
-import static org.hamcrest.Matchers.containsString;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
+import io.restassured.response.Response;
 import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
 import net.serenitybdd.rest.SerenityRest;
 import org.junit.Before;
@@ -38,12 +39,16 @@ public class WelcomeTest {
     @Test
     public void should_welcome_with_200_response_code() {
 
-        SerenityRest.given()
+        Response response = SerenityRest.given()
             .when()
-            .get("/")
-            .then()
-            .statusCode(HttpStatus.OK.value())
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(containsString("Welcome to wa-workflow-api"));
+            .get("/");
+
+        assertThat(response.statusCode())
+            .isEqualTo(HttpStatus.OK.value());
+        assertThat(response.contentType())
+            .isEqualTo(MediaType.APPLICATION_JSON_VALUE);
+        assertThat(response.body().asString())
+            .contains("Welcome to wa-workflow-api");
+
     }
 }
