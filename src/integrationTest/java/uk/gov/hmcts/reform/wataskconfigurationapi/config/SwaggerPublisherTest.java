@@ -22,10 +22,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest
 @ContextConfiguration(classes = SwaggerConfiguration.class)
 @AutoConfigureMockMvc
+@SuppressWarnings("PMD.BeanMembersShouldSerialize")
 class SwaggerPublisherTest {
 
     @Autowired
-    private static MockMvc mvc;
+    private MockMvc mvc;
 
     @DisplayName("Generate swagger documentation")
     @Test

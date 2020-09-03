@@ -11,9 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
  * Default endpoints per application.
  */
 @RestController
+@SuppressWarnings("PMD.BeanMembersShouldSerialize")
 public class RootController {
 
-    @Value("${testProperty}") private static String testProperty;
+    private final String testProperty;
+
+    public RootController(@Value("${testProperty}") String testProperty) {
+        this.testProperty = testProperty;
+    }
 
     /**
      * Root GET endpoint.

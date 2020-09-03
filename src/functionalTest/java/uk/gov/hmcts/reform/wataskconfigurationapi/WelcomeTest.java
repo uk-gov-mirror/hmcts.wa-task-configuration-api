@@ -18,12 +18,12 @@ import static org.hamcrest.Matchers.containsString;
 @RunWith(SpringIntegrationSerenityRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("functional")
-@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert", "PMD.LawOfDemeter"})
+@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert", "PMD.LawOfDemeter", "PMD.BeanMembersShouldSerialize"})
 public class WelcomeTest {
 
-    @Value("${targetInstance}") private static String testUrl;
+    @Value("${targetInstance}") private String testUrl;
 
-    @LocalServerPort private static int port;
+    @LocalServerPort private int port;
 
     @Before
     public void setUp() {
