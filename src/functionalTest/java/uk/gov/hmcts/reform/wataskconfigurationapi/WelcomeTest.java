@@ -45,6 +45,6 @@ public class WelcomeTest {
             .then()
             .statusCode(HttpStatus.OK.value())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(containsString("Welcome to wa-workflow-api"));
+            .body(containsString("Welcome to wa-task-configuration-api"));
     }
 }
