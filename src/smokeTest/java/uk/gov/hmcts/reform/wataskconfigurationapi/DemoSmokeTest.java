@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform;
+package uk.gov.hmcts.reform.wataskconfigurationapi;
 
 import org.junit.jupiter.api.Test;
 
