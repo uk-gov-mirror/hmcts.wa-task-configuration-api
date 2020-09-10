@@ -16,7 +16,6 @@ import static org.slf4j.LoggerFactory.getLogger;
  * Default endpoints per application.
  */
 @RestController
-@SuppressWarnings("PMD.BeanMembersShouldSerialize")
 public class RootController {
 
     private static final Logger LOG = getLogger(RootController.class);
