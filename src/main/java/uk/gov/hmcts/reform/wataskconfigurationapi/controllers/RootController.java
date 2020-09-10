@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.wataskconfigurationapi.controllers;
 
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
