@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.wataskconfigurationapi.controllers;
 
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,18 +15,11 @@ import static org.slf4j.LoggerFactory.getLogger;
  * Default endpoints per application.
  */
 @RestController
-@SuppressWarnings("PMD.BeanMembersShouldSerialize")
 public class RootController {
 
     private static final Logger LOG = getLogger(RootController.class);
     private static final String INSTANCE_ID = UUID.randomUUID().toString();
     private static final String MESSAGE = "Welcome to wa-task-configuration-api";
-
-    private final String testProperty;
-
-    public RootController(@Value("${testProperty}") String testProperty) {
-        this.testProperty = testProperty;
-    }
 
     /**
      * Root GET endpoint.
@@ -48,6 +40,6 @@ public class RootController {
         return ResponseEntity
             .ok()
             .cacheControl(CacheControl.noCache())
-            .body("Welcome to wa-task-configuration-api [\"" + testProperty + "\"]");
+            .body(MESSAGE);
     }
 }
