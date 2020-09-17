@@ -18,6 +18,10 @@ testProperty: ${A_SECRET:defaultValue}
 
 enableSwagger: ${ENABLE_SWAGGER:true}
 
+camunda:
+  url: ${CAMUNDA_URL:http://localhost:8080/engine-rest}
+
+
 #If you use a database then uncomment below lines and update db properties accordingly
 
 spring:
