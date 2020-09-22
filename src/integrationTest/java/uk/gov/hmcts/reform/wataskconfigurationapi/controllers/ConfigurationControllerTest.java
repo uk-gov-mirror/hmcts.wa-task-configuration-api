@@ -3,23 +3,28 @@ package uk.gov.hmcts.reform.wataskconfigurationapi.controllers;
 import feign.FeignException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
+import uk.gov.hmcts.reform.wataskconfigurationapi.ccd.CcdClient;
 import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.AddLocalVariableRequest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.CamundaClient;
 import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.CamundaValue;
-import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.CcdDataService;
 import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.ConfigureTaskRequest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.DmnRequest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.MapCaseDataDmnRequest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.MapCaseDataDmnResult;
 import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.TaskResponse;
+import uk.gov.hmcts.reform.wataskconfigurationapi.idam.IdamApi;
+import uk.gov.hmcts.reform.wataskconfigurationapi.idam.Token;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import static java.util.Collections.singletonList;
@@ -44,9 +49,14 @@ public class ConfigurationControllerTest {
     @MockBean
     private CamundaClient camundaClient;
 
-    //todo this should mock the call to ccd not the service once that is implemented
     @MockBean
-    private CcdDataService ccdDataService;
+    private AuthTokenGenerator authTokenGenerator;
+
+    @MockBean
+    private CcdClient ccdClient;
+
+    @MockBean
+    private IdamApi idamApi;
 
     @DisplayName("Should configure task")
     @Test
@@ -88,8 +98,12 @@ public class ConfigurationControllerTest {
         String ccdId = UUID.randomUUID().toString();
         processVariables.put("ccdId", new CamundaValue<>(ccdId, "string"));
         when(camundaClient.getProcessVariables(processInstanceId)).thenReturn(processVariables);
-        String caseData = "{ case_Data: {} }";
-        when(ccdDataService.getCaseData(ccdId)).thenReturn(caseData);
+        String userToken = "user_token";
+        when(idamApi.token(ArgumentMatchers.<Map<String, Object>>any())).thenReturn(new Token(userToken, "scope"));
+        String serviceToken = "service_token";
+        when(authTokenGenerator.generate()).thenReturn(serviceToken);
+        String caseData = "{ data: {} }";
+        when(ccdClient.getCase("Bearer " + userToken, serviceToken, ccdId)).thenReturn(caseData);
         when(camundaClient.mapCaseData(new DmnRequest<>(new MapCaseDataDmnRequest(jsonValue(caseData))))).thenReturn(
             singletonList(new MapCaseDataDmnResult(stringValue("name1"), stringValue("value1")))
         );

@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping;
 
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.wataskconfigurationapi.ccd.CcdDataService;
 
 import java.util.List;
 import java.util.Map;

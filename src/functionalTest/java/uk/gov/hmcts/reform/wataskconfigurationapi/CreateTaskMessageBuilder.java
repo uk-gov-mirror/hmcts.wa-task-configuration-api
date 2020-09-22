@@ -23,6 +23,13 @@ public class CreateTaskMessageBuilder {
         return this;
     }
 
+    public CreateTaskMessageBuilder withCcdId(String ccdId) {
+        processVariables.put("ccdId", stringValue(ccdId));
+        processVariables.put("taskId", stringValue("wa-task-configuration-api-task"));
+        processVariables.put("group", stringValue("TCW"));
+        return this;
+    }
+
     public CreateTaskMessage build() {
         return new CreateTaskMessage(messageName, processVariables);
     }

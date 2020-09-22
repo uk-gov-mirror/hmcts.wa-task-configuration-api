@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping;
 
 import org.junit.jupiter.api.Test;
+import uk.gov.hmcts.reform.wataskconfigurationapi.ccd.CcdDataService;
 
 import java.util.HashMap;
 import java.util.Map;
