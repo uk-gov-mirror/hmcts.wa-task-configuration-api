@@ -75,7 +75,8 @@ public class ConfigureTaskTest {
             .when()
             .get()
             .then()
-            //.body("appealType.value", is("RP/50001/2020"))
+            .body("caseName.value", is("Bob Smith"))
+            .body("appealType.value", is("protection"))
             .body("ccdId.value", is(createTaskMessage.getCcdId()))
         ;
     }
