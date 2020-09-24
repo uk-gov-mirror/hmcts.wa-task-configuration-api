@@ -2,6 +2,25 @@
 
 [![Build Status](https://travis-ci.org/hmcts/wa-task-configuration-api.svg?branch=master)](https://travis-ci.org/hmcts/wa-task-configuration-api)
 
+#### What does this app do?
+
+- Receives an unconfigured Task upon its creation
+- Retrieves CCD case data for given ccdId
+- Evaluates DMN configuration and gets output variables
+- Updates the Task
+- Auto-assigns the Task
+- Responds with a Configured Camunda Task.
+
+<!--
+    Sequence Diagram Source:
+    http://www.plantuml.com/plantuml/uml/hLDDJzj043spls94B-LWvLmEY93GgX9LaU2EXjsnCyJUTMTd2H7mt-jDRAL6QT93VR2yy_7UpDldowWecfhQBDWHb27eOtWn9YxPjoZOG5oW2ols5QWa6cNeLo9l2LxDoLGah6QX3W9pelPkkRwg4tLngq6kWZYIRTQXB1ytgHikwOOz7ScYNLOIadVRYa_JB_FP_AivCIUtACgMM_IwmnZnZse-8gqMh6IWVtvGZ5ZHjERAWoMl9ERT66Mj2UunBc4MVCbL4bGE7kv8djcICPWqe5L-HYK8thGxHZYrs7HyM3osJT7Mg6MGvdHSeXrsOV_4Bk8M-qEXjQvmg5X43K85jdngZDbFKLmSmeLpkFrvTtyEarmq6HLj1F512MegjPT7XQkAX1oaDdZ8NT2dhD2kZxpRz1fZ3l4VdOxBpzQwx-xwXQF6ioDmK5piKoS3VRlEMrgCj0go98cJryJkVVAKXADZct6ws5EEvQf2rorr0Qj391-wxxson7LKQY15alnoWoOQWBE1q2giM1T3V3QRZsNA1o5DuY5pFUG5Z74q-EcWEtOZ2LUBOQRWw_NsWaPT_GWx6k3OKvE3yLH7xcw_utfFmSIHvPWx79NiEJTFNhEQz8nrGYNJRomKKwt6lBsz_GUxe9yc3TCOkVBvTpqxvfbichzjClIGUyWO6td-zLOkoRlKrBy1
+
+    See: https://plantuml.com/ docs for reference
+-->
+
+![task-configuration-service](task-configuration.png)
+
+
 ## Notes
 
 Since Spring Boot 2.1 bean overriding is disabled. If you want to enable it you will need to set `spring.main.allow-bean-definition-overriding` to `true`.
