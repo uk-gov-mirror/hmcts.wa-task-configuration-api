@@ -77,6 +77,9 @@ public class ConfigureTaskTest {
             .then()
             .body("caseName.value", is("Bob Smith"))
             .body("appealType.value", is("protection"))
+            .body("staffLocation.value", is("London"))
+            .body("staffLocationID.value", is("1"))
+            .body("status.value", is("configured"))
             .body("ccdId.value", is(createTaskMessage.getCcdId()))
         ;
     }

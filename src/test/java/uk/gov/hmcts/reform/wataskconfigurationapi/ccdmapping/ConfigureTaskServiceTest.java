@@ -44,6 +44,7 @@ class ConfigureTaskServiceTest {
         modifications.put("key1", CamundaValue.stringValue("value1"));
         modifications.put("key2", CamundaValue.stringValue("value2"));
         modifications.put("ccdId", CamundaValue.stringValue(ccdId));
+        modifications.put("status", CamundaValue.stringValue("configured"));
         verify(camundaClient).addLocalVariablesToTask(taskId, new AddLocalVariableRequest(modifications));
     }
 
@@ -63,6 +64,7 @@ class ConfigureTaskServiceTest {
 
         HashMap<String, CamundaValue<String>> modifications = new HashMap<>();
         modifications.put("ccdId", CamundaValue.stringValue(ccdId));
+        modifications.put("status", CamundaValue.stringValue("configured"));
         verify(camundaClient).addLocalVariablesToTask(taskId, new AddLocalVariableRequest(modifications));
     }
 

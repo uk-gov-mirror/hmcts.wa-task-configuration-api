@@ -11,6 +11,8 @@ import static uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.CamundaValue
 @Component
 public class ConfigureTaskService {
     public static final String CCD_ID_PROCESS_VARIABLE_KEY = "ccdId";
+    public static final String STATUS_VARIABLE_KEY = "status";
+
     private final CamundaClient camundaClient;
     private final MapCaseDetailsService mapCaseDetailsService;
 
@@ -45,6 +47,7 @@ public class ConfigureTaskService {
         CamundaValue<Object> ccdId = processVariables.get(CCD_ID_PROCESS_VARIABLE_KEY);
         Map<String, Object> mappedDetails = mapCaseDetailsService.getMappedDetails((String) ccdId.getValue());
         mappedDetails.put(CCD_ID_PROCESS_VARIABLE_KEY, ccdId.getValue());
+        mappedDetails.put(STATUS_VARIABLE_KEY, "configured");
 
         Map<String, CamundaValue<String>> map = mappedDetails.entrySet().stream().collect(toMap(
             Map.Entry::getKey,
