@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.wataskconfigurationapi.controllers;
 
+import com.microsoft.applicationinsights.web.internal.WebRequestTrackingFilter;
 import feign.FeignException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
@@ -9,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockFilterConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.wataskconfigurationapi.ccd.CcdClient;
@@ -23,6 +26,7 @@ import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.TaskResponse;
 import uk.gov.hmcts.reform.wataskconfigurationapi.idam.IdamApi;
 import uk.gov.hmcts.reform.wataskconfigurationapi.idam.Token;
 
+import javax.servlet.FilterConfig;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -110,6 +114,7 @@ public class ConfigurationControllerTest {
         HashMap<String, CamundaValue<String>> modifications = new HashMap<>();
         modifications.put("name1", stringValue("value1"));
         modifications.put("ccdId", stringValue(ccdId));
+        modifications.put("state", stringValue("configured"));
         return modifications;
     }
 }
