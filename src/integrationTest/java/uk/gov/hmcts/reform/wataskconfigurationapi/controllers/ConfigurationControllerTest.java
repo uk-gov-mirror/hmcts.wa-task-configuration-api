@@ -110,7 +110,7 @@ public class ConfigurationControllerTest {
         HashMap<String, CamundaValue<String>> modifications = new HashMap<>();
         modifications.put("name1", stringValue("value1"));
         modifications.put("ccdId", stringValue(ccdId));
-        modifications.put("state", stringValue("configured"));
+        modifications.put("status", stringValue("configured"));
         return modifications;
     }
 }
