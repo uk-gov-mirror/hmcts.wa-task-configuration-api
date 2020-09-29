@@ -25,6 +25,7 @@ import java.util.Map;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static net.serenitybdd.rest.SerenityRest.given;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.CreateTaskMessageBuilder.createBasicMessageForTask;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.CreatorObjectMapper.asCamundaJsonString;
@@ -77,8 +78,8 @@ public class ConfigureTaskTest {
             .then()
             .body("caseName.value", is("Bob Smith"))
             .body("appealType.value", is("protection"))
-            .body("staffLocation.value", is("London"))
-            .body("staffLocationID.value", is("1"))
+            .body("staffLocation.value", is("Taylor House"))
+            .body("staffLocationId.value", is(nullValue())) //this is still to be set
             .body("status.value", is("configured"))
             .body("ccdId.value", is(createTaskMessage.getCcdId()))
         ;

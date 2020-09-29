@@ -8,8 +8,6 @@
   "appealType": "protection",
   "submissionOutOfTime": "Yes",
   "applicationOutOfTimeExplanation": "test case",
-  "staffLocation": "London",
-  "staffLocationID": "1",
   "subscriptions": [
     {
       "id": "1",
