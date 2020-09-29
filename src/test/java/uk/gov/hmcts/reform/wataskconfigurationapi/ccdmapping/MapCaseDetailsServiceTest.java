@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import uk.gov.hmcts.reform.wataskconfigurationapi.ccd.CcdDataService;
 
@@ -11,21 +12,31 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.CamundaValue.jsonValue;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.CamundaValue.stringValue;
 
 class MapCaseDetailsServiceTest {
+
+    private CamundaClient camundaClient;
+    private CcdDataService ccdDataService;
+
+    @BeforeEach
+    void setUp() {
+        camundaClient = mock(CamundaClient.class);
+        ccdDataService = mock(CcdDataService.class);
+    }
+
     @Test
     void doesNotHaveAnyFieldsToMap() {
-        CcdDataService ccdDataService = mock(CcdDataService.class);
         String someCcdId = "someCcdId";
-        String ccdData = "ccdData";
+        String ccdData = "{ \"jurisdiction\": \"ia\", \"case_type_id\": \"Asylum\", \"data\": {} }";
         when(ccdDataService.getCaseData(someCcdId)).thenReturn(ccdData);
-        CamundaClient camundaClient = mock(CamundaClient.class);
-        when(camundaClient.mapCaseData(new DmnRequest<>(new MapCaseDataDmnRequest(stringValue(ccdData)))))
-            .thenReturn(emptyList());
+        when(camundaClient.mapCaseData(
+            "ia", "Asylum", new DmnRequest<>(new MapCaseDataDmnRequest(stringValue(ccdData))))
+        ).thenReturn(emptyList());
 
         Map<String, Object> mappedData = new MapCaseDetailsService(ccdDataService, camundaClient)
             .getMappedDetails(someCcdId);
@@ -34,13 +45,28 @@ class MapCaseDetailsServiceTest {
     }
 
     @Test
+    void cannotParseResponseFromCcd() {
+        assertThrows(
+            IllegalStateException.class,
+            () -> {
+                String someCcdId = "someCcdId";
+                String ccdData = "not valid json";
+                when(ccdDataService.getCaseData(someCcdId)).thenReturn(ccdData);
+
+                Map<String, Object> mappedData = new MapCaseDetailsService(ccdDataService, camundaClient)
+                    .getMappedDetails(someCcdId);
+
+                assertThat(mappedData, is(emptyMap()));
+            }
+        );
+    }
+
+    @Test
     void getsFieldsToMap() {
-        CcdDataService ccdDataService = mock(CcdDataService.class);
         String someCcdId = "someCcdId";
-        String ccdData = "ccdData";
+        String ccdData = "{ \"jurisdiction\": \"ia\", \"case_type_id\": \"Asylum\", \"data\": {} }";
         when(ccdDataService.getCaseData(someCcdId)).thenReturn(ccdData);
-        CamundaClient camundaClient = mock(CamundaClient.class);
-        when(camundaClient.mapCaseData(new DmnRequest<>(new MapCaseDataDmnRequest(jsonValue(ccdData)))))
+        when(camundaClient.mapCaseData("ia", "Asylum", new DmnRequest<>(new MapCaseDataDmnRequest(jsonValue(ccdData)))))
             .thenReturn(asList(new MapCaseDataDmnResult(stringValue("name1"), stringValue("value1")),
                                new MapCaseDataDmnResult(stringValue("name2"), stringValue("value2"))));
 

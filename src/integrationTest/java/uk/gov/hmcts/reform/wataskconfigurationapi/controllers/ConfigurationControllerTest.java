@@ -102,11 +102,11 @@ public class ConfigurationControllerTest {
         when(idamApi.token(ArgumentMatchers.<Map<String, Object>>any())).thenReturn(new Token(userToken, "scope"));
         String serviceToken = "service_token";
         when(authTokenGenerator.generate()).thenReturn(serviceToken);
-        String caseData = "{ data: {} }";
+        String caseData = "{ \"jurisdiction\": \"ia\", \"case_type_id\": \"Asylum\", \"data\": {} }";
         when(ccdClient.getCase("Bearer " + userToken, serviceToken, ccdId)).thenReturn(caseData);
-        when(camundaClient.mapCaseData(new DmnRequest<>(new MapCaseDataDmnRequest(jsonValue(caseData))))).thenReturn(
-            singletonList(new MapCaseDataDmnResult(stringValue("name1"), stringValue("value1")))
-        );
+        when(camundaClient.mapCaseData(
+            "ia", "Asylum", new DmnRequest<>(new MapCaseDataDmnRequest(jsonValue(caseData))))
+        ).thenReturn(singletonList(new MapCaseDataDmnResult(stringValue("name1"), stringValue("value1"))));
         HashMap<String, CamundaValue<String>> modifications = new HashMap<>();
         modifications.put("name1", stringValue("value1"));
         modifications.put("ccdId", stringValue(ccdId));
