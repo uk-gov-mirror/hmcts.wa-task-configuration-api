@@ -1,8 +1,13 @@
-package uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping;
+package uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractor;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import uk.gov.hmcts.reform.wataskconfigurationapi.ccd.CcdDataService;
+import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors.MapCaseDetailsService;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaClient;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.DmnRequest;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.MapCaseDataDmnRequest;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.MapCaseDataDmnResult;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.ccd.CcdDataService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,8 +20,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.CamundaValue.jsonValue;
-import static uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.CamundaValue.stringValue;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaValue.jsonValue;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaValue.stringValue;
 
 class MapCaseDetailsServiceTest {
 

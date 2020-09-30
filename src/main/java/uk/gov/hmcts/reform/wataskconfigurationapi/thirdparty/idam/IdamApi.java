@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.wataskconfigurationapi.idam;
+package uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.idam;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;

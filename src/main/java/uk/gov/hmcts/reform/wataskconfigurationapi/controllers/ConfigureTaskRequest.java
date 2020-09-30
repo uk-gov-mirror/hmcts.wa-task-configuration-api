@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping;
+package uk.gov.hmcts.reform.wataskconfigurationapi.controllers;
 
 import java.util.Objects;
 

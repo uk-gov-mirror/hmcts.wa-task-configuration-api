@@ -1,8 +1,8 @@
-package uk.gov.hmcts.reform.wataskconfigurationapi.ccd;
+package uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.ccd;
 
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
-import uk.gov.hmcts.reform.wataskconfigurationapi.idam.IdamSystemTokenGenerator;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.idam.IdamSystemTokenGenerator;
 
 @Component
 public class CcdDataService {

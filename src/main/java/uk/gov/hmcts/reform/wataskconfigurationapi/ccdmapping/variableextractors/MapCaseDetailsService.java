@@ -1,16 +1,20 @@
-package uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping;
+package uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.wataskconfigurationapi.ccd.CaseDetails;
-import uk.gov.hmcts.reform.wataskconfigurationapi.ccd.CcdDataService;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaClient;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.DmnRequest;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.MapCaseDataDmnRequest;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.MapCaseDataDmnResult;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.ccd.CaseDetails;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.ccd.CcdDataService;
 
 import java.util.List;
 import java.util.Map;
 
 import static java.util.stream.Collectors.toMap;
-import static uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.CamundaValue.jsonValue;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaValue.jsonValue;
 
 @Component
 public class MapCaseDetailsService {

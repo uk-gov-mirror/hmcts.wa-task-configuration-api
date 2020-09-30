@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.wataskconfigurationapi.idam;
+package uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.idam;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
