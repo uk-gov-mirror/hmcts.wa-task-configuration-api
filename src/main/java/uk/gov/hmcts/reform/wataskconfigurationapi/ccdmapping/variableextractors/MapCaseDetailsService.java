@@ -47,6 +47,7 @@ public class MapCaseDetailsService {
 
             HashMap<String, Object> allMappedDetails = new HashMap<>(mappedCaseDetails);
             allMappedDetails.put("securityClassification", caseDetails.getSecurityClassification());
+            allMappedDetails.put("caseType", caseDetails.getCaseTypeId());
             return allMappedDetails;
         } catch (JsonProcessingException e) {
             throw new IllegalStateException("Cannot parse result from CCD for [" + ccdId + "]", e);
