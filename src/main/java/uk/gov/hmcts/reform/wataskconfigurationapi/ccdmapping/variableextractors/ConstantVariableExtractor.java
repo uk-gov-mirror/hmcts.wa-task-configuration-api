@@ -16,6 +16,7 @@ public class ConstantVariableExtractor implements TaskVariableExtractor {
         mappedDetails.put(STATUS_VARIABLE_KEY, "configured");
         mappedDetails.put("autoAssigned", false);
         mappedDetails.put("executionType", "Case Management Task");
+        mappedDetails.put("taskSystem", "SELF");
 
         return mappedDetails;
     }
