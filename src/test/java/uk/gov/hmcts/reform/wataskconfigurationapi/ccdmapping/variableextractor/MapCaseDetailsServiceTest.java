@@ -37,16 +37,24 @@ class MapCaseDetailsServiceTest {
     @Test
     void doesNotHaveAnyFieldsToMap() {
         String someCcdId = "someCcdId";
-        String ccdData = "{ \"jurisdiction\": \"ia\", \"case_type_id\": \"Asylum\", \"data\": {} }";
+        String ccdData = "{"
+                         + "\"jurisdiction\": \"ia\","
+                         + "\"case_type_id\": \"Asylum\","
+                         + "\"security_classification\": \"PUBLIC\","
+                         + "\"data\": {}"
+                         + "}";
         when(ccdDataService.getCaseData(someCcdId)).thenReturn(ccdData);
         when(camundaClient.mapCaseData(
             "ia", "Asylum", new DmnRequest<>(new MapCaseDataDmnRequest(stringValue(ccdData))))
         ).thenReturn(emptyList());
 
+        HashMap<String, Object> expectedMappedData = new HashMap<>();
+        expectedMappedData.put("securityClassification", "PUBLIC");
+        expectedMappedData.put("caseType", "Asylum");
         Map<String, Object> mappedData = new MapCaseDetailsService(ccdDataService, camundaClient)
             .getMappedDetails(someCcdId);
 
-        assertThat(mappedData, is(emptyMap()));
+        assertThat(mappedData, is(expectedMappedData));
     }
 
     @Test
@@ -80,14 +88,15 @@ class MapCaseDetailsServiceTest {
             .thenReturn(asList(new MapCaseDataDmnResult(stringValue("name1"), stringValue("value1")),
                                new MapCaseDataDmnResult(stringValue("name2"), stringValue("value2"))));
 
-        Map<String, Object> mappedData = new MapCaseDetailsService(ccdDataService,
-                                                                   camundaClient
-        ).getMappedDetails(someCcdId);
-
         HashMap<String, Object> expectedMappedData = new HashMap<>();
         expectedMappedData.put("name1", "value1");
         expectedMappedData.put("name2", "value2");
         expectedMappedData.put("securityClassification", "PUBLIC");
+        expectedMappedData.put("caseType", "Asylum");
+
+        Map<String, Object> mappedData = new MapCaseDetailsService(ccdDataService,
+                                                                   camundaClient
+        ).getMappedDetails(someCcdId);
 
         assertThat(mappedData, is(expectedMappedData));
     }

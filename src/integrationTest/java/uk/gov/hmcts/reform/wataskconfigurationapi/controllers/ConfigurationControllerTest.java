@@ -102,7 +102,12 @@ public class ConfigurationControllerTest {
         when(idamApi.token(ArgumentMatchers.<Map<String, Object>>any())).thenReturn(new Token(userToken, "scope"));
         String serviceToken = "service_token";
         when(authTokenGenerator.generate()).thenReturn(serviceToken);
-        String caseData = "{ \"jurisdiction\": \"ia\", \"case_type_id\": \"Asylum\", \"data\": {} }";
+        String caseData = "{ "
+                          + "\"jurisdiction\": \"ia\", "
+                          + "\"case_type_id\": \"Asylum\", "
+                          + "\"security_classification\": \"PUBLIC\","
+                          + "\"data\": {}"
+                          + " }";
         when(ccdClient.getCase("Bearer " + userToken, serviceToken, ccdId)).thenReturn(caseData);
         when(camundaClient.mapCaseData(
             "ia", "Asylum", new DmnRequest<>(new MapCaseDataDmnRequest(jsonValue(caseData))))
@@ -114,6 +119,9 @@ public class ConfigurationControllerTest {
         modifications.put(STATUS_VARIABLE_KEY, stringValue("configured"));
         modifications.put("autoAssigned", stringValue("false"));
         modifications.put("executionType", stringValue("Case Management Task"));
+        modifications.put("securityClassification", stringValue("PUBLIC"));
+        modifications.put("taskSystem", stringValue("SELF"));
+        modifications.put("caseType", stringValue("Asylum"));
         return modifications;
     }
 }
