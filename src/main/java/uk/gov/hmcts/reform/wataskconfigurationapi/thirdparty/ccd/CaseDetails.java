@@ -12,6 +12,8 @@ public class CaseDetails {
     @JsonProperty("case_type_id")
     @JsonAlias("case_type")
     private String caseTypeId;
+    @JsonProperty("security_classification")
+    private String securityClassification;
 
     public String getJurisdiction() {
         return jurisdiction;
@@ -19,6 +21,10 @@ public class CaseDetails {
 
     public String getCaseTypeId() {
         return caseTypeId;
+    }
+
+    public String getSecurityClassification() {
+        return securityClassification;
     }
 
     @Override
@@ -31,7 +37,8 @@ public class CaseDetails {
         }
         CaseDetails that = (CaseDetails) object;
         return Objects.equals(jurisdiction, that.jurisdiction)
-               && Objects.equals(caseTypeId, that.caseTypeId);
+               && Objects.equals(caseTypeId, that.caseTypeId)
+               && Objects.equals(securityClassification, that.securityClassification);
     }
 
     @Override
@@ -44,6 +51,7 @@ public class CaseDetails {
         return "CaseDetails{"
                + "jurisdiction='" + jurisdiction + '\''
                + ", caseTypeId='" + caseTypeId + '\''
+               + ", securityClassification='" + securityClassification + '\''
                + '}';
     }
 }

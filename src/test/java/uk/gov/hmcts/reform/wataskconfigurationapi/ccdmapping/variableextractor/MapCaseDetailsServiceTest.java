@@ -69,7 +69,12 @@ class MapCaseDetailsServiceTest {
     @Test
     void getsFieldsToMap() {
         String someCcdId = "someCcdId";
-        String ccdData = "{ \"jurisdiction\": \"ia\", \"case_type_id\": \"Asylum\", \"data\": {} }";
+        String ccdData = "{ "
+                         + "\"jurisdiction\": \"ia\","
+                         + "\"case_type_id\": \"Asylum\","
+                         + "\"security_classification\": \"PUBLIC\","
+                         + "\"data\": {}"
+                         + "}";
         when(ccdDataService.getCaseData(someCcdId)).thenReturn(ccdData);
         when(camundaClient.mapCaseData("ia", "Asylum", new DmnRequest<>(new MapCaseDataDmnRequest(jsonValue(ccdData)))))
             .thenReturn(asList(new MapCaseDataDmnResult(stringValue("name1"), stringValue("value1")),
@@ -82,6 +87,7 @@ class MapCaseDetailsServiceTest {
         HashMap<String, Object> expectedMappedData = new HashMap<>();
         expectedMappedData.put("name1", "value1");
         expectedMappedData.put("name2", "value2");
+        expectedMappedData.put("securityClassification", "PUBLIC");
 
         assertThat(mappedData, is(expectedMappedData));
     }

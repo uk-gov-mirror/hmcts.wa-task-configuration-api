@@ -10,6 +10,7 @@ import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.MapCaseData
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.ccd.CaseDetails;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.ccd.CcdDataService;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,10 +40,14 @@ public class MapCaseDetailsService {
                 )
             );
 
-            return mapCaseDataDmnResults.stream().collect(toMap(
+            Map<String, Object> mappedCaseDetails = mapCaseDataDmnResults.stream().collect(toMap(
                 mapCaseDataDmnResult -> mapCaseDataDmnResult.getName().getValue(),
                 mapCaseDataDmnResult -> mapCaseDataDmnResult.getValue().getValue()
             ));
+
+            HashMap<String, Object> allMappedDetails = new HashMap<>(mappedCaseDetails);
+            allMappedDetails.put("securityClassification", caseDetails.getSecurityClassification());
+            return allMappedDetails;
         } catch (JsonProcessingException e) {
             throw new IllegalStateException("Cannot parse result from CCD for [" + ccdId + "]", e);
         }
