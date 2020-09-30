@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping;
+package uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda;
 
 import java.util.Map;
 import java.util.Objects;

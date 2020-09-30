@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.wataskconfigurationapi.ccd;
+package uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.ccd;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

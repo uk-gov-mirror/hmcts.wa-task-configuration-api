@@ -10,9 +10,9 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
-import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.ConfigureTaskRequest;
-import uk.gov.hmcts.reform.wataskconfigurationapi.idam.IdamSystemTokenGenerator;
-import uk.gov.hmcts.reform.wataskconfigurationapi.idam.UserInfo;
+import uk.gov.hmcts.reform.wataskconfigurationapi.controllers.ConfigureTaskRequest;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.idam.IdamSystemTokenGenerator;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.idam.UserInfo;
 
 import java.io.IOException;
 import java.util.Map;
@@ -65,7 +65,7 @@ public class ConfigureTaskTest extends BaseFunctionalTest {
             .body("appealType.value", is("protection"))
             .body("staffLocation.value", is("Taylor House"))
             .body("staffLocationId.value", is(nullValue())) //this is still to be set
-            .body("status.value", is("configured"))
+            .body("taskState.value", is("configured"))
             .body("ccdId.value", is(createTaskMessage.getCcdId()))
         ;
     }

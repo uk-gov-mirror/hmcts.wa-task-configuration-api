@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.wataskconfigurationapi;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.CamundaValue;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaValue;
 
 import java.util.Map;
 

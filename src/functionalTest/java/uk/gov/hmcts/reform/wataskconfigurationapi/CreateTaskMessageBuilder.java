@@ -1,13 +1,13 @@
 package uk.gov.hmcts.reform.wataskconfigurationapi;
 
-import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.CamundaValue;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaValue;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 import static java.time.ZonedDateTime.now;
-import static uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.CamundaValue.stringValue;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaValue.stringValue;
 
 public class CreateTaskMessageBuilder {
     private String messageName;
