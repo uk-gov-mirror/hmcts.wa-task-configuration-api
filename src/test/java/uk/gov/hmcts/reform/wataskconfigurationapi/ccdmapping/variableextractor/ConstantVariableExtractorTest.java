@@ -29,6 +29,7 @@ class ConstantVariableExtractorTest {
         expectedValues.put(STATUS_VARIABLE_KEY, "configured");
         expectedValues.put("autoAssigned", false);
         expectedValues.put("executionType", "Case Management Task");
+        expectedValues.put("taskSystem", "SELF");
 
         Map<String, Object> values = new ConstantVariableExtractor().getValues(task, processVariables);
 
