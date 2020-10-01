@@ -40,7 +40,7 @@ import static uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.CamundaValue
 import static uk.gov.hmcts.reform.wataskconfigurationapi.controllers.util.CreatorObjectMapper.asJsonString;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 public class ConfigurationControllerTest {
 
     @Autowired

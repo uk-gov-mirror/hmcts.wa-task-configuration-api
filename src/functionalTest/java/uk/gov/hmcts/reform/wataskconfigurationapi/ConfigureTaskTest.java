@@ -1,13 +1,9 @@
 package uk.gov.hmcts.reform.wataskconfigurationapi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
 import org.eclipse.jetty.http.HttpStatus;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
@@ -19,10 +15,8 @@ import uk.gov.hmcts.reform.wataskconfigurationapi.idam.IdamSystemTokenGenerator;
 import uk.gov.hmcts.reform.wataskconfigurationapi.idam.UserInfo;
 
 import java.io.IOException;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
-import static java.time.format.DateTimeFormatter.ofPattern;
 import static net.serenitybdd.rest.SerenityRest.given;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -31,15 +25,7 @@ import static uk.gov.hmcts.reform.wataskconfigurationapi.CreateTaskMessageBuilde
 import static uk.gov.hmcts.reform.wataskconfigurationapi.CreatorObjectMapper.asCamundaJsonString;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.CreatorObjectMapper.asJsonString;
 
-@RunWith(SpringIntegrationSerenityRunner.class)
-@SpringBootTest
-@ActiveProfiles("functional")
-public class ConfigureTaskTest {
-    public static final DateTimeFormatter CAMUNDA_DATA_TIME_FORMATTER = ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-    private final String camundaUrl =
-        System.getenv("CAMUNDA_URL") == null ? "http://localhost:8080/engine-rest" : System.getenv("CAMUNDA_URL");
-    private final String testUrl =
-        System.getenv("TEST_URL") == null ? "http://localhost:8091" :  System.getenv("TEST_URL");
+public class ConfigureTaskTest extends BaseFunctionalTest {
 
     @Autowired
     private AuthTokenGenerator authTokenGenerator;
@@ -61,7 +47,6 @@ public class ConfigureTaskTest {
         given()
             .relaxedHTTPSValidation()
             .contentType(APPLICATION_JSON_VALUE)
-            .baseUri(testUrl)
             .basePath("/configureTask")
             .body(asJsonString(new ConfigureTaskRequest(taskId)))
             .when()
