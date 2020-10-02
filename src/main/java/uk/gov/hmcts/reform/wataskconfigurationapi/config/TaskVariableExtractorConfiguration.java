@@ -2,9 +2,9 @@ package uk.gov.hmcts.reform.wataskconfigurationapi.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors.CamundaProcessVariableExtractor;
 import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors.ConstantVariableExtractor;
 import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors.MapCaseDetailsService;
-import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors.CamundaProcessVariableExtractor;
 import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors.SystemConfiguredVariableExtractor;
 import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors.TaskVariableExtractor;
 

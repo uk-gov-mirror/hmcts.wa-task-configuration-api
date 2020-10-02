@@ -18,6 +18,7 @@ import static java.util.stream.Collectors.toMap;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaValue.jsonValue;
 
 @Component
+@SuppressWarnings({"PMD.UseConcurrentHashMap"})
 public class MapCaseDetailsService {
     private final CcdDataService ccdDataService;
     private final CamundaClient camundaClient;
@@ -40,14 +41,14 @@ public class MapCaseDetailsService {
                 )
             );
 
-            Map<String, Object> mappedCaseDetails = mapCaseDataDmnResults.stream().collect(toMap(
-                mapCaseDataDmnResult -> mapCaseDataDmnResult.getName().getValue(),
-                mapCaseDataDmnResult -> mapCaseDataDmnResult.getValue().getValue()
-            ));
-
-            HashMap<String, Object> allMappedDetails = new HashMap<>(mappedCaseDetails);
+            Map<String, Object> allMappedDetails = new HashMap<>();
             allMappedDetails.put("securityClassification", caseDetails.getSecurityClassification());
             allMappedDetails.put("caseType", caseDetails.getCaseTypeId());
+            allMappedDetails.putAll(mapCaseDataDmnResults.stream().collect(toMap(
+                mapCaseDataDmnResult -> mapCaseDataDmnResult.getName().getValue(),
+                mapCaseDataDmnResult -> mapCaseDataDmnResult.getValue().getValue()
+            )));
+
             return allMappedDetails;
         } catch (JsonProcessingException e) {
             throw new IllegalStateException("Cannot parse result from CCD for [" + ccdId + "]", e);
