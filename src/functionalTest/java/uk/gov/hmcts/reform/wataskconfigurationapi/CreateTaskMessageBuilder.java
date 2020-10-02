@@ -43,6 +43,7 @@ public class CreateTaskMessageBuilder {
             "dueDate",
             stringValue(now().plusDays(2).format(ConfigureTaskTest.CAMUNDA_DATA_TIME_FORMATTER))
         );
+        processVariables.put("name", stringValue("task name"));
         return new CreateTaskMessageBuilder()
             .withMessageName("createTaskMessage")
             .withProcessVariables(processVariables);

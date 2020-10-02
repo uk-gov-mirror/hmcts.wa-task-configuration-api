@@ -36,7 +36,7 @@ class ConfigureTaskServiceTest {
     void canConfigureATaskWithVariables() {
         String taskId = "taskId";
         String processInstanceId = "processInstanceId";
-        TaskResponse taskResponse = new TaskResponse("id", processInstanceId);
+        TaskResponse taskResponse = new TaskResponse("id", processInstanceId, "taskName");
         when(camundaClient.getTask(taskId)).thenReturn(taskResponse);
         HashMap<String, CamundaValue<Object>> processVariables = new HashMap<>();
         String ccdId = "someCcdValue";
@@ -59,7 +59,7 @@ class ConfigureTaskServiceTest {
     void canConfigureATaskWithNoExtraVariables() {
         String taskId = "taskId";
         String processInstanceId = "processInstanceId";
-        TaskResponse taskResponse = new TaskResponse("id", processInstanceId);
+        TaskResponse taskResponse = new TaskResponse("id", processInstanceId, "taskName");
         when(camundaClient.getTask(taskId)).thenReturn(taskResponse);
         HashMap<String, CamundaValue<Object>> processVariables = new HashMap<>();
         String ccdId = "someCcdValue";

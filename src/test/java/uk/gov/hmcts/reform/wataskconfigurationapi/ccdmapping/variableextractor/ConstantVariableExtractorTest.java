@@ -18,7 +18,7 @@ class ConstantVariableExtractorTest {
 
     @BeforeEach
     void setUp() {
-        task = new TaskResponse("id", "processInstanceId");
+        task = new TaskResponse("id", "processInstanceId", "taskName");
     }
 
     @Test

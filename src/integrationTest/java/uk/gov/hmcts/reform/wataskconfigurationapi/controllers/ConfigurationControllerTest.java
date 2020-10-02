@@ -43,6 +43,7 @@ import static uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.Camu
 @AutoConfigureMockMvc(addFilters = false)
 public class ConfigurationControllerTest {
 
+    public static final String TASK_NAME = "taskName";
     @Autowired
     private transient MockMvc mockMvc;
 
@@ -93,7 +94,7 @@ public class ConfigurationControllerTest {
     }
 
     private HashMap<String, CamundaValue<String>> configure3rdPartyResponses(String taskId, String processInstanceId) {
-        when(camundaClient.getTask(taskId)).thenReturn(new TaskResponse("id", processInstanceId));
+        when(camundaClient.getTask(taskId)).thenReturn(new TaskResponse("id", processInstanceId, TASK_NAME));
         HashMap<String, CamundaValue<Object>> processVariables = new HashMap<>();
         String ccdId = UUID.randomUUID().toString();
         processVariables.put("ccdId", new CamundaValue<>(ccdId, "string"));
@@ -122,6 +123,7 @@ public class ConfigurationControllerTest {
         modifications.put("securityClassification", stringValue("PUBLIC"));
         modifications.put("taskSystem", stringValue("SELF"));
         modifications.put("caseType", stringValue("Asylum"));
+        modifications.put("title", stringValue(TASK_NAME));
         return modifications;
     }
 }
