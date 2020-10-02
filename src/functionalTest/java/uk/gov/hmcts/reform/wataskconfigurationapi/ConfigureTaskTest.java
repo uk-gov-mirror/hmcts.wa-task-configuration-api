@@ -69,6 +69,7 @@ public class ConfigureTaskTest extends BaseFunctionalTest {
             .body("ccdId.value", is(createTaskMessage.getCcdId()))
             .body("securityClassification.value", is("PUBLIC"))
             .body("caseType.value", is("Asylum"))
+            .body("title.value", is("task name"))
         ;
     }
 
@@ -83,6 +84,7 @@ public class ConfigureTaskTest extends BaseFunctionalTest {
             .then()
             .statusCode(HttpStatus.NO_CONTENT_204);
 
+        Object taskName = createTaskMessage.getProcessVariables().get("name").getValue();
         return given()
             .contentType(APPLICATION_JSON_VALUE)
             .baseUri(camundaUrl)
@@ -92,7 +94,7 @@ public class ConfigureTaskTest extends BaseFunctionalTest {
             .get()
             .then()
             .body("size()", is(1))
-            .body("[0].name", is("Process Task"))
+            .body("[0].name", is(taskName))
             .extract()
             .path("[0].id");
     }

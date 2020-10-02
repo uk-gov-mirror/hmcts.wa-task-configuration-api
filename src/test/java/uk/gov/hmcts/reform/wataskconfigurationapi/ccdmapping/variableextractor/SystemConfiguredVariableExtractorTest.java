@@ -25,7 +25,7 @@ class SystemConfiguredVariableExtractorTest {
 
     @BeforeEach
     void setUp() {
-        task = new TaskResponse("id", "processInstanceId");
+        task = new TaskResponse("id", "processInstanceId", "taskName");
         mapCaseDetailsService = mock(MapCaseDetailsService.class);
 
         systemConfiguredVariableExtractor = new SystemConfiguredVariableExtractor(mapCaseDetailsService);

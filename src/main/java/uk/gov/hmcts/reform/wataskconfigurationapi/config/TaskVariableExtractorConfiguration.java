@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors.ConstantVariableExtractor;
 import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors.MapCaseDetailsService;
-import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors.ProcessVariablesVariableExtractor;
+import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors.CamundaProcessVariableExtractor;
 import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors.SystemConfiguredVariableExtractor;
 import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors.TaskVariableExtractor;
 
@@ -20,7 +20,7 @@ public class TaskVariableExtractorConfiguration {
     public List<TaskVariableExtractor> setupTaskVariableExtractors(MapCaseDetailsService mapCaseDetailsService) {
         return asList(
             new ConstantVariableExtractor(),
-            new ProcessVariablesVariableExtractor(),
+            new CamundaProcessVariableExtractor(),
             new SystemConfiguredVariableExtractor(mapCaseDetailsService)
         );
     }
