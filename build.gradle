@@ -230,6 +230,9 @@ dependencies {
 
   compile group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.38'
   compile group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '9.0.38'
+  compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '2.2.4.RELEASE'
+
+  compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.1.1'
 
   testImplementation libraries.junit5
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', {
@@ -240,6 +243,9 @@ dependencies {
   testCompile group: 'org.pitest', name: 'pitest', version: versions.pitest
   testCompile group: 'info.solidsoft.gradle.pitest', name: 'gradle-pitest-plugin', version: versions.gradlePitest
   testCompile group: 'org.codehaus.sonar-plugins', name: 'sonar-pitest-plugin', version: versions.sonarPitest
+  testCompile group: 'pl.pojo', name: 'pojo-tester', version: '0.7.6'
+  testCompile group: 'com.google.guava', name: 'guava-testlib', version: '29.0-jre'
+  testCompile group: 'com.jparams', name: 'to-string-verifier', version: '1.4.8'
 
   testCompile group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity
   testCompile group: 'net.serenity-bdd', name: 'serenity-junit', version: versions.serenity
@@ -249,9 +255,11 @@ dependencies {
 
   integrationTestImplementation sourceSets.main.runtimeClasspath
   integrationTestImplementation sourceSets.test.runtimeClasspath
+  integrationTestImplementation "org.junit.vintage:junit-vintage-engine:${versions.junit}"
 
   functionalTestImplementation sourceSets.main.runtimeClasspath
   functionalTestImplementation sourceSets.test.runtimeClasspath
+  compile group: 'uk.gov.hmcts.reform', name: 'core-case-data-store-client', version: '4.6.2'
 
   smokeTestImplementation sourceSets.main.runtimeClasspath
   smokeTestImplementation sourceSets.test.runtimeClasspath
