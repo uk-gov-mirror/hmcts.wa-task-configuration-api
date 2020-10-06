@@ -16,6 +16,7 @@ import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.DmnRequest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.MapCaseDataDmnRequest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.MapCaseDataDmnResult;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.TaskResponse;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.ccd.CaseDetails;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.idam.Token;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.idam.UserInfo;
 
@@ -45,7 +46,8 @@ class PojoTest {
         AddLocalVariableRequest.class,
         TaskResponse.class,
         Token.class,
-        UserInfo.class
+        UserInfo.class,
+        CaseDetails.class
     };
     // Cannot test equals for generic classes
     private final Class[] ignoreEquals = {
