@@ -5,7 +5,6 @@ spring:
       prefixed: false
       paths: /mnt/secrets/wa
       aliases:
-        testsecret: A_SECRET
         AppInsightsInstrumentationKey: azure.application-insights.instrumentation-key
         test-law-firm-a-username: TEST_LAW_FIRM_A_USERNAME
         test-law-firm-a-password: TEST_LAW_FIRM_A_PASSWORD

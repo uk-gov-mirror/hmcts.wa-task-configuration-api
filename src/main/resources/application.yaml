@@ -14,7 +14,6 @@ management:
 config:
   stacktraceEnabled:  ${STACKTRACE_ENABLED:false}
 
-testProperty: ${A_SECRET:defaultValue}
 
 enableSwagger: ${ENABLE_SWAGGER:true}
 
