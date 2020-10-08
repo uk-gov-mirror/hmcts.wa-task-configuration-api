@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping;
+package uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -8,13 +8,15 @@ public class TaskResponse {
     private String id;
     @JsonProperty("processInstanceId")
     private String processInstanceId;
+    private String name;
 
     private TaskResponse() {
     }
 
-    public TaskResponse(String id, String processInstanceId) {
+    public TaskResponse(String id, String processInstanceId, String name) {
         this.id = id;
         this.processInstanceId = processInstanceId;
+        this.name = name;
     }
 
     public String getId() {
@@ -23,6 +25,10 @@ public class TaskResponse {
 
     public String getProcessInstanceId() {
         return processInstanceId;
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -35,7 +41,8 @@ public class TaskResponse {
         }
         TaskResponse that = (TaskResponse) object;
         return Objects.equals(id, that.id)
-               && Objects.equals(processInstanceId, that.processInstanceId);
+               && Objects.equals(processInstanceId, that.processInstanceId)
+               && Objects.equals(name, that.name);
     }
 
     @Override
@@ -48,6 +55,7 @@ public class TaskResponse {
         return "TaskResponse{"
                + "id='" + id + '\''
                + ", processInstanceId='" + processInstanceId + '\''
+               + ", name='" + name + '\''
                + '}';
     }
 }

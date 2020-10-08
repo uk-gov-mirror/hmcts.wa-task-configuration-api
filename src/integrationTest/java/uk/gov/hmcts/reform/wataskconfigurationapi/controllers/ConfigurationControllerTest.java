@@ -11,17 +11,16 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
-import uk.gov.hmcts.reform.wataskconfigurationapi.ccd.CcdClient;
-import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.AddLocalVariableRequest;
-import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.CamundaClient;
-import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.CamundaValue;
-import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.ConfigureTaskRequest;
-import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.DmnRequest;
-import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.MapCaseDataDmnRequest;
-import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.MapCaseDataDmnResult;
-import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.TaskResponse;
-import uk.gov.hmcts.reform.wataskconfigurationapi.idam.IdamApi;
-import uk.gov.hmcts.reform.wataskconfigurationapi.idam.Token;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.AddLocalVariableRequest;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaClient;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaValue;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.DmnRequest;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.MapCaseDataDmnRequest;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.MapCaseDataDmnResult;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.TaskResponse;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.ccd.CcdClient;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.idam.IdamApi;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.idam.Token;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,14 +34,16 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.CamundaValue.jsonValue;
-import static uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.CamundaValue.stringValue;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors.ConstantVariableExtractor.STATUS_VARIABLE_KEY;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.controllers.util.CreatorObjectMapper.asJsonString;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaValue.jsonValue;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaValue.stringValue;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 public class ConfigurationControllerTest {
 
+    public static final String TASK_NAME = "taskName";
     @Autowired
     private transient MockMvc mockMvc;
 
@@ -93,7 +94,7 @@ public class ConfigurationControllerTest {
     }
 
     private HashMap<String, CamundaValue<String>> configure3rdPartyResponses(String taskId, String processInstanceId) {
-        when(camundaClient.getTask(taskId)).thenReturn(new TaskResponse("id", processInstanceId));
+        when(camundaClient.getTask(taskId)).thenReturn(new TaskResponse("id", processInstanceId, TASK_NAME));
         HashMap<String, CamundaValue<Object>> processVariables = new HashMap<>();
         String ccdId = UUID.randomUUID().toString();
         processVariables.put("ccdId", new CamundaValue<>(ccdId, "string"));
@@ -102,15 +103,27 @@ public class ConfigurationControllerTest {
         when(idamApi.token(ArgumentMatchers.<Map<String, Object>>any())).thenReturn(new Token(userToken, "scope"));
         String serviceToken = "service_token";
         when(authTokenGenerator.generate()).thenReturn(serviceToken);
-        String caseData = "{ data: {} }";
+        String caseData = "{ "
+                          + "\"jurisdiction\": \"ia\", "
+                          + "\"case_type_id\": \"Asylum\", "
+                          + "\"security_classification\": \"PUBLIC\","
+                          + "\"data\": {}"
+                          + " }";
         when(ccdClient.getCase("Bearer " + userToken, serviceToken, ccdId)).thenReturn(caseData);
-        when(camundaClient.mapCaseData(new DmnRequest<>(new MapCaseDataDmnRequest(jsonValue(caseData))))).thenReturn(
-            singletonList(new MapCaseDataDmnResult(stringValue("name1"), stringValue("value1")))
-        );
+        when(camundaClient.mapCaseData(
+            "ia", "Asylum", new DmnRequest<>(new MapCaseDataDmnRequest(jsonValue(caseData))))
+        ).thenReturn(singletonList(new MapCaseDataDmnResult(stringValue("name1"), stringValue("value1"))));
+
         HashMap<String, CamundaValue<String>> modifications = new HashMap<>();
         modifications.put("name1", stringValue("value1"));
         modifications.put("ccdId", stringValue(ccdId));
-        modifications.put("status", stringValue("configured"));
+        modifications.put(STATUS_VARIABLE_KEY, stringValue("configured"));
+        modifications.put("autoAssigned", stringValue("false"));
+        modifications.put("executionType", stringValue("Case Management Task"));
+        modifications.put("securityClassification", stringValue("PUBLIC"));
+        modifications.put("taskSystem", stringValue("SELF"));
+        modifications.put("caseType", stringValue("Asylum"));
+        modifications.put("title", stringValue(TASK_NAME));
         return modifications;
     }
 }

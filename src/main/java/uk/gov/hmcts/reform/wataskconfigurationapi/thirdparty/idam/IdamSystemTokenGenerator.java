@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.wataskconfigurationapi.idam;
+package uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.idam;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

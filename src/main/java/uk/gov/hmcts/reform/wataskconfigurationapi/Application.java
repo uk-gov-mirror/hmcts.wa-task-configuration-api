@@ -10,9 +10,9 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @SuppressWarnings("HideUtilityClassConstructor") // Spring needs a constructor, its not a utility class
 @EnableFeignClients(basePackages =
     {
-        "uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping",
-        "uk.gov.hmcts.reform.wataskconfigurationapi.idam",
-        "uk.gov.hmcts.reform.wataskconfigurationapi.ccd",
+        "uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda",
+        "uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.idam",
+        "uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.ccd",
         "uk.gov.hmcts.reform.ccd.client"
     })
 public class Application {

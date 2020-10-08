@@ -2,28 +2,32 @@ package uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping;
 
 import feign.FeignException;
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors.TaskVariableExtractor;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.AddLocalVariableRequest;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaClient;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaValue;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.TaskResponse;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static java.util.stream.Collectors.toMap;
-import static uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.CamundaValue.stringValue;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaValue.stringValue;
 
 @Component
 public class ConfigureTaskService {
     public static final String CCD_ID_PROCESS_VARIABLE_KEY = "ccdId";
-    public static final String STATUS_VARIABLE_KEY = "status";
 
     private final CamundaClient camundaClient;
-    private final MapCaseDetailsService mapCaseDetailsService;
+    private final List<TaskVariableExtractor> taskVariableExtractors;
 
-    public ConfigureTaskService(CamundaClient camundaClient, MapCaseDetailsService mapCaseDetailsService) {
+    public ConfigureTaskService(CamundaClient camundaClient, List<TaskVariableExtractor> taskVariableExtractors) {
         this.camundaClient = camundaClient;
-        this.mapCaseDetailsService = mapCaseDetailsService;
+        this.taskVariableExtractors = taskVariableExtractors;
     }
 
-    @SuppressWarnings({
-        "PMD.DataflowAnomalyAnalysis"
-    })
+    @SuppressWarnings({"PMD.DataflowAnomalyAnalysis"})
     public void configureTask(String taskId) {
         TaskResponse task;
         try {
@@ -37,17 +41,11 @@ public class ConfigureTaskService {
 
         Map<String, CamundaValue<Object>> processVariables =
             camundaClient.getProcessVariables(task.getProcessInstanceId());
-        if (!processVariables.containsKey(CCD_ID_PROCESS_VARIABLE_KEY)) {
-            throw new IllegalStateException(
-                "Task id ["
-                + taskId
-                + "] cannot be configured it has not been setup correctly. No ccdId process variable."
-            );
-        }
-        CamundaValue<Object> ccdId = processVariables.get(CCD_ID_PROCESS_VARIABLE_KEY);
-        Map<String, Object> mappedDetails = mapCaseDetailsService.getMappedDetails((String) ccdId.getValue());
-        mappedDetails.put(CCD_ID_PROCESS_VARIABLE_KEY, ccdId.getValue());
-        mappedDetails.put(STATUS_VARIABLE_KEY, "configured");
+
+        HashMap<String, Object> mappedDetails = new HashMap<>();
+        taskVariableExtractors.stream()
+            .map(taskVariableExtractor -> taskVariableExtractor.getValues(task, processVariables))
+            .forEach(mappedDetails::putAll);
 
         Map<String, CamundaValue<String>> map = mappedDetails.entrySet().stream().collect(toMap(
             Map.Entry::getKey,

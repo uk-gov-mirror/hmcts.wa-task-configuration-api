@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping;
+package uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
@@ -14,8 +14,15 @@ import java.util.Map;
     url = "${camunda.url}"
 )
 public interface CamundaClient {
-    @PostMapping(value = "/decision-definition/key/mapCaseData/evaluate", produces = MediaType.APPLICATION_JSON_VALUE)
-    List<MapCaseDataDmnResult> mapCaseData(DmnRequest<MapCaseDataDmnRequest> requestParameters);
+    @PostMapping(
+        value = "/decision-definition/key/mapCaseData_{jurisdiction}_{caseType}/evaluate",
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    List<MapCaseDataDmnResult> mapCaseData(
+        @PathVariable("jurisdiction") String jurisdiction,
+        @PathVariable("caseType") String caseType,
+        DmnRequest<MapCaseDataDmnRequest> requestParameters
+    );
 
     @PostMapping(value = "/task/{id}/localVariables", produces = MediaType.APPLICATION_JSON_VALUE)
     void addLocalVariablesToTask(@PathVariable("id") String taskId, AddLocalVariableRequest addLocalVariableRequest);

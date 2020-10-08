@@ -1,6 +1,6 @@
 package uk.gov.hmcts.reform.wataskconfigurationapi.controllers.util;
 
-import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.ConfigureTaskRequest;
+import uk.gov.hmcts.reform.wataskconfigurationapi.controllers.ConfigureTaskRequest;
 
 import java.util.UUID;
 

@@ -9,15 +9,16 @@ import pl.pojo.tester.api.assertion.Method;
 import pl.pojo.tester.internal.field.DefaultFieldValueChanger;
 import pl.pojo.tester.internal.instantiator.ObjectGenerator;
 import pl.pojo.tester.internal.utils.ThoroughFieldPermutator;
-import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.AddLocalVariableRequest;
-import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.CamundaValue;
-import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.ConfigureTaskRequest;
-import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.DmnRequest;
-import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.MapCaseDataDmnRequest;
-import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.MapCaseDataDmnResult;
-import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.TaskResponse;
-import uk.gov.hmcts.reform.wataskconfigurationapi.idam.Token;
-import uk.gov.hmcts.reform.wataskconfigurationapi.idam.UserInfo;
+import uk.gov.hmcts.reform.wataskconfigurationapi.controllers.ConfigureTaskRequest;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.AddLocalVariableRequest;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaValue;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.DmnRequest;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.MapCaseDataDmnRequest;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.MapCaseDataDmnResult;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.TaskResponse;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.ccd.CaseDetails;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.idam.Token;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.idam.UserInfo;
 
 import java.util.List;
 
@@ -45,7 +46,8 @@ class PojoTest {
         AddLocalVariableRequest.class,
         TaskResponse.class,
         Token.class,
-        UserInfo.class
+        UserInfo.class,
+        CaseDetails.class
     };
     // Cannot test equals for generic classes
     private final Class[] ignoreEquals = {
