@@ -9,7 +9,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import uk.gov.hmcts.reform.wataskconfigurationapi.controllers.advice.ErrorLogger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -18,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest
 @AutoConfigureMockMvc
-@ContextConfiguration(classes = {RootController.class, ErrorLogger.class})
+@ContextConfiguration(classes = {RootController.class})
 @ActiveProfiles("integration")
 class GetRootTest {
 
