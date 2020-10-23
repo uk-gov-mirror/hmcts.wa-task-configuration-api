@@ -1,12 +1,13 @@
-package uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractor;
+package uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors.MapCaseDetailsService;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaClient;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.DecisionTableRequest;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.DecisionTableResult;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.DmnRequest;
-import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.MapCaseDataDmnRequest;
-import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.MapCaseDataDmnResult;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.ccd.CcdDataService;
 
 import java.util.HashMap;
@@ -18,21 +19,20 @@ import static java.util.Collections.emptyMap;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors.MapCaseDetailsService.MAP_CASE_DATA_DECISION_TABLE_NAME;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaValue.jsonValue;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaValue.stringValue;
 
+@ExtendWith(MockitoExtension.class)
 class MapCaseDetailsServiceTest {
 
+    @Mock
     private CamundaClient camundaClient;
+    @Mock
     private CcdDataService ccdDataService;
-
-    @BeforeEach
-    void setUp() {
-        camundaClient = mock(CamundaClient.class);
-        ccdDataService = mock(CcdDataService.class);
-    }
+    @Mock
+    private PermissionsService permissionsService;
 
     @Test
     void doesNotHaveAnyFieldsToMap() {
@@ -44,14 +44,27 @@ class MapCaseDetailsServiceTest {
                          + "\"data\": {}"
                          + "}";
         when(ccdDataService.getCaseData(someCcdId)).thenReturn(ccdData);
+        when(permissionsService.getMappedDetails("ia", "Asylum", ccdData))
+            .thenReturn(asList(
+                new DecisionTableResult(
+                    stringValue("tribunalCaseworker"), stringValue("Read,Refer,Own,Manage,Cancel")),
+                new DecisionTableResult(
+                    stringValue("seniorTribunalCaseworker"), stringValue("Read,Refer,Own,Manage,Cancel"))
+            ));
         when(camundaClient.mapCaseData(
-            "ia", "Asylum", new DmnRequest<>(new MapCaseDataDmnRequest(stringValue(ccdData))))
+            MAP_CASE_DATA_DECISION_TABLE_NAME,
+            "ia",
+            "Asylum",
+            new DmnRequest<>(new DecisionTableRequest(jsonValue(ccdData)))
+             )
         ).thenReturn(emptyList());
 
         HashMap<String, Object> expectedMappedData = new HashMap<>();
+        expectedMappedData.put("tribunalCaseworker", "Read,Refer,Own,Manage,Cancel");
+        expectedMappedData.put("seniorTribunalCaseworker", "Read,Refer,Own,Manage,Cancel");
         expectedMappedData.put("securityClassification", "PUBLIC");
         expectedMappedData.put("caseType", "Asylum");
-        Map<String, Object> mappedData = new MapCaseDetailsService(ccdDataService, camundaClient)
+        Map<String, Object> mappedData = new MapCaseDetailsService(ccdDataService, camundaClient, permissionsService)
             .getMappedDetails(someCcdId);
 
         assertThat(mappedData, is(expectedMappedData));
@@ -66,7 +79,11 @@ class MapCaseDetailsServiceTest {
                 String ccdData = "not valid json";
                 when(ccdDataService.getCaseData(someCcdId)).thenReturn(ccdData);
 
-                Map<String, Object> mappedData = new MapCaseDetailsService(ccdDataService, camundaClient)
+                Map<String, Object> mappedData = new MapCaseDetailsService(
+                    ccdDataService,
+                    camundaClient,
+                    permissionsService
+                )
                     .getMappedDetails(someCcdId);
 
                 assertThat(mappedData, is(emptyMap()));
@@ -84,9 +101,16 @@ class MapCaseDetailsServiceTest {
                          + "\"data\": {}"
                          + "}";
         when(ccdDataService.getCaseData(someCcdId)).thenReturn(ccdData);
-        when(camundaClient.mapCaseData("ia", "Asylum", new DmnRequest<>(new MapCaseDataDmnRequest(jsonValue(ccdData)))))
-            .thenReturn(asList(new MapCaseDataDmnResult(stringValue("name1"), stringValue("value1")),
-                               new MapCaseDataDmnResult(stringValue("name2"), stringValue("value2"))));
+        when(camundaClient.mapCaseData(
+            MAP_CASE_DATA_DECISION_TABLE_NAME,
+            "ia",
+            "Asylum",
+            new DmnRequest<>(new DecisionTableRequest(jsonValue(ccdData)))
+        ))
+            .thenReturn(asList(
+                new DecisionTableResult(stringValue("name1"), stringValue("value1")),
+                new DecisionTableResult(stringValue("name2"), stringValue("value2"))
+            ));
 
         HashMap<String, Object> expectedMappedData = new HashMap<>();
         expectedMappedData.put("name1", "value1");
@@ -94,8 +118,10 @@ class MapCaseDetailsServiceTest {
         expectedMappedData.put("securityClassification", "PUBLIC");
         expectedMappedData.put("caseType", "Asylum");
 
-        Map<String, Object> mappedData = new MapCaseDetailsService(ccdDataService,
-                                                                   camundaClient
+        Map<String, Object> mappedData = new MapCaseDetailsService(
+            ccdDataService,
+            camundaClient,
+            permissionsService
         ).getMappedDetails(someCcdId);
 
         assertThat(mappedData, is(expectedMappedData));

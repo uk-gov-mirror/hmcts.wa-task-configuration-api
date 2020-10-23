@@ -4,11 +4,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
-public class MapCaseDataDmnRequest {
+public class DecisionTableRequest {
 
     private final CamundaValue<String> caseJson;
 
-    public MapCaseDataDmnRequest(CamundaValue<String> caseJson) {
+    public DecisionTableRequest(CamundaValue<String> caseJson) {
         this.caseJson = caseJson;
     }
 
@@ -25,7 +25,7 @@ public class MapCaseDataDmnRequest {
         if (object == null || getClass() != object.getClass()) {
             return false;
         }
-        MapCaseDataDmnRequest that = (MapCaseDataDmnRequest) object;
+        DecisionTableRequest that = (DecisionTableRequest) object;
         return Objects.equals(caseJson, that.caseJson);
     }
 

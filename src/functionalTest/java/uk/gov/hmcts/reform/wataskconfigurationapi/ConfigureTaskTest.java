@@ -70,6 +70,9 @@ public class ConfigureTaskTest extends BaseFunctionalTest {
             .body("securityClassification.value", is("PUBLIC"))
             .body("caseType.value", is("Asylum"))
             .body("title.value", is("task name"))
+            .body("tribunalCaseworker.value", is("Read,Refer,Own,Manage,Cancel"))
+            .body("seniorTribunalCaseworker.value", is("Read,Refer,Own,Manage,Cancel"))
+
         ;
     }
 

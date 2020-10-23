@@ -12,9 +12,9 @@ import pl.pojo.tester.internal.utils.ThoroughFieldPermutator;
 import uk.gov.hmcts.reform.wataskconfigurationapi.controllers.ConfigureTaskRequest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.AddLocalVariableRequest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaValue;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.DecisionTableRequest;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.DecisionTableResult;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.DmnRequest;
-import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.MapCaseDataDmnRequest;
-import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.MapCaseDataDmnResult;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.TaskResponse;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.ccd.CaseDetails;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.idam.Token;
@@ -39,9 +39,9 @@ class PojoTest {
 
     private final Class[] classesToTest = {
         ConfigureTaskRequest.class,
-        MapCaseDataDmnRequest.class,
+        DecisionTableRequest.class,
         DmnRequest.class,
-        MapCaseDataDmnResult.class,
+        DecisionTableResult.class,
         CamundaValue.class,
         AddLocalVariableRequest.class,
         TaskResponse.class,
@@ -52,7 +52,7 @@ class PojoTest {
     // Cannot test equals for generic classes
     private final Class[] ignoreEquals = {
         DmnRequest.class,
-        MapCaseDataDmnRequest.class,
+        DecisionTableRequest.class,
         CamundaValue.class
     };
     private final ObjectGenerator objectGenerator = new ObjectGenerator(

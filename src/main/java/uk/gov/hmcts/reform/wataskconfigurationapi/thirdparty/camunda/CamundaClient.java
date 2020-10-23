@@ -15,13 +15,14 @@ import java.util.Map;
 )
 public interface CamundaClient {
     @PostMapping(
-        value = "/decision-definition/key/mapCaseData_{jurisdiction}_{caseType}/evaluate",
+        value = "/decision-definition/key/{decisionTableName}_{jurisdiction}_{caseType}/evaluate",
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    List<MapCaseDataDmnResult> mapCaseData(
+    List<DecisionTableResult> mapCaseData(
+        @PathVariable("decisionTableName") String decisionTableName,
         @PathVariable("jurisdiction") String jurisdiction,
         @PathVariable("caseType") String caseType,
-        DmnRequest<MapCaseDataDmnRequest> requestParameters
+        DmnRequest<DecisionTableRequest> requestParameters
     );
 
     @PostMapping(value = "/task/{id}/localVariables", produces = MediaType.APPLICATION_JSON_VALUE)

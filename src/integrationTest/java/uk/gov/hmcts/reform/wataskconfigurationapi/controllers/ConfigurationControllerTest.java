@@ -14,9 +14,9 @@ import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.AddLocalVariableRequest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaClient;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaValue;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.DecisionTableRequest;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.DecisionTableResult;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.DmnRequest;
-import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.MapCaseDataDmnRequest;
-import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.MapCaseDataDmnResult;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.TaskResponse;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.ccd.CcdClient;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.idam.IdamApi;
@@ -35,6 +35,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors.ConstantVariableExtractor.STATUS_VARIABLE_KEY;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors.MapCaseDetailsService.MAP_CASE_DATA_DECISION_TABLE_NAME;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.controllers.util.CreatorObjectMapper.asJsonString;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaValue.jsonValue;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaValue.stringValue;
@@ -45,7 +46,7 @@ public class ConfigurationControllerTest {
 
     public static final String TASK_NAME = "taskName";
     @Autowired
-    private transient MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @MockBean
     private CamundaClient camundaClient;
@@ -72,7 +73,6 @@ public class ConfigurationControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(asJsonString(new ConfigureTaskRequest(taskId)))
         ).andExpect(status().isOk()).andReturn();
-
 
         verify(camundaClient).addLocalVariablesToTask(taskId, new AddLocalVariableRequest(modifications));
     }
@@ -111,8 +111,12 @@ public class ConfigurationControllerTest {
                           + " }";
         when(ccdClient.getCase("Bearer " + userToken, serviceToken, ccdId)).thenReturn(caseData);
         when(camundaClient.mapCaseData(
-            "ia", "Asylum", new DmnRequest<>(new MapCaseDataDmnRequest(jsonValue(caseData))))
-        ).thenReturn(singletonList(new MapCaseDataDmnResult(stringValue("name1"), stringValue("value1"))));
+            MAP_CASE_DATA_DECISION_TABLE_NAME,
+            "ia",
+            "Asylum",
+            new DmnRequest<>(new DecisionTableRequest(jsonValue(caseData)))
+             )
+        ).thenReturn(singletonList(new DecisionTableResult(stringValue("name1"), stringValue("value1"))));
 
         HashMap<String, CamundaValue<String>> modifications = new HashMap<>();
         modifications.put("name1", stringValue("value1"));

@@ -2,14 +2,14 @@ package uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda;
 
 import java.util.Objects;
 
-public class MapCaseDataDmnResult {
+public class DecisionTableResult {
     private CamundaValue<String> name;
     private CamundaValue<String> value;
 
-    private MapCaseDataDmnResult() {
+    private DecisionTableResult() {
     }
 
-    public MapCaseDataDmnResult(CamundaValue<String> name, CamundaValue<String> value) {
+    public DecisionTableResult(CamundaValue<String> name, CamundaValue<String> value) {
         this.name = name;
         this.value = value;
     }
@@ -30,7 +30,7 @@ public class MapCaseDataDmnResult {
         if (object == null || getClass() != object.getClass()) {
             return false;
         }
-        MapCaseDataDmnResult that = (MapCaseDataDmnResult) object;
+        DecisionTableResult that = (DecisionTableResult) object;
         return Objects.equals(name, that.name)
                && Objects.equals(value, that.value);
     }

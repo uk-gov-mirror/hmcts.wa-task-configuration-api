@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractor;
+package uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

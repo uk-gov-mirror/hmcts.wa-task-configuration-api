@@ -4,6 +4,9 @@ branches:
   only:
     - master
 
+jdk:
+  - openjdk11
+
 #services:
 #  - docker
 
