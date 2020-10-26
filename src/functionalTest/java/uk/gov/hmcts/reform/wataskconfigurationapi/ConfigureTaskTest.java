@@ -16,10 +16,10 @@ import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.idam.UserInfo;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 
 import static net.serenitybdd.rest.SerenityRest.given;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.CreateTaskMessageBuilder.createBasicMessageForTask;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.CreatorObjectMapper.asCamundaJsonString;
@@ -63,8 +63,9 @@ public class ConfigureTaskTest extends BaseFunctionalTest {
             .then()
             .body("caseName.value", is("Bob Smith"))
             .body("appealType.value", is("protection"))
-            .body("staffLocation.value", is("Taylor House"))
-            .body("staffLocationId.value", is(nullValue())) //this is still to be set
+            .body("region.value", is("1"))
+            .body("location.value", is("765324"))
+            .body("locationName.value", is("Taylor House"))
             .body("taskState.value", is("configured"))
             .body("ccdId.value", is(createTaskMessage.getCcdId()))
             .body("securityClassification.value", is("PUBLIC"))
@@ -115,7 +116,8 @@ public class ConfigureTaskTest extends BaseFunctionalTest {
             "startAppeal"
         );
         String caseData = new String(
-            (Thread.currentThread().getContextClassLoader().getResourceAsStream("case_data.json")).readAllBytes()
+            (Objects.requireNonNull(Thread.currentThread().getContextClassLoader()
+                                        .getResourceAsStream("case_data.json"))).readAllBytes()
         );
         Map data = new ObjectMapper().readValue(caseData, Map.class);
         CaseDataContent caseDataContent = CaseDataContent.builder()
