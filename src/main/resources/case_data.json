@@ -29,5 +29,10 @@
         "wantsSms": "Yes"
       }
     }
-  ]
+  ],
+  "caseManagementLocation": {
+    "region": "1",
+    "baseLocation": "765324"
+  },
+  "staffLocation": "Taylor House"
 }
