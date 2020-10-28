@@ -1,13 +1,11 @@
 package uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.ccd;
 
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
-import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.idam.IdamApi;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.idam.IdamSystemTokenGenerator;
 
 import java.util.UUID;
@@ -20,9 +18,6 @@ public class CcdDataServiceTest {
 
     @Mock
     CcdClient ccdClient;
-
-    @Mock
-    IdamApi idamApi;
 
     @Mock
     AuthTokenGenerator authTokenGenerator;
