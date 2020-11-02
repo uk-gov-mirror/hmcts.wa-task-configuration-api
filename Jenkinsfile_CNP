@@ -15,7 +15,7 @@ def secrets = [
   ],
 
   's2s-${env}' : [
-    secret('microservicekey-wa-task-configuration-api', 'S2S_SECRET_TASK_CONFIGURATION_API'),
+    secret('microservicekey-wa-task-configuration-api', 'S2S_SECRET_TASK_CONFIGURATION_API')
   ]
 ]
 

@@ -28,7 +28,7 @@ import static uk.gov.hmcts.reform.wataskconfigurationapi.CreatorObjectMapper.asJ
 public class ConfigureTaskTest extends BaseFunctionalTest {
 
     @Autowired
-    private AuthTokenGenerator authTokenGenerator;
+    private AuthTokenGenerator ccdServiceAuthTokenGenerator;
     @Autowired
     private IdamSystemTokenGenerator systemTokenGenerator;
     @Autowired
@@ -106,7 +106,7 @@ public class ConfigureTaskTest extends BaseFunctionalTest {
     private String createCcdCase() throws IOException {
         String userToken = "Bearer " + systemTokenGenerator.generate();
         UserInfo userInfo = systemTokenGenerator.getUserInfo(userToken);
-        String serviceToken = authTokenGenerator.generate();
+        String serviceToken = ccdServiceAuthTokenGenerator.generate();
         StartEventResponse startCase = coreCaseDataApi.startForCaseworker(
             userToken,
             serviceToken,
