@@ -10,4 +10,4 @@ spring:
         test-law-firm-a-password: TEST_LAW_FIRM_A_PASSWORD
         idam-redirect-uri: IA_IDAM_REDIRECT_URI
         idam-secret: IA_IDAM_SECRET
-        s2s-name: S2S_NAME_WORKFLOW_API
+        s2s-secret-task-configuration-api: S2S_SECRET_TASK_CONFIGURATION_API
