@@ -45,7 +45,7 @@ class ConfigureTaskServiceTest {
         String taskId = "taskId";
         String processInstanceId = "processInstanceId";
         TaskResponse taskResponse = new TaskResponse("id", processInstanceId, "taskName");
-        when(camundaClient.getTask(taskId)).thenReturn(taskResponse);
+        when(camundaClient.getTask(BEARER_SERVICE_TOKEN, taskId)).thenReturn(taskResponse);
 
         HashMap<String, CamundaValue<Object>> processVariables = new HashMap<>();
         String ccdId = "someCcdValue";
@@ -74,7 +74,7 @@ class ConfigureTaskServiceTest {
         String taskId = "taskId";
         String processInstanceId = "processInstanceId";
         TaskResponse taskResponse = new TaskResponse("id", processInstanceId, "taskName");
-        when(camundaClient.getTask(taskId)).thenReturn(taskResponse);
+        when(camundaClient.getTask(BEARER_SERVICE_TOKEN, taskId)).thenReturn(taskResponse);
         HashMap<String, CamundaValue<Object>> processVariables = new HashMap<>();
         String ccdId = "someCcdValue";
         processVariables.put("ccdId", new CamundaValue<>(ccdId, "String"));
@@ -96,7 +96,7 @@ class ConfigureTaskServiceTest {
     void tryToConfigureATaskThatDoesNotExist() {
         String taskIdThatDoesNotExist = "doesNotExist";
         FeignException.NotFound notFound = mock(FeignException.NotFound.class);
-        when(camundaClient.getTask(taskIdThatDoesNotExist)).thenThrow(notFound);
+        when(camundaClient.getTask(BEARER_SERVICE_TOKEN, taskIdThatDoesNotExist)).thenThrow(notFound);
 
         Assertions.assertThrows(ConfigureTaskException.class, () -> {
             configureTaskService.configureTask(taskIdThatDoesNotExist);

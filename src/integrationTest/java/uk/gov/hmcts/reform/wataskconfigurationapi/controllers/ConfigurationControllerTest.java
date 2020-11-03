@@ -91,7 +91,7 @@ public class ConfigurationControllerTest {
     void cannotFindTask() throws Exception {
         String taskId = UUID.randomUUID().toString();
 
-        when(camundaClient.getTask(taskId)).thenThrow(mock(FeignException.NotFound.class));
+        when(camundaClient.getTask(BEARER_SERVICE_TOKEN, taskId)).thenThrow(mock(FeignException.NotFound.class));
         when(ccdServiceAuthTokenGenerator.generate()).thenReturn(BEARER_SERVICE_TOKEN);
         when(camundaServiceAuthTokenGenerator.generate()).thenReturn(BEARER_SERVICE_TOKEN);
 
@@ -109,7 +109,8 @@ public class ConfigurationControllerTest {
     }
 
     private HashMap<String, CamundaValue<String>> configure3rdPartyResponses(String taskId, String processInstanceId) {
-        when(camundaClient.getTask(taskId)).thenReturn(new TaskResponse("id", processInstanceId, TASK_NAME));
+        when(camundaClient.getTask(BEARER_SERVICE_TOKEN, taskId))
+            .thenReturn(new TaskResponse("id", processInstanceId, TASK_NAME));
         HashMap<String, CamundaValue<Object>> processVariables = new HashMap<>();
         String ccdId = UUID.randomUUID().toString();
         processVariables.put("ccdId", new CamundaValue<>(ccdId, "string"));

@@ -37,7 +37,8 @@ public interface CamundaClient {
                                  AddLocalVariableRequest addLocalVariableRequest);
 
     @GetMapping(value = "/task/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    TaskResponse getTask(@PathVariable("id") String taskId);
+    TaskResponse getTask(@RequestHeader(SERVICE_AUTHORIZATION) String serviceAuthorisation,
+                         @PathVariable("id") String taskId);
 
     @GetMapping(value = "/process-instance/{id}/variables", produces = MediaType.APPLICATION_JSON_VALUE)
     Map<String, CamundaValue<Object>> getProcessVariables(@PathVariable("id") String processInstanceId);

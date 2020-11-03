@@ -38,7 +38,7 @@ public class ConfigureTaskService {
     public void configureTask(String taskId) {
         TaskResponse task;
         try {
-            task = camundaClient.getTask(taskId);
+            task = camundaClient.getTask(camundaServiceAuthTokenGenerator.generate(), taskId);
         } catch (FeignException.NotFound notFoundException) {
             throw new ConfigureTaskException(
                 "Task [" + taskId + "] cannot be configured as it has not been found.",
