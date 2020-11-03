@@ -53,6 +53,8 @@ public class ConfigurationControllerTest {
 
     @MockBean(name = "ccdServiceAuthTokenGenerator")
     private AuthTokenGenerator ccdServiceAuthTokenGenerator;
+    @MockBean(name = "camundaServiceAuthTokenGenerator")
+    private AuthTokenGenerator camundaServiceAuthTokenGenerator;
 
     @MockBean
     private CcdClient ccdClient;
@@ -104,6 +106,7 @@ public class ConfigurationControllerTest {
         String userToken = "user_token";
         when(idamApi.token(ArgumentMatchers.<Map<String, Object>>any())).thenReturn(new Token(userToken, "scope"));
         when(ccdServiceAuthTokenGenerator.generate()).thenReturn(BEARER_SERVICE_TOKEN);
+        when(camundaServiceAuthTokenGenerator.generate()).thenReturn(BEARER_SERVICE_TOKEN);
         String caseData = "{ "
                           + "\"jurisdiction\": \"ia\", "
                           + "\"case_type_id\": \"Asylum\", "

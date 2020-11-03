@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors;
 
 import feign.FeignException;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaClient;
@@ -19,7 +20,8 @@ public class PermissionsService {
     private final AuthTokenGenerator camundaServiceAuthTokenGenerator;
 
     public PermissionsService(CamundaClient camundaClient,
-                              AuthTokenGenerator camundaServiceAuthTokenGenerator) {
+                              @Qualifier("camundaServiceAuthTokenGenerator")
+                                  AuthTokenGenerator camundaServiceAuthTokenGenerator) {
         this.camundaClient = camundaClient;
         this.camundaServiceAuthTokenGenerator = camundaServiceAuthTokenGenerator;
     }

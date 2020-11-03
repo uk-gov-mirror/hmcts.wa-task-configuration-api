@@ -10,7 +10,7 @@ import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGeneratorFactory;
 @Configuration
 public class ServiceTokenGeneratorConfiguration {
 
-    @Bean
+    @Bean(name = "ccdServiceAuthTokenGenerator")
     public AuthTokenGenerator ccdServiceAuthTokenGenerator(
         @Value("${idam.s2s-auth.secret.ccd}") String secret,
         @Value("${idam.s2s-auth.name.ccd}") String microService,
@@ -19,7 +19,7 @@ public class ServiceTokenGeneratorConfiguration {
         return AuthTokenGeneratorFactory.createDefaultGenerator(secret, microService, serviceAuthorisationApi);
     }
 
-    @Bean
+    @Bean(name = "camundaServiceAuthTokenGenerator")
     public AuthTokenGenerator camundaServiceAuthTokenGenerator(
         @Value("${idam.s2s-auth.secret.camunda}") String secret,
         @Value("${idam.s2s-auth.name.camunda}") String microService,

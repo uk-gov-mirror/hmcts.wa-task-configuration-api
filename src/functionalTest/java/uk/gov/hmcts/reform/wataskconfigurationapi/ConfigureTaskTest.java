@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.jetty.http.HttpStatus;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
@@ -28,6 +29,7 @@ import static uk.gov.hmcts.reform.wataskconfigurationapi.CreatorObjectMapper.asJ
 public class ConfigureTaskTest extends BaseFunctionalTest {
 
     @Autowired
+    @Qualifier("ccdServiceAuthTokenGenerator")
     private AuthTokenGenerator ccdServiceAuthTokenGenerator;
     @Autowired
     private IdamSystemTokenGenerator systemTokenGenerator;
