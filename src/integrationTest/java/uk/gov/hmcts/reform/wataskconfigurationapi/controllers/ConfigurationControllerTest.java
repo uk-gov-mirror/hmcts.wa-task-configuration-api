@@ -28,6 +28,7 @@ import java.util.UUID;
 
 import static java.util.Collections.singletonList;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -78,7 +79,11 @@ public class ConfigurationControllerTest {
                 .content(asJsonString(new ConfigureTaskRequest(taskId)))
         ).andExpect(status().isOk()).andReturn();
 
-        verify(camundaClient).addLocalVariablesToTask(taskId, new AddLocalVariableRequest(modifications));
+        verify(camundaClient).addLocalVariablesToTask(
+            BEARER_SERVICE_TOKEN,
+            taskId,
+            new AddLocalVariableRequest(modifications)
+        );
     }
 
     @DisplayName("Cannot find task")
@@ -87,6 +92,8 @@ public class ConfigurationControllerTest {
         String taskId = UUID.randomUUID().toString();
 
         when(camundaClient.getTask(taskId)).thenThrow(mock(FeignException.NotFound.class));
+        when(ccdServiceAuthTokenGenerator.generate()).thenReturn(BEARER_SERVICE_TOKEN);
+        when(camundaServiceAuthTokenGenerator.generate()).thenReturn(BEARER_SERVICE_TOKEN);
 
         mockMvc.perform(
             post("/configureTask")
@@ -94,7 +101,11 @@ public class ConfigurationControllerTest {
                 .content(asJsonString(new ConfigureTaskRequest(taskId)))
         ).andExpect(status().isNotFound()).andReturn();
 
-        verify(camundaClient, never()).addLocalVariablesToTask(any(String.class), any(AddLocalVariableRequest.class));
+        verify(camundaClient, never()).addLocalVariablesToTask(
+            eq(BEARER_SERVICE_TOKEN),
+            any(String.class),
+            any(AddLocalVariableRequest.class)
+        );
     }
 
     private HashMap<String, CamundaValue<String>> configure3rdPartyResponses(String taskId, String processInstanceId) {

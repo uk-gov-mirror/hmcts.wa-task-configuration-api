@@ -32,7 +32,9 @@ public interface CamundaClient {
     );
 
     @PostMapping(value = "/task/{id}/localVariables", produces = MediaType.APPLICATION_JSON_VALUE)
-    void addLocalVariablesToTask(@PathVariable("id") String taskId, AddLocalVariableRequest addLocalVariableRequest);
+    void addLocalVariablesToTask(@RequestHeader(SERVICE_AUTHORIZATION) String serviceAuthorisation,
+                                 @PathVariable("id") String taskId,
+                                 AddLocalVariableRequest addLocalVariableRequest);
 
     @GetMapping(value = "/task/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     TaskResponse getTask(@PathVariable("id") String taskId);
