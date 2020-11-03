@@ -46,8 +46,10 @@ public class ConfigureTaskService {
             );
         }
 
-        Map<String, CamundaValue<Object>> processVariables =
-            camundaClient.getProcessVariables(task.getProcessInstanceId());
+        Map<String, CamundaValue<Object>> processVariables = camundaClient.getProcessVariables(
+            camundaServiceAuthTokenGenerator.generate(),
+            task.getProcessInstanceId()
+        );
 
         HashMap<String, Object> mappedDetails = new HashMap<>();
         taskVariableExtractors.stream()

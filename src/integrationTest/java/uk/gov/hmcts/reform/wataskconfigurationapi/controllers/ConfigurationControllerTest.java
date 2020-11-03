@@ -114,7 +114,7 @@ public class ConfigurationControllerTest {
         HashMap<String, CamundaValue<Object>> processVariables = new HashMap<>();
         String ccdId = UUID.randomUUID().toString();
         processVariables.put("ccdId", new CamundaValue<>(ccdId, "string"));
-        when(camundaClient.getProcessVariables(processInstanceId)).thenReturn(processVariables);
+        when(camundaClient.getProcessVariables(BEARER_SERVICE_TOKEN, processInstanceId)).thenReturn(processVariables);
         String userToken = "user_token";
         when(idamApi.token(ArgumentMatchers.<Map<String, Object>>any())).thenReturn(new Token(userToken, "scope"));
         when(ccdServiceAuthTokenGenerator.generate()).thenReturn(BEARER_SERVICE_TOKEN);

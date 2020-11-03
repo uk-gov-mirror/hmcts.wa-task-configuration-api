@@ -41,6 +41,8 @@ public interface CamundaClient {
                          @PathVariable("id") String taskId);
 
     @GetMapping(value = "/process-instance/{id}/variables", produces = MediaType.APPLICATION_JSON_VALUE)
-    Map<String, CamundaValue<Object>> getProcessVariables(@PathVariable("id") String processInstanceId);
+    Map<String, CamundaValue<Object>> getProcessVariables(
+        @RequestHeader(SERVICE_AUTHORIZATION) String serviceAuthorisation,
+        @PathVariable("id") String processInstanceId);
 }
 
