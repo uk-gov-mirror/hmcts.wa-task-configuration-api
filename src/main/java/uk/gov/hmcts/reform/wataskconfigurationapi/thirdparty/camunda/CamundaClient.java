@@ -5,6 +5,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
 import java.util.Map;
@@ -14,11 +15,16 @@ import java.util.Map;
     url = "${camunda.url}"
 )
 public interface CamundaClient {
+
+    String SERVICE_AUTHORIZATION = "ServiceAuthorization";
+
     @PostMapping(
         value = "/decision-definition/key/{decisionTableName}_{jurisdiction}_{caseType}/evaluate",
         produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @SuppressWarnings("PMD.UseObjectForClearerAPI")
     List<DecisionTableResult> mapCaseData(
+        @RequestHeader(SERVICE_AUTHORIZATION) String serviceAuthorisation,
         @PathVariable("decisionTableName") String decisionTableName,
         @PathVariable("jurisdiction") String jurisdiction,
         @PathVariable("caseType") String caseType,

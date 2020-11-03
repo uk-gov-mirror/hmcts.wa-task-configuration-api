@@ -60,6 +60,8 @@ public class ConfigurationControllerTest {
     @MockBean
     private IdamApi idamApi;
 
+    private static final String BEARER_SERVICE_TOKEN = "Bearer service token";
+
     @DisplayName("Should configure task")
     @Test
     void createsTaskForTransitionWithoutDueDate() throws Exception {
@@ -101,16 +103,16 @@ public class ConfigurationControllerTest {
         when(camundaClient.getProcessVariables(processInstanceId)).thenReturn(processVariables);
         String userToken = "user_token";
         when(idamApi.token(ArgumentMatchers.<Map<String, Object>>any())).thenReturn(new Token(userToken, "scope"));
-        String serviceToken = "service_token";
-        when(ccdServiceAuthTokenGenerator.generate()).thenReturn(serviceToken);
+        when(ccdServiceAuthTokenGenerator.generate()).thenReturn(BEARER_SERVICE_TOKEN);
         String caseData = "{ "
                           + "\"jurisdiction\": \"ia\", "
                           + "\"case_type_id\": \"Asylum\", "
                           + "\"security_classification\": \"PUBLIC\","
                           + "\"data\": {}"
                           + " }";
-        when(ccdClient.getCase("Bearer " + userToken, serviceToken, ccdId)).thenReturn(caseData);
+        when(ccdClient.getCase("Bearer " + userToken, BEARER_SERVICE_TOKEN, ccdId)).thenReturn(caseData);
         when(camundaClient.mapCaseData(
+            BEARER_SERVICE_TOKEN,
             MAP_CASE_DATA_DECISION_TABLE_NAME,
             "ia",
             "Asylum",
