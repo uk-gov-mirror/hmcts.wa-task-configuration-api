@@ -17,6 +17,8 @@ import static java.time.format.DateTimeFormatter.ofPattern;
 @ActiveProfiles("functional")
 public abstract class BaseFunctionalTest {
     public static final DateTimeFormatter CAMUNDA_DATA_TIME_FORMATTER = ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    public static final String SERVICE_AUTHORIZATION = "ServiceAuthorization";
+
 
     @Value("${targets.instance}")
     protected String testUrl;

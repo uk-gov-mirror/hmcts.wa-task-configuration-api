@@ -31,6 +31,11 @@ public class ConfigureTaskTest extends BaseFunctionalTest {
     @Autowired
     @Qualifier("ccdServiceAuthTokenGenerator")
     private AuthTokenGenerator ccdServiceAuthTokenGenerator;
+
+    @Autowired
+    @Qualifier("camundaServiceAuthTokenGenerator")
+    private AuthTokenGenerator camundaServiceAuthTokenGenerator;
+
     @Autowired
     private IdamSystemTokenGenerator systemTokenGenerator;
     @Autowired
@@ -58,6 +63,7 @@ public class ConfigureTaskTest extends BaseFunctionalTest {
 
         given()
             .contentType(APPLICATION_JSON_VALUE)
+            .header(SERVICE_AUTHORIZATION, camundaServiceAuthTokenGenerator.generate())
             .baseUri(camundaUrl)
             .basePath("/task/" + taskId + "/localVariables")
             .when()
@@ -82,6 +88,7 @@ public class ConfigureTaskTest extends BaseFunctionalTest {
     private String createTask(CreateTaskMessage createTaskMessage) {
         given()
             .contentType(APPLICATION_JSON_VALUE)
+            .header(SERVICE_AUTHORIZATION, camundaServiceAuthTokenGenerator.generate())
             .baseUri(camundaUrl)
             .basePath("/message")
             .body(asCamundaJsonString(createTaskMessage))
@@ -93,6 +100,7 @@ public class ConfigureTaskTest extends BaseFunctionalTest {
         Object taskName = createTaskMessage.getProcessVariables().get("name").getValue();
         return given()
             .contentType(APPLICATION_JSON_VALUE)
+            .header(SERVICE_AUTHORIZATION, camundaServiceAuthTokenGenerator.generate())
             .baseUri(camundaUrl)
             .basePath("/task")
             .param("processVariables", "ccdId_eq_" + createTaskMessage.getCcdId())
