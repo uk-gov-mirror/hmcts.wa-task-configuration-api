@@ -2,7 +2,9 @@ package uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaClient;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.DecisionTableRequest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.DecisionTableResult;
@@ -24,13 +26,17 @@ public class MapCaseDetailsService {
     private final CcdDataService ccdDataService;
     private final CamundaClient camundaClient;
     private final PermissionsService permissionsService;
+    private final AuthTokenGenerator camundaServiceAuthTokenGenerator;
 
     public MapCaseDetailsService(CcdDataService ccdDataService,
                                  CamundaClient camundaClient,
-                                 PermissionsService permissionsService) {
+                                 PermissionsService permissionsService,
+                                 @Qualifier("camundaServiceAuthTokenGenerator")
+                                     AuthTokenGenerator camundaServiceAuthTokenGenerator) {
         this.ccdDataService = ccdDataService;
         this.camundaClient = camundaClient;
         this.permissionsService = permissionsService;
+        this.camundaServiceAuthTokenGenerator = camundaServiceAuthTokenGenerator;
     }
 
     public Map<String, Object> getMappedDetails(String ccdId) {
@@ -43,6 +49,7 @@ public class MapCaseDetailsService {
             String caseType = caseDetails.getCaseTypeId();
 
             List<DecisionTableResult> decisionTableResults = camundaClient.mapCaseData(
+                camundaServiceAuthTokenGenerator.generate(),
                 MAP_CASE_DATA_DECISION_TABLE_NAME,
                 jurisdiction,
                 caseType,

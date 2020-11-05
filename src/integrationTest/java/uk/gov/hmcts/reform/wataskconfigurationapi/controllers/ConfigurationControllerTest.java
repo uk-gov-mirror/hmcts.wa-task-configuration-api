@@ -28,6 +28,7 @@ import java.util.UUID;
 
 import static java.util.Collections.singletonList;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -51,14 +52,18 @@ public class ConfigurationControllerTest {
     @MockBean
     private CamundaClient camundaClient;
 
-    @MockBean
-    private AuthTokenGenerator authTokenGenerator;
+    @MockBean(name = "ccdServiceAuthTokenGenerator")
+    private AuthTokenGenerator ccdServiceAuthTokenGenerator;
+    @MockBean(name = "camundaServiceAuthTokenGenerator")
+    private AuthTokenGenerator camundaServiceAuthTokenGenerator;
 
     @MockBean
     private CcdClient ccdClient;
 
     @MockBean
     private IdamApi idamApi;
+
+    private static final String BEARER_SERVICE_TOKEN = "Bearer service token";
 
     @DisplayName("Should configure task")
     @Test
@@ -74,7 +79,11 @@ public class ConfigurationControllerTest {
                 .content(asJsonString(new ConfigureTaskRequest(taskId)))
         ).andExpect(status().isOk()).andReturn();
 
-        verify(camundaClient).addLocalVariablesToTask(taskId, new AddLocalVariableRequest(modifications));
+        verify(camundaClient).addLocalVariablesToTask(
+            BEARER_SERVICE_TOKEN,
+            taskId,
+            new AddLocalVariableRequest(modifications)
+        );
     }
 
     @DisplayName("Cannot find task")
@@ -82,7 +91,9 @@ public class ConfigurationControllerTest {
     void cannotFindTask() throws Exception {
         String taskId = UUID.randomUUID().toString();
 
-        when(camundaClient.getTask(taskId)).thenThrow(mock(FeignException.NotFound.class));
+        when(camundaClient.getTask(BEARER_SERVICE_TOKEN, taskId)).thenThrow(mock(FeignException.NotFound.class));
+        when(ccdServiceAuthTokenGenerator.generate()).thenReturn(BEARER_SERVICE_TOKEN);
+        when(camundaServiceAuthTokenGenerator.generate()).thenReturn(BEARER_SERVICE_TOKEN);
 
         mockMvc.perform(
             post("/configureTask")
@@ -90,27 +101,33 @@ public class ConfigurationControllerTest {
                 .content(asJsonString(new ConfigureTaskRequest(taskId)))
         ).andExpect(status().isNotFound()).andReturn();
 
-        verify(camundaClient, never()).addLocalVariablesToTask(any(String.class), any(AddLocalVariableRequest.class));
+        verify(camundaClient, never()).addLocalVariablesToTask(
+            eq(BEARER_SERVICE_TOKEN),
+            any(String.class),
+            any(AddLocalVariableRequest.class)
+        );
     }
 
     private HashMap<String, CamundaValue<String>> configure3rdPartyResponses(String taskId, String processInstanceId) {
-        when(camundaClient.getTask(taskId)).thenReturn(new TaskResponse("id", processInstanceId, TASK_NAME));
+        when(camundaClient.getTask(BEARER_SERVICE_TOKEN, taskId))
+            .thenReturn(new TaskResponse("id", processInstanceId, TASK_NAME));
         HashMap<String, CamundaValue<Object>> processVariables = new HashMap<>();
         String ccdId = UUID.randomUUID().toString();
         processVariables.put("ccdId", new CamundaValue<>(ccdId, "string"));
-        when(camundaClient.getProcessVariables(processInstanceId)).thenReturn(processVariables);
+        when(camundaClient.getProcessVariables(BEARER_SERVICE_TOKEN, processInstanceId)).thenReturn(processVariables);
         String userToken = "user_token";
         when(idamApi.token(ArgumentMatchers.<Map<String, Object>>any())).thenReturn(new Token(userToken, "scope"));
-        String serviceToken = "service_token";
-        when(authTokenGenerator.generate()).thenReturn(serviceToken);
+        when(ccdServiceAuthTokenGenerator.generate()).thenReturn(BEARER_SERVICE_TOKEN);
+        when(camundaServiceAuthTokenGenerator.generate()).thenReturn(BEARER_SERVICE_TOKEN);
         String caseData = "{ "
                           + "\"jurisdiction\": \"ia\", "
                           + "\"case_type_id\": \"Asylum\", "
                           + "\"security_classification\": \"PUBLIC\","
                           + "\"data\": {}"
                           + " }";
-        when(ccdClient.getCase("Bearer " + userToken, serviceToken, ccdId)).thenReturn(caseData);
+        when(ccdClient.getCase("Bearer " + userToken, BEARER_SERVICE_TOKEN, ccdId)).thenReturn(caseData);
         when(camundaClient.mapCaseData(
+            BEARER_SERVICE_TOKEN,
             MAP_CASE_DATA_DECISION_TABLE_NAME,
             "ia",
             "Asylum",

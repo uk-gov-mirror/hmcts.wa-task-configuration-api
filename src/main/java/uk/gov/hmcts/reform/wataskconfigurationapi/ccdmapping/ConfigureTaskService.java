@@ -1,7 +1,9 @@
 package uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping;
 
 import feign.FeignException;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors.TaskVariableExtractor;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.AddLocalVariableRequest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaClient;
@@ -21,17 +23,22 @@ public class ConfigureTaskService {
 
     private final CamundaClient camundaClient;
     private final List<TaskVariableExtractor> taskVariableExtractors;
+    private final AuthTokenGenerator camundaServiceAuthTokenGenerator;
 
-    public ConfigureTaskService(CamundaClient camundaClient, List<TaskVariableExtractor> taskVariableExtractors) {
+    public ConfigureTaskService(CamundaClient camundaClient,
+                                List<TaskVariableExtractor> taskVariableExtractors,
+                                @Qualifier("camundaServiceAuthTokenGenerator")
+                                    AuthTokenGenerator camundaServiceAuthTokenGenerator) {
         this.camundaClient = camundaClient;
         this.taskVariableExtractors = taskVariableExtractors;
+        this.camundaServiceAuthTokenGenerator = camundaServiceAuthTokenGenerator;
     }
 
     @SuppressWarnings({"PMD.DataflowAnomalyAnalysis"})
     public void configureTask(String taskId) {
         TaskResponse task;
         try {
-            task = camundaClient.getTask(taskId);
+            task = camundaClient.getTask(camundaServiceAuthTokenGenerator.generate(), taskId);
         } catch (FeignException.NotFound notFoundException) {
             throw new ConfigureTaskException(
                 "Task [" + taskId + "] cannot be configured as it has not been found.",
@@ -39,8 +46,10 @@ public class ConfigureTaskService {
             );
         }
 
-        Map<String, CamundaValue<Object>> processVariables =
-            camundaClient.getProcessVariables(task.getProcessInstanceId());
+        Map<String, CamundaValue<Object>> processVariables = camundaClient.getProcessVariables(
+            camundaServiceAuthTokenGenerator.generate(),
+            task.getProcessInstanceId()
+        );
 
         HashMap<String, Object> mappedDetails = new HashMap<>();
         taskVariableExtractors.stream()
@@ -52,6 +61,10 @@ public class ConfigureTaskService {
             mappedDetail -> stringValue(mappedDetail.getValue().toString())
         ));
 
-        camundaClient.addLocalVariablesToTask(taskId, new AddLocalVariableRequest(map));
+        camundaClient.addLocalVariablesToTask(
+            camundaServiceAuthTokenGenerator.generate(),
+            taskId,
+            new AddLocalVariableRequest(map)
+        );
     }
 }

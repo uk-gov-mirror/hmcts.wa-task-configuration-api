@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaClient;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.DecisionTableRequest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.DecisionTableResult;
@@ -33,6 +34,10 @@ class MapCaseDetailsServiceTest {
     private CcdDataService ccdDataService;
     @Mock
     private PermissionsService permissionsService;
+    @Mock
+    private AuthTokenGenerator authTokenGenerator;
+
+    private static final String BEARER_SERVICE_TOKEN = "Bearer service token";
 
     @Test
     void doesNotHaveAnyFieldsToMap() {
@@ -52,6 +57,7 @@ class MapCaseDetailsServiceTest {
                     stringValue("seniorTribunalCaseworker"), stringValue("Read,Refer,Own,Manage,Cancel"))
             ));
         when(camundaClient.mapCaseData(
+            BEARER_SERVICE_TOKEN,
             MAP_CASE_DATA_DECISION_TABLE_NAME,
             "ia",
             "Asylum",
@@ -59,12 +65,19 @@ class MapCaseDetailsServiceTest {
              )
         ).thenReturn(emptyList());
 
+        when(authTokenGenerator.generate()).thenReturn(BEARER_SERVICE_TOKEN);
+
         HashMap<String, Object> expectedMappedData = new HashMap<>();
         expectedMappedData.put("tribunalCaseworker", "Read,Refer,Own,Manage,Cancel");
         expectedMappedData.put("seniorTribunalCaseworker", "Read,Refer,Own,Manage,Cancel");
         expectedMappedData.put("securityClassification", "PUBLIC");
         expectedMappedData.put("caseType", "Asylum");
-        Map<String, Object> mappedData = new MapCaseDetailsService(ccdDataService, camundaClient, permissionsService)
+        Map<String, Object> mappedData = new MapCaseDetailsService(
+            ccdDataService,
+            camundaClient,
+            permissionsService,
+            authTokenGenerator
+        )
             .getMappedDetails(someCcdId);
 
         assertThat(mappedData, is(expectedMappedData));
@@ -82,8 +95,8 @@ class MapCaseDetailsServiceTest {
                 Map<String, Object> mappedData = new MapCaseDetailsService(
                     ccdDataService,
                     camundaClient,
-                    permissionsService
-                )
+                    permissionsService,
+                        authTokenGenerator)
                     .getMappedDetails(someCcdId);
 
                 assertThat(mappedData, is(emptyMap()));
@@ -102,6 +115,7 @@ class MapCaseDetailsServiceTest {
                          + "}";
         when(ccdDataService.getCaseData(someCcdId)).thenReturn(ccdData);
         when(camundaClient.mapCaseData(
+            BEARER_SERVICE_TOKEN,
             MAP_CASE_DATA_DECISION_TABLE_NAME,
             "ia",
             "Asylum",
@@ -118,11 +132,13 @@ class MapCaseDetailsServiceTest {
         expectedMappedData.put("securityClassification", "PUBLIC");
         expectedMappedData.put("caseType", "Asylum");
 
+        when(authTokenGenerator.generate()).thenReturn(BEARER_SERVICE_TOKEN);
+
         Map<String, Object> mappedData = new MapCaseDetailsService(
             ccdDataService,
             camundaClient,
-            permissionsService
-        ).getMappedDetails(someCcdId);
+            permissionsService,
+                authTokenGenerator).getMappedDetails(someCcdId);
 
         assertThat(mappedData, is(expectedMappedData));
     }

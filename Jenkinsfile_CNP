@@ -11,8 +11,11 @@ def secrets = [
     secret('test-law-firm-a-username', 'TEST_LAW_FIRM_A_USERNAME'),
     secret('test-law-firm-a-password', 'TEST_LAW_FIRM_A_PASSWORD'),
     secret('idam-redirect-uri', 'IA_IDAM_REDIRECT_URI'),
-    secret('idam-secret', 'IA_IDAM_SECRET'),
-    secret('s2s-name', 'S2S_NAME_WORKFLOW_API')
+    secret('idam-secret', 'IA_IDAM_SECRET')
+  ],
+
+  's2s-${env}' : [
+    secret('microservicekey-wa-task-configuration-api', 'S2S_SECRET_TASK_CONFIGURATION_API')
   ]
 ]
 

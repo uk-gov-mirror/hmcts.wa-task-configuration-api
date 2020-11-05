@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaClient;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.DecisionTableRequest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.DecisionTableResult;
@@ -28,10 +29,14 @@ class PermissionsServiceTest {
     PermissionsService permissionsService;
     @Mock
     private CamundaClient camundaClient;
+    @Mock
+    private AuthTokenGenerator authTokenGenerator;
+
+    private static final String BEARER_SERVICE_TOKEN = "Bearer service token";
 
     @BeforeEach
     void setUp() {
-        permissionsService = new PermissionsService(camundaClient);
+        permissionsService = new PermissionsService(camundaClient, authTokenGenerator);
     }
 
     @Test
@@ -44,6 +49,7 @@ class PermissionsServiceTest {
                          + "}";
 
         when(camundaClient.mapCaseData(
+            BEARER_SERVICE_TOKEN,
             PERMISSION_DECISION_TABLE_NAME,
             "ia",
             "Asylum",
@@ -55,6 +61,8 @@ class PermissionsServiceTest {
                 new DecisionTableResult(
                     stringValue("seniorTribunalCaseworker"), stringValue("Read,Refer,Own,Manage,Cancel"))
             ));
+
+        when(authTokenGenerator.generate()).thenReturn(BEARER_SERVICE_TOKEN);
 
         List<DecisionTableResult> response = permissionsService.getMappedDetails("ia", "Asylum", ccdData);
 
@@ -78,11 +86,14 @@ class PermissionsServiceTest {
                          + "}";
 
         when(camundaClient.mapCaseData(
+            BEARER_SERVICE_TOKEN,
             PERMISSION_DECISION_TABLE_NAME,
             "ia",
             "Asylum",
             new DmnRequest<>(new DecisionTableRequest(jsonValue(ccdData)))
         )).thenThrow(FeignException.class);
+
+        when(authTokenGenerator.generate()).thenReturn(BEARER_SERVICE_TOKEN);
 
         assertThatThrownBy(() -> permissionsService.getMappedDetails("ia", "Asylum", ccdData))
             .isInstanceOf(IllegalStateException.class)

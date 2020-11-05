@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.ccd;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.idam.IdamSystemTokenGenerator;
@@ -7,23 +8,23 @@ import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.idam.IdamSystemToke
 @Component
 public class CcdDataService {
     private final CcdClient ccdClient;
-    private final AuthTokenGenerator authTokenGenerator;
+    private final AuthTokenGenerator ccdServiceAuthTokenGenerator;
     private final IdamSystemTokenGenerator systemTokenGenerator;
 
     public CcdDataService(
         CcdClient ccdClient,
-        AuthTokenGenerator authTokenGenerator,
+        @Qualifier("ccdServiceAuthTokenGenerator") AuthTokenGenerator ccdServiceAuthTokenGenerator,
         IdamSystemTokenGenerator systemTokenGenerator
     ) {
         this.ccdClient = ccdClient;
-        this.authTokenGenerator = authTokenGenerator;
+        this.ccdServiceAuthTokenGenerator = ccdServiceAuthTokenGenerator;
         this.systemTokenGenerator = systemTokenGenerator;
     }
 
     public String getCaseData(String ccdId) {
         return ccdClient.getCase(
             "Bearer " + systemTokenGenerator.generate(),
-            authTokenGenerator.generate(),
+            ccdServiceAuthTokenGenerator.generate(),
             ccdId
         );
     }
