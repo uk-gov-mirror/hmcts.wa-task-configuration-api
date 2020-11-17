@@ -11,6 +11,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
+import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.roleassignment.QueryRequest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.AddLocalVariableRequest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaClient;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaValue;
@@ -21,7 +22,9 @@ import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.TaskRespons
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.ccd.CcdClient;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.idam.IdamApi;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.idam.Token;
+import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.roleassignment.RoleAssignmentClient;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -62,6 +65,9 @@ public class ConfigurationControllerTest {
 
     @MockBean
     private IdamApi idamApi;
+
+    @MockBean
+    private RoleAssignmentClient roleAssignmentClient;
 
     private static final String BEARER_SERVICE_TOKEN = "Bearer service token";
 
@@ -109,13 +115,20 @@ public class ConfigurationControllerTest {
     }
 
     private HashMap<String, CamundaValue<String>> configure3rdPartyResponses(String taskId, String processInstanceId) {
+
+        String userToken = "user_token";
+        when(roleAssignmentClient.queryRoleAssignments(
+            eq("Bearer " + userToken),
+            eq(BEARER_SERVICE_TOKEN),
+            any(QueryRequest.class)
+        )).thenReturn(Collections.emptyList());
+
         when(camundaClient.getTask(BEARER_SERVICE_TOKEN, taskId))
             .thenReturn(new TaskResponse("id", processInstanceId, TASK_NAME));
         HashMap<String, CamundaValue<Object>> processVariables = new HashMap<>();
         String ccdId = UUID.randomUUID().toString();
         processVariables.put("ccdId", new CamundaValue<>(ccdId, "string"));
         when(camundaClient.getProcessVariables(BEARER_SERVICE_TOKEN, processInstanceId)).thenReturn(processVariables);
-        String userToken = "user_token";
         when(idamApi.token(ArgumentMatchers.<Map<String, Object>>any())).thenReturn(new Token(userToken, "scope"));
         when(ccdServiceAuthTokenGenerator.generate()).thenReturn(BEARER_SERVICE_TOKEN);
         when(camundaServiceAuthTokenGenerator.generate()).thenReturn(BEARER_SERVICE_TOKEN);
@@ -138,7 +151,7 @@ public class ConfigurationControllerTest {
         HashMap<String, CamundaValue<String>> modifications = new HashMap<>();
         modifications.put("name1", stringValue("value1"));
         modifications.put("ccdId", stringValue(ccdId));
-        modifications.put(STATUS_VARIABLE_KEY, stringValue("configured"));
+        modifications.put(STATUS_VARIABLE_KEY, stringValue("unassigned"));
         modifications.put("autoAssigned", stringValue("false"));
         modifications.put("executionType", stringValue("Case Management Task"));
         modifications.put("securityClassification", stringValue("PUBLIC"));

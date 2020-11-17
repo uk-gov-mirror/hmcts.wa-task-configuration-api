@@ -1,7 +1,9 @@
 package uk.gov.hmcts.reform.wataskconfigurationapi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jetty.http.HttpStatus;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,6 +28,7 @@ import static uk.gov.hmcts.reform.wataskconfigurationapi.CreateTaskMessageBuilde
 import static uk.gov.hmcts.reform.wataskconfigurationapi.CreatorObjectMapper.asCamundaJsonString;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.CreatorObjectMapper.asJsonString;
 
+@Slf4j
 public class ConfigureTaskTest extends BaseFunctionalTest {
 
     @Autowired
@@ -38,19 +41,31 @@ public class ConfigureTaskTest extends BaseFunctionalTest {
 
     @Autowired
     private IdamSystemTokenGenerator systemTokenGenerator;
+
     @Autowired
     private CoreCaseDataApi coreCaseDataApi;
 
-    @Test
-    public void canConfigureATask() throws IOException {
-        String ccdId = createCcdCase();
+    @Autowired
+    private RoleAssignmentHelper roleAssignmentHelper;
 
-        CreateTaskMessage createTaskMessage = createBasicMessageForTask()
+    private String taskId;
+    private CreateTaskMessage createTaskMessage;
+    private String ccdId;
+
+    @Override
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+        ccdId = createCcdCase();
+        createTaskMessage = createBasicMessageForTask()
             .withCcdId(ccdId)
             .build();
+        taskId = createTask(createTaskMessage);
+    }
 
-        String taskId = createTask(createTaskMessage);
-
+    @Test
+    public void given_configure_task_then_expect_task_state_is_assigned() throws Exception {
+        roleAssignmentHelper.setRoleAssignments(ccdId);
         given()
             .relaxedHTTPSValidation()
             .contentType(APPLICATION_JSON_VALUE)
@@ -74,14 +89,48 @@ public class ConfigureTaskTest extends BaseFunctionalTest {
             .body("region.value", is("1"))
             .body("location.value", is("765324"))
             .body("locationName.value", is("Taylor House"))
-            .body("taskState.value", is("configured"))
+            .body("taskState.value", is("assigned"))
             .body("ccdId.value", is(createTaskMessage.getCcdId()))
             .body("securityClassification.value", is("PUBLIC"))
             .body("caseType.value", is("Asylum"))
             .body("title.value", is("task name"))
             .body("tribunal-caseworker.value", is("Read,Refer,Own,Manage,Cancel"))
             .body("senior-tribunal-caseworker.value", is("Read,Refer,Own,Manage,Cancel"))
+        ;
+    }
 
+    @Test
+    public void given_configure_task_then_expect_task_state_is_unassigned() {
+        given()
+            .relaxedHTTPSValidation()
+            .contentType(APPLICATION_JSON_VALUE)
+            .basePath("/configureTask")
+            .body(asJsonString(new ConfigureTaskRequest(taskId)))
+            .when()
+            .post()
+            .then()
+            .statusCode(HttpStatus.OK_200);
+
+        given()
+            .contentType(APPLICATION_JSON_VALUE)
+            .header(SERVICE_AUTHORIZATION, camundaServiceAuthTokenGenerator.generate())
+            .baseUri(camundaUrl)
+            .basePath("/task/" + taskId + "/localVariables")
+            .when()
+            .get()
+            .then()
+            .body("caseName.value", is("Bob Smith"))
+            .body("appealType.value", is("protection"))
+            .body("region.value", is("1"))
+            .body("location.value", is("765324"))
+            .body("locationName.value", is("Taylor House"))
+            .body("taskState.value", is("unassigned"))
+            .body("ccdId.value", is(createTaskMessage.getCcdId()))
+            .body("securityClassification.value", is("PUBLIC"))
+            .body("caseType.value", is("Asylum"))
+            .body("title.value", is("task name"))
+            .body("tribunal-caseworker.value", is("Read,Refer,Own,Manage,Cancel"))
+            .body("senior-tribunal-caseworker.value", is("Read,Refer,Own,Manage,Cancel"))
         ;
     }
 
@@ -114,7 +163,7 @@ public class ConfigureTaskTest extends BaseFunctionalTest {
     }
 
     private String createCcdCase() throws IOException {
-        String userToken = "Bearer " + systemTokenGenerator.generate();
+        String userToken = systemTokenGenerator.generate();
         UserInfo userInfo = systemTokenGenerator.getUserInfo(userToken);
         String serviceToken = ccdServiceAuthTokenGenerator.generate();
         StartEventResponse startCase = coreCaseDataApi.startForCaseworker(
@@ -149,7 +198,7 @@ public class ConfigureTaskTest extends BaseFunctionalTest {
             caseDataContent
         );
 
-        System.out.println("Created case [" + caseDetails.getId() + "]");
+        log.info("Created case [" + caseDetails.getId() + "]");
 
         StartEventResponse submitCase = coreCaseDataApi.startEventForCaseWorker(
             userToken,

@@ -8,6 +8,6 @@ spring:
         AppInsightsInstrumentationKey: azure.application-insights.instrumentation-key
         test-law-firm-a-username: TEST_LAW_FIRM_A_USERNAME
         test-law-firm-a-password: TEST_LAW_FIRM_A_PASSWORD
-        idam-redirect-uri: IA_IDAM_REDIRECT_URI
-        idam-secret: IA_IDAM_SECRET
+        wa-idam-client-id: WA_IDAM_CLIENT_ID
+        wa-idam-client-secret: WA_IDAM_CLIENT_SECRET
         s2s-secret-task-configuration-api: S2S_SECRET_TASK_CONFIGURATION_API

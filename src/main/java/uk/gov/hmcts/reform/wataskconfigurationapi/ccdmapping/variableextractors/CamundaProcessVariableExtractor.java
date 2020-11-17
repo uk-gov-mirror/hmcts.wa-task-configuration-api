@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors;
 
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.ConfigureTaskService;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaValue;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.TaskResponse;
@@ -8,6 +10,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @SuppressWarnings({"PMD.UseConcurrentHashMap"})
+@Component
+@Order(2)
 public class CamundaProcessVariableExtractor implements TaskVariableExtractor {
     @Override
     public Map<String, Object> getValues(TaskResponse task, Map<String, CamundaValue<Object>> processVariables) {

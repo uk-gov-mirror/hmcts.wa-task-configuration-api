@@ -1,0 +1,9 @@
+logging.level.uk.gov.hmcts.reform: debug
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 10000
+        readTimeout: 10000
+        loggerLevel: full

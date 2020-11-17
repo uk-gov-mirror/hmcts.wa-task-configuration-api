@@ -26,8 +26,9 @@ public abstract class BaseFunctionalTest {
     protected String camundaUrl;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         RestAssured.baseURI = testUrl;
         RestAssured.useRelaxedHTTPSValidation();
     }
+
 }

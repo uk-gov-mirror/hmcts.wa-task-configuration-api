@@ -11,14 +11,14 @@ management:
       exposure:
         include: health, info, prometheus
 
-config:
-  stacktraceEnabled:  ${STACKTRACE_ENABLED:false}
-
 
 enableSwagger: ${ENABLE_SWAGGER:true}
 
+role-assignment-service:
+  url: ${ROLE_ASSIGNMENT_URL:http://role-assignment}
+
 camunda:
-  url: ${CAMUNDA_URL:http://localhost:8080/engine-rest}
+  url: ${CAMUNDA_URL:http://camunda-bpm/engine-rest}
 
 ccd:
   url: ${CCD_URL:http://ccd-data-store-api}
@@ -48,8 +48,6 @@ idam:
     password: ${TEST_LAW_FIRM_A_PASSWORD:password}
     scope: "openid profile roles"
 
-#If you use a database then uncomment below lines and update db properties accordingly
-
 spring:
   application:
     name: WA Task Configuration
@@ -57,11 +55,13 @@ spring:
     allow-bean-definition-overriding: true
   jackson:
     property-naming-strategy: SNAKE_CASE
+    serialization:
+      indent_output: true
 
   security:
     oauth2:
       client:
         registration:
           oidc:
-            client-id: ${IA_IDAM_CLIENT_ID:iac}
-            client-secret: ${IA_IDAM_SECRET:something}
+            client-id: ${WA_IDAM_CLIENT_ID:wa}
+            client-secret: ${WA_IDAM_CLIENT_SECRET:something}

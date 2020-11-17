@@ -45,10 +45,10 @@ public class IdamSystemTokenGenerator {
         map.add("scope", systemUserScope);
         Token tokenResponse = idamApi.token(map);
 
-        return tokenResponse.getAccessToken();
+        return "Bearer " + tokenResponse.getAccessToken();
     }
 
-    public UserInfo getUserInfo(String accessToken) {
-        return idamApi.userInfo(accessToken);
+    public UserInfo getUserInfo(String bearerAccessToken) {
+        return idamApi.userInfo(bearerAccessToken);
     }
 }

@@ -23,7 +23,7 @@ public class CcdDataService {
 
     public String getCaseData(String ccdId) {
         return ccdClient.getCase(
-            "Bearer " + systemTokenGenerator.generate(),
+            systemTokenGenerator.generate(),
             ccdServiceAuthTokenGenerator.generate(),
             ccdId
         );

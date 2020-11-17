@@ -48,7 +48,7 @@ public class CcdDataServiceTest {
         when(idamSystemTokenGenerator.generate()).thenReturn(userToken);
         when(authTokenGenerator.generate()).thenReturn(serviceToken);
 
-        when(ccdClient.getCase("Bearer " + userToken, serviceToken, ccdId)).thenReturn(caseData);
+        when(ccdClient.getCase(userToken, serviceToken, ccdId)).thenReturn(caseData);
 
         String actualCaseData = ccdDataService.getCaseData(ccdId);
 

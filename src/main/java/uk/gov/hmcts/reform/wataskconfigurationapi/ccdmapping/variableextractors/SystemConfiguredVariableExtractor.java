@@ -1,11 +1,15 @@
 package uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors;
 
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.ConfigureTaskService;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaValue;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.TaskResponse;
 
 import java.util.Map;
 
+@Component
+@Order(3)
 public class SystemConfiguredVariableExtractor implements TaskVariableExtractor {
 
     private final MapCaseDetailsService mapCaseDetailsService;

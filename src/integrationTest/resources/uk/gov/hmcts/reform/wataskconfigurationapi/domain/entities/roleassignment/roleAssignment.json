@@ -1,0 +1,16 @@
+{
+  "id": "4c704d91-de05-43e1-a9ee-9b8dc87c2c12",
+  "actorIdType": "IDAM",
+  "actorId": "4afa7d5c-02fa-4a82-82c2-0a9ad7467d30",
+  "roleType": "CASE",
+  "roleName": "tribunal-caseworker",
+  "classification": "RESTRICTED",
+  "grantType": "SPECIFIC",
+  "roleCategory": "STAFF",
+  "readOnly": false,
+  "created": "2020-11-06T17:15:36.960886",
+  "attributes": {
+    "caseId": "1604584759556245"
+  },
+  "authorisations": []
+}

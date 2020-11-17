@@ -5,7 +5,9 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.AssigneeRequest;
 
 import java.util.List;
 import java.util.Map;
@@ -35,6 +37,11 @@ public interface CamundaClient {
     void addLocalVariablesToTask(@RequestHeader(SERVICE_AUTHORIZATION) String serviceAuthorisation,
                                  @PathVariable("id") String taskId,
                                  AddLocalVariableRequest addLocalVariableRequest);
+
+    @PostMapping(value = "/task/{id}/assignee", produces = MediaType.APPLICATION_JSON_VALUE)
+    void setAssignee(@RequestHeader(SERVICE_AUTHORIZATION) String serviceAuthorisation,
+                     @PathVariable("id") String taskId,
+                     @RequestBody AssigneeRequest assigneeRequest);
 
     @GetMapping(value = "/task/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     TaskResponse getTask(@RequestHeader(SERVICE_AUTHORIZATION) String serviceAuthorisation,

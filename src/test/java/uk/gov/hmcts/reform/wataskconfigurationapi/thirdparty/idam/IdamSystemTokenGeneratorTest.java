@@ -63,15 +63,15 @@ public class IdamSystemTokenGeneratorTest {
 
         final String actualToken = idamSystemTokenGenerator.generate();
 
-        assertEquals(actualToken, returnToken);
+        assertEquals("Bearer " + returnToken, actualToken);
     }
 
     @Test
     public void getUserInfo() {
-        final String accessToken = "accessToken";
-        when(idamApi.userInfo(accessToken)).thenReturn(userInfo);
+        final String bearerAccessToken = "Bearer accessToken";
+        when(idamApi.userInfo(bearerAccessToken)).thenReturn(userInfo);
 
-        final UserInfo actualUserInfo = idamSystemTokenGenerator.getUserInfo(accessToken);
+        final UserInfo actualUserInfo = idamSystemTokenGenerator.getUserInfo(bearerAccessToken);
 
         assertEquals(actualUserInfo, userInfo);
     }
