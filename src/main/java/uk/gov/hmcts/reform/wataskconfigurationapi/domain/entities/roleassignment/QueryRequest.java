@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,6 +16,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include;
 @Builder
 @JsonNaming
 @JsonInclude(Include.NON_NULL)
+@ToString
 public final class QueryRequest {
 
     private final List<String> actorId;
