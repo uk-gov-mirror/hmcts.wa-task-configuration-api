@@ -20,14 +20,14 @@ public class SystemConfiguredVariableExtractor implements TaskVariableExtractor 
 
     @Override
     public Map<String, Object> getValues(TaskResponse task, Map<String, CamundaValue<Object>> processVariables) {
-        if (!processVariables.containsKey(ConfigureTaskService.CCD_ID_PROCESS_VARIABLE_KEY)) {
+        if (!processVariables.containsKey(ConfigureTaskService.CASE_ID_PROCESS_VARIABLE_KEY)) {
             throw new IllegalStateException(
                 "Task id ["
                 + task.getId()
-                + "] cannot be configured it has not been setup correctly. No ccdId process variable."
+                + "] cannot be configured it has not been setup correctly. No caseId process variable."
             );
         }
-        CamundaValue<Object> ccdId = processVariables.get(ConfigureTaskService.CCD_ID_PROCESS_VARIABLE_KEY);
-        return mapCaseDetailsService.getMappedDetails((String) ccdId.getValue());
+        CamundaValue<Object> caseId = processVariables.get(ConfigureTaskService.CASE_ID_PROCESS_VARIABLE_KEY);
+        return mapCaseDetailsService.getMappedDetails((String) caseId.getValue());
     }
 }

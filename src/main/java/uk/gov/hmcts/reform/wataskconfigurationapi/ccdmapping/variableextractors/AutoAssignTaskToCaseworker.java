@@ -50,12 +50,12 @@ public class AutoAssignTaskToCaseworker implements TaskVariableExtractor {
 
     @Override
     public Map<String, Object> getValues(TaskResponse task, Map<String, CamundaValue<Object>> processVariables) {
-        String ccdId = (String) processVariables.get(ConfigureTaskService.CCD_ID_PROCESS_VARIABLE_KEY).getValue();
+        String caseId = (String) processVariables.get(ConfigureTaskService.CASE_ID_PROCESS_VARIABLE_KEY).getValue();
 
         List<RoleAssignment> roleAssignmentList = roleAssignmentClient.queryRoleAssignments(
             idamSystemTokenGenerator.generate(),
             ccdServiceAuthTokenGenerator.generate(),
-            buildQueryRequest(ccdId)
+            buildQueryRequest(caseId)
         );
 
         return updateTaskStateAndSetAssignee(task, roleAssignmentList);
@@ -79,12 +79,12 @@ public class AutoAssignTaskToCaseworker implements TaskVariableExtractor {
         return taskVariables;
     }
 
-    private QueryRequest buildQueryRequest(String ccdId) {
+    private QueryRequest buildQueryRequest(String caseId) {
         return QueryRequest.builder()
             .roleType(Collections.singletonList(RoleType.CASE))
             .roleName(Collections.singletonList(RoleName.TRIBUNAL_CASEWORKER))
             .validAt(LocalDateTime.now())
-            .attributes(Collections.singletonMap(Attributes.CASE_ID, Collections.singletonList(ccdId)))
+            .attributes(Collections.singletonMap(Attributes.CASE_ID, Collections.singletonList(caseId)))
             .build();
     }
 }

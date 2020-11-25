@@ -22,7 +22,7 @@ class ConstantVariableExtractorTest {
     }
 
     @Test
-    void addsCcdId() {
+    void addsCaseId() {
         HashMap<String, CamundaValue<Object>> processVariables = new HashMap<>();
 
         HashMap<String, Object> expectedValues = new HashMap<>();

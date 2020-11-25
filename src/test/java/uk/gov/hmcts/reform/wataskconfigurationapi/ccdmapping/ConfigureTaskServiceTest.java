@@ -48,8 +48,8 @@ class ConfigureTaskServiceTest {
         when(camundaClient.getTask(BEARER_SERVICE_TOKEN, taskId)).thenReturn(taskResponse);
 
         HashMap<String, CamundaValue<Object>> processVariables = new HashMap<>();
-        String ccdId = "someCcdValue";
-        processVariables.put("ccdId", new CamundaValue<>(ccdId, "String"));
+        String caseId = "someCcdValue";
+        processVariables.put("caseId", new CamundaValue<>(caseId, "String"));
         when(camundaClient.getProcessVariables(BEARER_SERVICE_TOKEN, processInstanceId)).thenReturn(processVariables);
 
         HashMap<String, Object> mappedValues = new HashMap<>();
@@ -76,8 +76,8 @@ class ConfigureTaskServiceTest {
         TaskResponse taskResponse = new TaskResponse("id", processInstanceId, "taskName");
         when(camundaClient.getTask(BEARER_SERVICE_TOKEN, taskId)).thenReturn(taskResponse);
         HashMap<String, CamundaValue<Object>> processVariables = new HashMap<>();
-        String ccdId = "someCcdValue";
-        processVariables.put("ccdId", new CamundaValue<>(ccdId, "String"));
+        String caseId = "someCcdValue";
+        processVariables.put("caseId", new CamundaValue<>(caseId, "String"));
         when(camundaClient.getProcessVariables(BEARER_SERVICE_TOKEN, processInstanceId)).thenReturn(processVariables);
         HashMap<String, Object> mappedValues = new HashMap<>();
         when(taskVariableExtractor.getValues(taskResponse, processVariables)).thenReturn(mappedValues);

@@ -23,8 +23,8 @@ public class CreateTaskMessageBuilder {
         return this;
     }
 
-    public CreateTaskMessageBuilder withCcdId(String ccdId) {
-        processVariables.put("ccdId", stringValue(ccdId));
+    public CreateTaskMessageBuilder withCaseId(String caseId) {
+        processVariables.put("caseId", stringValue(caseId));
         processVariables.put("taskId", stringValue("wa-task-configuration-api-task"));
         processVariables.put("group", stringValue("TCW"));
         return this;
@@ -36,7 +36,7 @@ public class CreateTaskMessageBuilder {
 
     public static CreateTaskMessageBuilder createBasicMessageForTask() {
         HashMap<String, CamundaValue<?>> processVariables = new HashMap<>();
-        processVariables.put("ccdId", stringValue(UUID.randomUUID().toString()));
+        processVariables.put("caseId", stringValue(UUID.randomUUID().toString()));
         processVariables.put("taskId", stringValue("wa-task-configuration-api-task"));
         processVariables.put("group", stringValue("TCW"));
         processVariables.put(

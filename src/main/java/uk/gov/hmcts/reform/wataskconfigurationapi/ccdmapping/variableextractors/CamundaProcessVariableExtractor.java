@@ -15,9 +15,9 @@ import java.util.Map;
 public class CamundaProcessVariableExtractor implements TaskVariableExtractor {
     @Override
     public Map<String, Object> getValues(TaskResponse task, Map<String, CamundaValue<Object>> processVariables) {
-        CamundaValue<Object> ccdId = processVariables.get(ConfigureTaskService.CCD_ID_PROCESS_VARIABLE_KEY);
+        CamundaValue<Object> caseId = processVariables.get(ConfigureTaskService.CASE_ID_PROCESS_VARIABLE_KEY);
         Map<String, Object> mappedDetails = new HashMap<>();
-        mappedDetails.put(ConfigureTaskService.CCD_ID_PROCESS_VARIABLE_KEY, ccdId.getValue());
+        mappedDetails.put(ConfigureTaskService.CASE_ID_PROCESS_VARIABLE_KEY, caseId.getValue());
         mappedDetails.put("title", task.getName());
         return mappedDetails;
     }

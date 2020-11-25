@@ -32,7 +32,7 @@ class SystemConfiguredVariableExtractorTest {
     }
 
     @Test
-    void taskNeedsACcdId() {
+    void taskNeedsACaseId() {
         HashMap<String, CamundaValue<Object>> processVariables = new HashMap<>();
 
         assertThrows(IllegalStateException.class, () -> {
@@ -43,10 +43,10 @@ class SystemConfiguredVariableExtractorTest {
     @Test
     void getsValuesFromMapCaseDetailsService() {
         HashMap<String, CamundaValue<Object>> processVariables = new HashMap<>();
-        String ccdId = "ccd_id_123";
-        processVariables.put(ConfigureTaskService.CCD_ID_PROCESS_VARIABLE_KEY, new CamundaValue<>(ccdId, "String"));
+        String caseId = "ccd_id_123";
+        processVariables.put(ConfigureTaskService.CASE_ID_PROCESS_VARIABLE_KEY, new CamundaValue<>(caseId, "String"));
         HashMap<String, Object> expectedValues = new HashMap<>();
-        when(mapCaseDetailsService.getMappedDetails(ccdId)).thenReturn(expectedValues);
+        when(mapCaseDetailsService.getMappedDetails(caseId)).thenReturn(expectedValues);
 
         Map<String, Object> values = systemConfiguredVariableExtractor.getValues(task, processVariables);
 

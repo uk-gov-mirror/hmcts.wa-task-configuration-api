@@ -21,11 +21,11 @@ public class CcdDataService {
         this.systemTokenGenerator = systemTokenGenerator;
     }
 
-    public String getCaseData(String ccdId) {
+    public String getCaseData(String caseId) {
         return ccdClient.getCase(
             systemTokenGenerator.generate(),
             ccdServiceAuthTokenGenerator.generate(),
-            ccdId
+            caseId
         );
     }
 }

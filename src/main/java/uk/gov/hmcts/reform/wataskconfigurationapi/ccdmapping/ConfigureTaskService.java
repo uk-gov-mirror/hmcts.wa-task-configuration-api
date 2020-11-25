@@ -19,7 +19,7 @@ import static uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.Camu
 
 @Component
 public class ConfigureTaskService {
-    public static final String CCD_ID_PROCESS_VARIABLE_KEY = "ccdId";
+    public static final String CASE_ID_PROCESS_VARIABLE_KEY = "caseId";
 
     private final CamundaClient camundaClient;
     private final List<TaskVariableExtractor> taskVariableExtractors;

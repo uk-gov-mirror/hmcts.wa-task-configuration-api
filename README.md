@@ -5,7 +5,7 @@
 #### What does this app do?
 
 - Receives an unconfigured Task upon its creation
-- Retrieves CCD case data for given ccdId
+- Retrieves CCD case data for given caseId
 - Evaluates DMN configuration and gets output variables
 - Updates the Task
 - Auto-assigns the Task

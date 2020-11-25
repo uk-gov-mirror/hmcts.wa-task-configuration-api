@@ -39,8 +39,8 @@ public class MapCaseDetailsService {
         this.camundaServiceAuthTokenGenerator = camundaServiceAuthTokenGenerator;
     }
 
-    public Map<String, Object> getMappedDetails(String ccdId) {
-        String caseData = ccdDataService.getCaseData(ccdId);
+    public Map<String, Object> getMappedDetails(String caseId) {
+        String caseData = ccdDataService.getCaseData(caseId);
 
         try {
             CaseDetails caseDetails = new ObjectMapper().readValue(caseData, CaseDetails.class);
@@ -73,7 +73,7 @@ public class MapCaseDetailsService {
             allMappedDetails.put("caseType", caseDetails.getCaseTypeId());
             return allMappedDetails;
         } catch (JsonProcessingException e) {
-            throw new IllegalStateException("Cannot parse result from CCD for [" + ccdId + "]", e);
+            throw new IllegalStateException("Cannot parse result from CCD for [" + caseId + "]", e);
         }
     }
 }

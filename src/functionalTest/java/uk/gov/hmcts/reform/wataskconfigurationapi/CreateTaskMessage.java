@@ -23,8 +23,8 @@ public class CreateTaskMessage {
     }
 
     @JsonIgnore
-    public String getCcdId() {
-        CamundaValue<?> ccdId = processVariables.get("ccdId");
-        return String.valueOf(ccdId.getValue());
+    public String getCaseId() {
+        CamundaValue<?> caseId = processVariables.get("caseId");
+        return String.valueOf(caseId.getValue());
     }
 }

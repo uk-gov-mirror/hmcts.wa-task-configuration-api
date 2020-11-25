@@ -41,14 +41,14 @@ class MapCaseDetailsServiceTest {
 
     @Test
     void doesNotHaveAnyFieldsToMap() {
-        String someCcdId = "someCcdId";
+        String someCaseId = "someCaseId";
         String ccdData = "{"
                          + "\"jurisdiction\": \"ia\","
                          + "\"case_type_id\": \"Asylum\","
                          + "\"security_classification\": \"PUBLIC\","
                          + "\"data\": {}"
                          + "}";
-        when(ccdDataService.getCaseData(someCcdId)).thenReturn(ccdData);
+        when(ccdDataService.getCaseData(someCaseId)).thenReturn(ccdData);
         when(permissionsService.getMappedDetails("ia", "Asylum", ccdData))
             .thenReturn(asList(
                 new DecisionTableResult(
@@ -78,7 +78,7 @@ class MapCaseDetailsServiceTest {
             permissionsService,
             authTokenGenerator
         )
-            .getMappedDetails(someCcdId);
+            .getMappedDetails(someCaseId);
 
         assertThat(mappedData, is(expectedMappedData));
     }
@@ -88,16 +88,16 @@ class MapCaseDetailsServiceTest {
         assertThrows(
             IllegalStateException.class,
             () -> {
-                String someCcdId = "someCcdId";
+                String someCaseId = "someCaseId";
                 String ccdData = "not valid json";
-                when(ccdDataService.getCaseData(someCcdId)).thenReturn(ccdData);
+                when(ccdDataService.getCaseData(someCaseId)).thenReturn(ccdData);
 
                 Map<String, Object> mappedData = new MapCaseDetailsService(
                     ccdDataService,
                     camundaClient,
                     permissionsService,
                         authTokenGenerator)
-                    .getMappedDetails(someCcdId);
+                    .getMappedDetails(someCaseId);
 
                 assertThat(mappedData, is(emptyMap()));
             }
@@ -106,14 +106,14 @@ class MapCaseDetailsServiceTest {
 
     @Test
     void getsFieldsToMap() {
-        String someCcdId = "someCcdId";
+        String someCaseId = "someCaseId";
         String ccdData = "{ "
                          + "\"jurisdiction\": \"ia\","
                          + "\"case_type_id\": \"Asylum\","
                          + "\"security_classification\": \"PUBLIC\","
                          + "\"data\": {}"
                          + "}";
-        when(ccdDataService.getCaseData(someCcdId)).thenReturn(ccdData);
+        when(ccdDataService.getCaseData(someCaseId)).thenReturn(ccdData);
         when(camundaClient.mapCaseData(
             BEARER_SERVICE_TOKEN,
             MAP_CASE_DATA_DECISION_TABLE_NAME,
@@ -138,7 +138,7 @@ class MapCaseDetailsServiceTest {
             ccdDataService,
             camundaClient,
             permissionsService,
-                authTokenGenerator).getMappedDetails(someCcdId);
+                authTokenGenerator).getMappedDetails(someCaseId);
 
         assertThat(mappedData, is(expectedMappedData));
     }

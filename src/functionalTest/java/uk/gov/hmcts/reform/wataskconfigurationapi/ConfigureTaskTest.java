@@ -50,22 +50,22 @@ public class ConfigureTaskTest extends BaseFunctionalTest {
 
     private String taskId;
     private CreateTaskMessage createTaskMessage;
-    private String ccdId;
+    private String caseId;
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        ccdId = createCcdCase();
+        caseId = createCcdCase();
         createTaskMessage = createBasicMessageForTask()
-            .withCcdId(ccdId)
+            .withCaseId(caseId)
             .build();
         taskId = createTask(createTaskMessage);
     }
 
     @Test
     public void given_configure_task_then_expect_task_state_is_assigned() throws Exception {
-        roleAssignmentHelper.setRoleAssignments(ccdId);
+        roleAssignmentHelper.setRoleAssignments(caseId);
         given()
             .relaxedHTTPSValidation()
             .contentType(APPLICATION_JSON_VALUE)
@@ -90,7 +90,7 @@ public class ConfigureTaskTest extends BaseFunctionalTest {
             .body("location.value", is("765324"))
             .body("locationName.value", is("Taylor House"))
             .body("taskState.value", is("assigned"))
-            .body("ccdId.value", is(createTaskMessage.getCcdId()))
+            .body("caseId.value", is(createTaskMessage.getCaseId()))
             .body("securityClassification.value", is("PUBLIC"))
             .body("caseType.value", is("Asylum"))
             .body("title.value", is("task name"))
@@ -125,7 +125,7 @@ public class ConfigureTaskTest extends BaseFunctionalTest {
             .body("location.value", is("765324"))
             .body("locationName.value", is("Taylor House"))
             .body("taskState.value", is("unassigned"))
-            .body("ccdId.value", is(createTaskMessage.getCcdId()))
+            .body("caseId.value", is(createTaskMessage.getCaseId()))
             .body("securityClassification.value", is("PUBLIC"))
             .body("caseType.value", is("Asylum"))
             .body("title.value", is("task name"))
@@ -152,7 +152,7 @@ public class ConfigureTaskTest extends BaseFunctionalTest {
             .header(SERVICE_AUTHORIZATION, camundaServiceAuthTokenGenerator.generate())
             .baseUri(camundaUrl)
             .basePath("/task")
-            .param("processVariables", "ccdId_eq_" + createTaskMessage.getCcdId())
+            .param("processVariables", "caseId_eq_" + createTaskMessage.getCaseId())
             .when()
             .get()
             .then()
@@ -176,16 +176,16 @@ public class ConfigureTaskTest extends BaseFunctionalTest {
         );
         String caseData = new String(
             (Objects.requireNonNull(Thread.currentThread().getContextClassLoader()
-                                        .getResourceAsStream("case_data.json"))).readAllBytes()
+                .getResourceAsStream("case_data.json"))).readAllBytes()
         );
         Map data = new ObjectMapper().readValue(caseData, Map.class);
         CaseDataContent caseDataContent = CaseDataContent.builder()
             .eventToken(startCase.getToken())
             .event(Event.builder()
-                       .id(startCase.getEventId())
-                       .summary("summary")
-                       .description("description")
-                       .build())
+                .id(startCase.getEventId())
+                .summary("summary")
+                .description("description")
+                .build())
             .data(data)
             .build();
         CaseDetails caseDetails = coreCaseDataApi.submitForCaseworker(
@@ -212,10 +212,10 @@ public class ConfigureTaskTest extends BaseFunctionalTest {
         CaseDataContent submitCaseDataContent = CaseDataContent.builder()
             .eventToken(submitCase.getToken())
             .event(Event.builder()
-                       .id(submitCase.getEventId())
-                       .summary("summary")
-                       .description("description")
-                       .build())
+                .id(submitCase.getEventId())
+                .summary("summary")
+                .description("description")
+                .build())
             .data(data)
             .build();
         coreCaseDataApi.submitEventForCaseWorker(

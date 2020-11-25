@@ -11,7 +11,7 @@ import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.ConfigureTaskService.CCD_ID_PROCESS_VARIABLE_KEY;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.ConfigureTaskService.CASE_ID_PROCESS_VARIABLE_KEY;
 
 class CamundaProcessVariableExtractorTest {
 
@@ -28,12 +28,12 @@ class CamundaProcessVariableExtractorTest {
     @Test
     void addsVariables() {
         HashMap<String, CamundaValue<Object>> processVariables = new HashMap<>();
-        processVariables.put(CCD_ID_PROCESS_VARIABLE_KEY, new CamundaValue<>("CCD_ID_123", "String"));
+        processVariables.put(CASE_ID_PROCESS_VARIABLE_KEY, new CamundaValue<>("CASE_ID_123", "String"));
 
         Map<String, Object> values = camundaProcessVariableExtractor.getValues(task, processVariables);
 
         assertThat(values.size(), is(2));
-        assertThat(values.get(CCD_ID_PROCESS_VARIABLE_KEY), is("CCD_ID_123"));
+        assertThat(values.get(CASE_ID_PROCESS_VARIABLE_KEY), is("CASE_ID_123"));
         assertThat(values.get("title"), is(TASK_NAME));
     }
 }

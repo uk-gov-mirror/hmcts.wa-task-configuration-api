@@ -126,8 +126,8 @@ public class ConfigurationControllerTest {
         when(camundaClient.getTask(BEARER_SERVICE_TOKEN, taskId))
             .thenReturn(new TaskResponse("id", processInstanceId, TASK_NAME));
         HashMap<String, CamundaValue<Object>> processVariables = new HashMap<>();
-        String ccdId = UUID.randomUUID().toString();
-        processVariables.put("ccdId", new CamundaValue<>(ccdId, "string"));
+        String caseId = UUID.randomUUID().toString();
+        processVariables.put("caseId", new CamundaValue<>(caseId, "string"));
         when(camundaClient.getProcessVariables(BEARER_SERVICE_TOKEN, processInstanceId)).thenReturn(processVariables);
         when(idamApi.token(ArgumentMatchers.<Map<String, Object>>any())).thenReturn(new Token(userToken, "scope"));
         when(ccdServiceAuthTokenGenerator.generate()).thenReturn(BEARER_SERVICE_TOKEN);
@@ -138,7 +138,7 @@ public class ConfigurationControllerTest {
                           + "\"security_classification\": \"PUBLIC\","
                           + "\"data\": {}"
                           + " }";
-        when(ccdClient.getCase("Bearer " + userToken, BEARER_SERVICE_TOKEN, ccdId)).thenReturn(caseData);
+        when(ccdClient.getCase("Bearer " + userToken, BEARER_SERVICE_TOKEN, caseId)).thenReturn(caseData);
         when(camundaClient.mapCaseData(
             BEARER_SERVICE_TOKEN,
             MAP_CASE_DATA_DECISION_TABLE_NAME,
@@ -150,7 +150,7 @@ public class ConfigurationControllerTest {
 
         HashMap<String, CamundaValue<String>> modifications = new HashMap<>();
         modifications.put("name1", stringValue("value1"));
-        modifications.put("ccdId", stringValue(ccdId));
+        modifications.put("caseId", stringValue(caseId));
         modifications.put(STATUS_VARIABLE_KEY, stringValue("unassigned"));
         modifications.put("autoAssigned", stringValue("false"));
         modifications.put("executionType", stringValue("Case Management Task"));
