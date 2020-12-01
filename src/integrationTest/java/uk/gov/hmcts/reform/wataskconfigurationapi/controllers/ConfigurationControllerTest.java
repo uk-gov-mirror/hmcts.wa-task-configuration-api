@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.roleassignment.QueryRequest;
+import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.roleassignment.RoleAssignmentResource;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.AddLocalVariableRequest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaClient;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaValue;
@@ -24,11 +25,11 @@ import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.idam.IdamApi;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.idam.Token;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.roleassignment.RoleAssignmentClient;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -121,7 +122,7 @@ public class ConfigurationControllerTest {
             eq("Bearer " + userToken),
             eq(BEARER_SERVICE_TOKEN),
             any(QueryRequest.class)
-        )).thenReturn(Collections.emptyList());
+        )).thenReturn(new RoleAssignmentResource(emptyList(), null));
 
         when(camundaClient.getTask(BEARER_SERVICE_TOKEN, taskId))
             .thenReturn(new TaskResponse("id", processInstanceId, TASK_NAME));

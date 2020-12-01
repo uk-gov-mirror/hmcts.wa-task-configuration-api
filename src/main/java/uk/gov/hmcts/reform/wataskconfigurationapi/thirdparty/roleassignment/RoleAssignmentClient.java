@@ -5,9 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.roleassignment.QueryRequest;
-import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.roleassignment.RoleAssignment;
-
-import java.util.List;
+import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.roleassignment.RoleAssignmentResource;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -20,7 +18,7 @@ public interface RoleAssignmentClient {
     String SERVICE_AUTHORIZATION = "ServiceAuthorization";
 
     @PostMapping(value = "/am/role-assignments/query", consumes = "application/json")
-    List<RoleAssignment> queryRoleAssignments(
+    RoleAssignmentResource queryRoleAssignments(
         @RequestHeader(AUTHORIZATION) String userToken,
         @RequestHeader(SERVICE_AUTHORIZATION) String s2sToken,
         @RequestBody QueryRequest queryRequest

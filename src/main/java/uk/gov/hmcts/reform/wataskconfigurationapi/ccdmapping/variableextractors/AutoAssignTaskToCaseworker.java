@@ -10,6 +10,7 @@ import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.TaskSt
 import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.roleassignment.Attributes;
 import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.roleassignment.QueryRequest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.roleassignment.RoleAssignment;
+import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.roleassignment.RoleAssignmentResource;
 import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.roleassignment.RoleName;
 import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.roleassignment.RoleType;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaClient;
@@ -52,13 +53,14 @@ public class AutoAssignTaskToCaseworker implements TaskVariableExtractor {
     public Map<String, Object> getValues(TaskResponse task, Map<String, CamundaValue<Object>> processVariables) {
         String caseId = (String) processVariables.get(ConfigureTaskService.CASE_ID_PROCESS_VARIABLE_KEY).getValue();
 
-        List<RoleAssignment> roleAssignmentList = roleAssignmentClient.queryRoleAssignments(
+        RoleAssignmentResource roleAssignmentList = roleAssignmentClient.queryRoleAssignments(
             idamSystemTokenGenerator.generate(),
             ccdServiceAuthTokenGenerator.generate(),
             buildQueryRequest(caseId)
         );
 
-        return updateTaskStateAndSetAssignee(task, roleAssignmentList);
+
+        return updateTaskStateAndSetAssignee(task, roleAssignmentList.getRoleAssignmentResponse());
     }
 
     @SuppressWarnings({"PMD.LawOfDemeter"})

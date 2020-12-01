@@ -12,12 +12,16 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Map;
 
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
+
+
 @RunWith(SpringRunner.class)
 @JsonTest
 class RoleAssignmentTest {
 
     @Autowired
-    private JacksonTester<RoleAssignment> jacksonTester;
+    private JacksonTester<RoleAssignmentResource> jacksonTester;
 
     @Test
     public void testDeserializeRoleAssignment() throws Exception {
@@ -36,8 +40,11 @@ class RoleAssignmentTest {
             .authorisations(Collections.emptyList())
             .build();
 
-        ObjectContent<RoleAssignment> actualRoleAssignment = jacksonTester.read("roleAssignment.json");
+        ObjectContent<RoleAssignmentResource> actualRoleAssignment =
+            jacksonTester.read("roleAssignment.json");
 
-        actualRoleAssignment.assertThat().isEqualTo(expectedRoleAssignment);
+        assertThat(actualRoleAssignment.getObject()).isNotNull();
+        assertThat(actualRoleAssignment.getObject().getRoleAssignmentResponse())
+            .isEqualTo(asList(expectedRoleAssignment));
     }
 }

@@ -15,6 +15,7 @@ import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.roleassignment
 import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.roleassignment.GrantType;
 import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.roleassignment.QueryRequest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.roleassignment.RoleAssignment;
+import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.roleassignment.RoleAssignmentResource;
 import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.roleassignment.RoleCategory;
 import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.roleassignment.RoleName;
 import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.roleassignment.RoleType;
@@ -23,7 +24,6 @@ import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.roleassignment.Role
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -58,7 +58,7 @@ public class RoleAssignmentClientTest {
 
         stubRoleAssignmentApiResponse(roleAssignmentsResponseAsJsonString);
 
-        List<RoleAssignment> actualRoleAssignments = roleAssignmentClient.queryRoleAssignments(
+        RoleAssignmentResource roleAssignmentResource = roleAssignmentClient.queryRoleAssignments(
             "user token",
             "s2s token",
             QueryRequest.builder().build()
@@ -79,7 +79,8 @@ public class RoleAssignmentClientTest {
             .authorisations(Collections.emptyList())
             .build();
 
-        assertThat(actualRoleAssignments.get(0)).isEqualTo(expectedRoleAssignment);
+        assertThat(roleAssignmentResource.getRoleAssignmentResponse()).isNotEmpty();
+        assertThat(roleAssignmentResource.getRoleAssignmentResponse().get(0)).isEqualTo(expectedRoleAssignment);
     }
 
     private void stubRoleAssignmentApiResponse(String roleAssignmentsResponseAsJsonString) {
