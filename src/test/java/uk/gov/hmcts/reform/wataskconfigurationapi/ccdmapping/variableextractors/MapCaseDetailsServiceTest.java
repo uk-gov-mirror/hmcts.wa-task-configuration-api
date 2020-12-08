@@ -21,7 +21,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors.MapCaseDetailsService.MAP_CASE_DATA_DECISION_TABLE_NAME;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors.MapCaseDetailsService.WA_TASK_CONFIGURATION_DECISION_TABLE_NAME;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaValue.jsonValue;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaValue.stringValue;
 
@@ -56,11 +56,11 @@ class MapCaseDetailsServiceTest {
                 new DecisionTableResult(
                     stringValue("seniorTribunalCaseworker"), stringValue("Read,Refer,Own,Manage,Cancel"))
             ));
-        when(camundaClient.mapCaseData(
+        when(camundaClient.evaluateDmnTable(
             BEARER_SERVICE_TOKEN,
-            MAP_CASE_DATA_DECISION_TABLE_NAME,
+            WA_TASK_CONFIGURATION_DECISION_TABLE_NAME,
             "ia",
-            "Asylum",
+            "asylum",
             new DmnRequest<>(new DecisionTableRequest(jsonValue(ccdData)))
              )
         ).thenReturn(emptyList());
@@ -114,11 +114,11 @@ class MapCaseDetailsServiceTest {
                          + "\"data\": {}"
                          + "}";
         when(ccdDataService.getCaseData(someCaseId)).thenReturn(ccdData);
-        when(camundaClient.mapCaseData(
+        when(camundaClient.evaluateDmnTable(
             BEARER_SERVICE_TOKEN,
-            MAP_CASE_DATA_DECISION_TABLE_NAME,
+            WA_TASK_CONFIGURATION_DECISION_TABLE_NAME,
             "ia",
-            "Asylum",
+            "asylum",
             new DmnRequest<>(new DecisionTableRequest(jsonValue(ccdData)))
         ))
             .thenReturn(asList(

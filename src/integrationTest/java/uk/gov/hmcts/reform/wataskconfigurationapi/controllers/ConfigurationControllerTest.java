@@ -40,7 +40,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors.ConstantVariableExtractor.STATUS_VARIABLE_KEY;
-import static uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors.MapCaseDetailsService.MAP_CASE_DATA_DECISION_TABLE_NAME;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors.MapCaseDetailsService.WA_TASK_CONFIGURATION_DECISION_TABLE_NAME;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.controllers.util.CreatorObjectMapper.asJsonString;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaValue.jsonValue;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaValue.stringValue;
@@ -140,11 +140,11 @@ public class ConfigurationControllerTest {
                           + "\"data\": {}"
                           + " }";
         when(ccdClient.getCase("Bearer " + userToken, BEARER_SERVICE_TOKEN, caseId)).thenReturn(caseData);
-        when(camundaClient.mapCaseData(
+        when(camundaClient.evaluateDmnTable(
             BEARER_SERVICE_TOKEN,
-            MAP_CASE_DATA_DECISION_TABLE_NAME,
+            WA_TASK_CONFIGURATION_DECISION_TABLE_NAME,
             "ia",
-            "Asylum",
+            "asylum",
             new DmnRequest<>(new DecisionTableRequest(jsonValue(caseData)))
              )
         ).thenReturn(singletonList(new DecisionTableResult(stringValue("name1"), stringValue("value1"))));

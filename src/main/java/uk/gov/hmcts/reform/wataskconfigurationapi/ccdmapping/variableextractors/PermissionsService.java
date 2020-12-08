@@ -10,12 +10,13 @@ import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.DecisionTab
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.DmnRequest;
 
 import java.util.List;
+import java.util.Locale;
 
 import static uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaValue.jsonValue;
 
 @Component
 public class PermissionsService {
-    public static final String PERMISSION_DECISION_TABLE_NAME = "permissions";
+    public static final String WA_TASK_PERMISSIONS_DECISION_TABLE_NAME = "wa-task-permissions";
     private final CamundaClient camundaClient;
     private final AuthTokenGenerator camundaServiceAuthTokenGenerator;
 
@@ -29,11 +30,11 @@ public class PermissionsService {
     public List<DecisionTableResult> getMappedDetails(String jurisdiction, String caseType, String caseData) {
 
         try {
-            return camundaClient.mapCaseData(
+            return camundaClient.evaluateDmnTable(
                 camundaServiceAuthTokenGenerator.generate(),
-                PERMISSION_DECISION_TABLE_NAME,
-                jurisdiction,
-                caseType,
+                WA_TASK_PERMISSIONS_DECISION_TABLE_NAME,
+                jurisdiction.toLowerCase(Locale.getDefault()),
+                caseType.toLowerCase(Locale.getDefault()),
                 new DmnRequest<>(
                     new DecisionTableRequest(jsonValue(caseData))
                 )
@@ -41,7 +42,7 @@ public class PermissionsService {
 
         } catch (FeignException e) {
             throw new IllegalStateException(
-                "Could not evaluate from decision table [" + PERMISSION_DECISION_TABLE_NAME + "]",
+                "Could not evaluate from decision table [" + WA_TASK_PERMISSIONS_DECISION_TABLE_NAME + "]",
                 e
             );
         }

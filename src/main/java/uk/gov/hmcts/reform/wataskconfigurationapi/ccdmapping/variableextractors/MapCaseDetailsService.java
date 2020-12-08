@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.ccd.CcdDataService;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -22,7 +23,7 @@ import static uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.Camu
 
 @Component
 public class MapCaseDetailsService {
-    public static final String MAP_CASE_DATA_DECISION_TABLE_NAME = "mapCaseData";
+    public static final String WA_TASK_CONFIGURATION_DECISION_TABLE_NAME = "wa-task-configuration";
     private final CcdDataService ccdDataService;
     private final CamundaClient camundaClient;
     private final PermissionsService permissionsService;
@@ -48,11 +49,11 @@ public class MapCaseDetailsService {
             String jurisdiction = caseDetails.getJurisdiction();
             String caseType = caseDetails.getCaseTypeId();
 
-            List<DecisionTableResult> decisionTableResults = camundaClient.mapCaseData(
+            List<DecisionTableResult> decisionTableResults = camundaClient.evaluateDmnTable(
                 camundaServiceAuthTokenGenerator.generate(),
-                MAP_CASE_DATA_DECISION_TABLE_NAME,
-                jurisdiction,
-                caseType,
+                WA_TASK_CONFIGURATION_DECISION_TABLE_NAME,
+                jurisdiction.toLowerCase(Locale.getDefault()),
+                caseType.toLowerCase(Locale.getDefault()),
                 new DmnRequest<>(
                     new DecisionTableRequest(jsonValue(caseData))
                 )

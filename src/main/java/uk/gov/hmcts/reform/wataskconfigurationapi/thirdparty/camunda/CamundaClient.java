@@ -21,11 +21,11 @@ public interface CamundaClient {
     String SERVICE_AUTHORIZATION = "ServiceAuthorization";
 
     @PostMapping(
-        value = "/decision-definition/key/{decisionTableName}_{jurisdiction}_{caseType}/evaluate",
+        value = "/decision-definition/key/{decisionTableName}-{jurisdiction}-{caseType}/evaluate",
         produces = MediaType.APPLICATION_JSON_VALUE
     )
     @SuppressWarnings("PMD.UseObjectForClearerAPI")
-    List<DecisionTableResult> mapCaseData(
+    List<DecisionTableResult> evaluateDmnTable(
         @RequestHeader(SERVICE_AUTHORIZATION) String serviceAuthorisation,
         @PathVariable("decisionTableName") String decisionTableName,
         @PathVariable("jurisdiction") String jurisdiction,
