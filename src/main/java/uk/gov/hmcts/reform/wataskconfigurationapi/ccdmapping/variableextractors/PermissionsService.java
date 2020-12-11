@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors;
 
 import feign.FeignException;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaClient;
@@ -18,20 +17,19 @@ import static uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.Camu
 public class PermissionsService {
     public static final String WA_TASK_PERMISSIONS_DECISION_TABLE_NAME = "wa-task-permissions";
     private final CamundaClient camundaClient;
-    private final AuthTokenGenerator camundaServiceAuthTokenGenerator;
+    private final AuthTokenGenerator serviceAuthTokenGenerator;
 
     public PermissionsService(CamundaClient camundaClient,
-                              @Qualifier("camundaServiceAuthTokenGenerator")
-                                  AuthTokenGenerator camundaServiceAuthTokenGenerator) {
+                              AuthTokenGenerator serviceAuthTokenGenerator) {
         this.camundaClient = camundaClient;
-        this.camundaServiceAuthTokenGenerator = camundaServiceAuthTokenGenerator;
+        this.serviceAuthTokenGenerator = serviceAuthTokenGenerator;
     }
 
     public List<DecisionTableResult> getMappedDetails(String jurisdiction, String caseType, String caseData) {
 
         try {
             return camundaClient.evaluateDmnTable(
-                camundaServiceAuthTokenGenerator.generate(),
+                serviceAuthTokenGenerator.generate(),
                 WA_TASK_PERMISSIONS_DECISION_TABLE_NAME,
                 jurisdiction.toLowerCase(Locale.getDefault()),
                 caseType.toLowerCase(Locale.getDefault()),

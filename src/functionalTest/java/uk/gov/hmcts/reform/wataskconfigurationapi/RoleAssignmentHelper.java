@@ -5,7 +5,6 @@ import org.apache.commons.io.FileUtils;
 import org.eclipse.jetty.http.HttpStatus;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
@@ -26,15 +25,14 @@ public class RoleAssignmentHelper {
     protected String roleAssignmentUrl;
 
     @Autowired
-    @Qualifier("ccdServiceAuthTokenGenerator")
-    private AuthTokenGenerator ccdServiceAuthTokenGenerator;
+    private AuthTokenGenerator serviceAuthTokenGenerator;
 
     @Autowired
     private IdamSystemTokenGenerator systemTokenGenerator;
 
     public void setRoleAssignments(String caseId) throws IOException {
         String bearerUserToken = systemTokenGenerator.generate();
-        String s2sToken = ccdServiceAuthTokenGenerator.generate();
+        String s2sToken = serviceAuthTokenGenerator.generate();
         UserInfo userInfo = systemTokenGenerator.getUserInfo(bearerUserToken);
         createRoleAssignmentInThisOrder(caseId, bearerUserToken, s2sToken, userInfo);
     }
@@ -43,6 +41,8 @@ public class RoleAssignmentHelper {
                                                  String bearerUserToken,
                                                  String s2sToken,
                                                  UserInfo userInfo) throws IOException {
+
+        log.info("Creating Organizational Role");
         postRoleAssignment(
             caseId,
             bearerUserToken,
@@ -51,6 +51,7 @@ public class RoleAssignmentHelper {
             "set-rules-assignment-request.json"
         );
 
+        log.info("Creating Restricted role-assignment");
         postRoleAssignment(
             caseId,
             bearerUserToken,

@@ -50,27 +50,19 @@ import static uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.Camu
 public class ConfigurationControllerTest {
 
     public static final String TASK_NAME = "taskName";
+    private static final String BEARER_SERVICE_TOKEN = "Bearer service token";
     @Autowired
     private MockMvc mockMvc;
-
     @MockBean
     private CamundaClient camundaClient;
-
-    @MockBean(name = "ccdServiceAuthTokenGenerator")
-    private AuthTokenGenerator ccdServiceAuthTokenGenerator;
-    @MockBean(name = "camundaServiceAuthTokenGenerator")
-    private AuthTokenGenerator camundaServiceAuthTokenGenerator;
-
+    @MockBean
+    private AuthTokenGenerator serviceAuthTokenGenerator;
     @MockBean
     private CcdClient ccdClient;
-
     @MockBean
     private IdamApi idamApi;
-
     @MockBean
     private RoleAssignmentClient roleAssignmentClient;
-
-    private static final String BEARER_SERVICE_TOKEN = "Bearer service token";
 
     @DisplayName("Should configure task")
     @Test
@@ -99,8 +91,7 @@ public class ConfigurationControllerTest {
         String taskId = UUID.randomUUID().toString();
 
         when(camundaClient.getTask(BEARER_SERVICE_TOKEN, taskId)).thenThrow(mock(FeignException.NotFound.class));
-        when(ccdServiceAuthTokenGenerator.generate()).thenReturn(BEARER_SERVICE_TOKEN);
-        when(camundaServiceAuthTokenGenerator.generate()).thenReturn(BEARER_SERVICE_TOKEN);
+        when(serviceAuthTokenGenerator.generate()).thenReturn(BEARER_SERVICE_TOKEN);
 
         mockMvc.perform(
             post("/configureTask")
@@ -131,8 +122,7 @@ public class ConfigurationControllerTest {
         processVariables.put("caseId", new CamundaValue<>(caseId, "string"));
         when(camundaClient.getProcessVariables(BEARER_SERVICE_TOKEN, processInstanceId)).thenReturn(processVariables);
         when(idamApi.token(ArgumentMatchers.<Map<String, Object>>any())).thenReturn(new Token(userToken, "scope"));
-        when(ccdServiceAuthTokenGenerator.generate()).thenReturn(BEARER_SERVICE_TOKEN);
-        when(camundaServiceAuthTokenGenerator.generate()).thenReturn(BEARER_SERVICE_TOKEN);
+        when(serviceAuthTokenGenerator.generate()).thenReturn(BEARER_SERVICE_TOKEN);
         String caseData = "{ "
                           + "\"jurisdiction\": \"ia\", "
                           + "\"case_type_id\": \"Asylum\", "
@@ -146,7 +136,7 @@ public class ConfigurationControllerTest {
             "ia",
             "asylum",
             new DmnRequest<>(new DecisionTableRequest(jsonValue(caseData)))
-             )
+            )
         ).thenReturn(singletonList(new DecisionTableResult(stringValue("name1"), stringValue("value1"))));
 
         HashMap<String, CamundaValue<String>> modifications = new HashMap<>();

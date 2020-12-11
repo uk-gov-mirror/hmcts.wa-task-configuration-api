@@ -37,12 +37,8 @@ idam:
   redirectUrl: ${IA_IDAM_REDIRECT_URI:http://localhost:3002/oauth2/callback}
   s2s-auth:
     url: ${S2S_URL:http://service-auth-provider-api}
-    secret:
-      camunda: ${S2S_SECRET_TASK_CONFIGURATION_API:AAAAAAAAAAAAAAAC}
-      ccd: AAAAAAAAAAAAAAAC
-    name:
-      camunda: ${S2S_NAME_TASK_CONFIGURATION_API:wa_task_configuration_api}
-      ccd: iac
+    secret: ${S2S_SECRET_TASK_CONFIGURATION_API:AAAAAAAAAAAAAAAC}
+    name: wa_task_configuration_api
   system:
     username: ${TEST_LAW_FIRM_A_USERNAME:some_user@hmcts.net}
     password: ${TEST_LAW_FIRM_A_PASSWORD:password}

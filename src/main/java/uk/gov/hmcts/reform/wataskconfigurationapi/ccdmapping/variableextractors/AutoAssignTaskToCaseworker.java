@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
@@ -31,21 +30,16 @@ public class AutoAssignTaskToCaseworker implements TaskVariableExtractor {
 
     private final RoleAssignmentClient roleAssignmentClient;
     private final CamundaClient camundaClient;
-    private final AuthTokenGenerator ccdServiceAuthTokenGenerator;
-    private final AuthTokenGenerator camundaServiceAuthTokenGenerator;
+    private final AuthTokenGenerator serviceAuthTokenGenerator;
     private final IdamSystemTokenGenerator idamSystemTokenGenerator;
 
     public AutoAssignTaskToCaseworker(RoleAssignmentClient roleAssignmentClient,
                                       CamundaClient camundaClient,
-                                      @Qualifier("ccdServiceAuthTokenGenerator")
-                                          AuthTokenGenerator ccdServiceAuthTokenGenerator,
-                                      @Qualifier("camundaServiceAuthTokenGenerator")
-                                          AuthTokenGenerator camundaServiceAuthTokenGenerator,
+                                      AuthTokenGenerator serviceAuthTokenGenerator,
                                       IdamSystemTokenGenerator idamSystemTokenGenerator) {
         this.roleAssignmentClient = roleAssignmentClient;
         this.camundaClient = camundaClient;
-        this.ccdServiceAuthTokenGenerator = ccdServiceAuthTokenGenerator;
-        this.camundaServiceAuthTokenGenerator = camundaServiceAuthTokenGenerator;
+        this.serviceAuthTokenGenerator = serviceAuthTokenGenerator;
         this.idamSystemTokenGenerator = idamSystemTokenGenerator;
     }
 
@@ -55,7 +49,7 @@ public class AutoAssignTaskToCaseworker implements TaskVariableExtractor {
 
         RoleAssignmentResource roleAssignmentList = roleAssignmentClient.queryRoleAssignments(
             idamSystemTokenGenerator.generate(),
-            ccdServiceAuthTokenGenerator.generate(),
+            serviceAuthTokenGenerator.generate(),
             buildQueryRequest(caseId)
         );
 
@@ -72,7 +66,7 @@ public class AutoAssignTaskToCaseworker implements TaskVariableExtractor {
         } else {
             String actorId = roleAssignmentList.get(0).getActorId();
             camundaClient.setAssignee(
-                camundaServiceAuthTokenGenerator.generate(),
+                serviceAuthTokenGenerator.generate(),
                 task.getId(),
                 new AssigneeRequest(actorId)
             );
