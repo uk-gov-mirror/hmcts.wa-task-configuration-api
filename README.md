@@ -39,72 +39,68 @@ To build the project execute the following command:
 ```bash
   ./gradlew build
 ```
+This will do compilation, checkstyle, PMD checks , run tests , but not integration or functional tests.
 
 ### Running the application
 
-Create the image of the application by executing the following command:
+- Prerequisite:
+    - Install yarn
+    ```
+        yarn upgrade --latest
+    ```
+    - git clone git@github.com:hmcts/ia-ccd-definitions.git
+    - change folder cd ia-ccd-definitions
+    - Install needed yarn libs
+        ```
+            yarn install
+        ```
+    - Setup local repo for ccd-definition-processor
+        ```
+            yarn setup
+        ```
+    - Upload case definitions
+        ```
+            yarn upload-wa
+        ```
+- To run application, from IDE or command line
+   ```
+     ./gradlew bootRun
+   ```
+- In order to test if the application is up, you can call its health endpoint:
+   ```
+     http://localhost:8091/health
+   ```
 
-```bash
-  ./gradlew assemble
-```
+  You should get a response similar to this:
 
-Create docker image:
+  ```
+    {"status":"UP","diskSpace":{"status":"UP","total":249644974080,"free":137188298752,"threshold":10485760}}
+  ```
 
-```bash
-  docker-compose build
-```
+- To run FT locally
+    - Run ia-case-api
+       ```
+         ./gradlew bootRun
+       ```
+    - Run ia-case-notifications
+       ```
+         ./gradlew bootRun
+       ```
+    - Run ia-case-documents-api
+       ```
+         ./gradlew bootRun
+       ```
+    Note: If you see any environment variables missing, do source ~/.bash_profile.
+          Make sure you have got the environment variables in bash_profile.
 
-Run the distribution (created in `build/install/wa-task-configuration-api` directory)
-by executing the following command:
-
-```bash
-  docker-compose up
-```
-
-This will start the API container exposing the application's port
-(set to `8091` in this template app).
-
-In order to test if the application is up, you can call its health endpoint:
-
-```bash
-  curl http://localhost:8091/health
-```
-
-You should get a response similar to this:
-
-```
-  {"status":"UP","diskSpace":{"status":"UP","total":249644974080,"free":137188298752,"threshold":10485760}}
-```
-
-### Alternative script to run application
-
-To skip all the setting up and building, just execute the following command:
-
-```bash
-./bin/run-in-docker.sh
-```
-
-For more information:
-
-```bash
-./bin/run-in-docker.sh -h
-```
-
-Script includes bare minimum environment variables necessary to start api instance. Whenever any variable is changed or any other script regarding docker image/container build, the suggested way to ensure all is cleaned up properly is by this command:
-
-```bash
-docker-compose rm
-```
-
-It clears stopped containers correctly. Might consider removing clutter of images too, especially the ones fiddled with:
-
-```bash
-docker images
-
-docker image rm <image-id>
-```
-
-There is no need to remove postgres and java or similar core images.
+     - To run all tests including junit, integration and functional. You can run the command
+        ```
+            ./gradlew test integration functional
+        ```
+       or
+        ```
+            ./gradlew tests
+        ```
 
 ## License
 

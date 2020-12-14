@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.wataskconfigurationapi;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jetty.http.HttpStatus;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,6 +128,11 @@ public class ConfigureTaskTest extends BaseFunctionalTest {
             .body("tribunal-caseworker.value", is("Read,Refer,Own,Manage,Cancel"))
             .body("senior-tribunal-caseworker.value", is("Read,Refer,Own,Manage,Cancel"))
         ;
+    }
+
+    @After
+    public void cleanUp() {
+        super.cleanUp(taskId, serviceAuthTokenGenerator.generate());
     }
 
     private String createTask(CreateTaskMessage createTaskMessage) {
