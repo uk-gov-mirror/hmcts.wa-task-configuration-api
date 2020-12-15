@@ -39,10 +39,20 @@ lombok {
 }
 
 sourceSets {
-  functionalTest {
+
+  testUtils {
     java {
       compileClasspath += main.output
       runtimeClasspath += main.output
+      srcDir file('src/testUtils/java')
+    }
+    resources.srcDir file('src/testUtils/resources')
+  }
+
+  functionalTest {
+    java {
+      compileClasspath += testUtils.output
+      runtimeClasspath += testUtils.output
       srcDir file('src/functionalTest/java')
     }
     resources.srcDir file('src/functionalTest/resources')
@@ -50,8 +60,8 @@ sourceSets {
 
   integrationTest {
     java {
-      compileClasspath += main.output
-      runtimeClasspath += main.output
+      compileClasspath += testUtils.output
+      runtimeClasspath += testUtils.output
       srcDir file('src/integrationTest/java')
     }
     resources.srcDir file('src/integrationTest/resources')
@@ -256,6 +266,9 @@ dependencies {
 
   compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.1.2'
 
+  compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-paranamer', version: '2.12.0'
+
+
   annotationProcessor 'org.projectlombok:lombok:1.18.12'
   compileOnly 'org.projectlombok:lombok:1.18.12'
 
@@ -279,6 +292,9 @@ dependencies {
   testCompile group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: versions.serenity
   testCompile group: 'net.serenity-bdd', name: 'serenity-spring', version: versions.serenity
   testCompile "org.junit.vintage:junit-vintage-engine:${versions.junit}"
+
+  testUtilsImplementation sourceSets.main.runtimeClasspath
+  testUtilsImplementation sourceSets.test.runtimeClasspath
 
   integrationTestImplementation sourceSets.main.runtimeClasspath
   integrationTestImplementation sourceSets.test.runtimeClasspath

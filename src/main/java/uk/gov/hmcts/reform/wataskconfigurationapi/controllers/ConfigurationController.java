@@ -5,8 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.ConfigureTaskException;
-import uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.ConfigureTaskService;
+import uk.gov.hmcts.reform.wataskconfigurationapi.exceptions.ConfigureTaskException;
+import uk.gov.hmcts.reform.wataskconfigurationapi.services.ConfigureTaskService;
 
 @RestController
 public class ConfigurationController {

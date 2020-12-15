@@ -11,19 +11,19 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.idam.entities.Token;
+import uk.gov.hmcts.reform.wataskconfigurationapi.clients.CamundaServiceApi;
+import uk.gov.hmcts.reform.wataskconfigurationapi.clients.CcdDataServiceApi;
+import uk.gov.hmcts.reform.wataskconfigurationapi.clients.IdamServiceApi;
+import uk.gov.hmcts.reform.wataskconfigurationapi.clients.RoleAssignmentServiceApi;
+import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.AddLocalVariableRequest;
+import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.CamundaTask;
+import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.CamundaValue;
+import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.DecisionTableRequest;
+import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.DecisionTableResult;
+import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.DmnRequest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.roleassignment.QueryRequest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.roleassignment.RoleAssignmentResource;
-import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.AddLocalVariableRequest;
-import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaClient;
-import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaValue;
-import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.DecisionTableRequest;
-import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.DecisionTableResult;
-import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.DmnRequest;
-import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.TaskResponse;
-import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.ccd.CcdClient;
-import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.idam.IdamApi;
-import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.idam.Token;
-import uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.roleassignment.RoleAssignmentClient;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,11 +39,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors.ConstantVariableExtractor.STATUS_VARIABLE_KEY;
-import static uk.gov.hmcts.reform.wataskconfigurationapi.ccdmapping.variableextractors.MapCaseDetailsService.WA_TASK_CONFIGURATION_DECISION_TABLE_NAME;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.controllers.util.CreatorObjectMapper.asJsonString;
-import static uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaValue.jsonValue;
-import static uk.gov.hmcts.reform.wataskconfigurationapi.thirdparty.camunda.CamundaValue.stringValue;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.CamundaValue.jsonValue;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.CamundaValue.stringValue;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.services.MapCaseDetailsService.WA_TASK_CONFIGURATION_DECISION_TABLE_NAME;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.services.configurators.ConstantVariableExtractor.STATUS_VARIABLE_KEY;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -54,15 +54,15 @@ public class ConfigurationControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private CamundaClient camundaClient;
+    private CamundaServiceApi camundaServiceApi;
     @MockBean
     private AuthTokenGenerator serviceAuthTokenGenerator;
     @MockBean
-    private CcdClient ccdClient;
+    private CcdDataServiceApi ccdDataServiceApi;
     @MockBean
-    private IdamApi idamApi;
+    private IdamServiceApi idamServiceApi;
     @MockBean
-    private RoleAssignmentClient roleAssignmentClient;
+    private RoleAssignmentServiceApi roleAssignmentServiceApi;
 
     @DisplayName("Should configure task")
     @Test
@@ -78,7 +78,7 @@ public class ConfigurationControllerTest {
                 .content(asJsonString(new ConfigureTaskRequest(taskId)))
         ).andExpect(status().isOk()).andReturn();
 
-        verify(camundaClient).addLocalVariablesToTask(
+        verify(camundaServiceApi).addLocalVariablesToTask(
             BEARER_SERVICE_TOKEN,
             taskId,
             new AddLocalVariableRequest(modifications)
@@ -90,7 +90,7 @@ public class ConfigurationControllerTest {
     void cannotFindTask() throws Exception {
         String taskId = UUID.randomUUID().toString();
 
-        when(camundaClient.getTask(BEARER_SERVICE_TOKEN, taskId)).thenThrow(mock(FeignException.NotFound.class));
+        when(camundaServiceApi.getTask(BEARER_SERVICE_TOKEN, taskId)).thenThrow(mock(FeignException.NotFound.class));
         when(serviceAuthTokenGenerator.generate()).thenReturn(BEARER_SERVICE_TOKEN);
 
         mockMvc.perform(
@@ -99,7 +99,7 @@ public class ConfigurationControllerTest {
                 .content(asJsonString(new ConfigureTaskRequest(taskId)))
         ).andExpect(status().isNotFound()).andReturn();
 
-        verify(camundaClient, never()).addLocalVariablesToTask(
+        verify(camundaServiceApi, never()).addLocalVariablesToTask(
             eq(BEARER_SERVICE_TOKEN),
             any(String.class),
             any(AddLocalVariableRequest.class)
@@ -109,28 +109,31 @@ public class ConfigurationControllerTest {
     private HashMap<String, CamundaValue<String>> configure3rdPartyResponses(String taskId, String processInstanceId) {
 
         String userToken = "user_token";
-        when(roleAssignmentClient.queryRoleAssignments(
+        when(roleAssignmentServiceApi.queryRoleAssignments(
             eq("Bearer " + userToken),
             eq(BEARER_SERVICE_TOKEN),
             any(QueryRequest.class)
         )).thenReturn(new RoleAssignmentResource(emptyList(), null));
 
-        when(camundaClient.getTask(BEARER_SERVICE_TOKEN, taskId))
-            .thenReturn(new TaskResponse("id", processInstanceId, TASK_NAME));
+        when(camundaServiceApi.getTask(BEARER_SERVICE_TOKEN, taskId))
+            .thenReturn(new CamundaTask("id", processInstanceId, TASK_NAME));
         HashMap<String, CamundaValue<Object>> processVariables = new HashMap<>();
         String caseId = UUID.randomUUID().toString();
         processVariables.put("caseId", new CamundaValue<>(caseId, "string"));
-        when(camundaClient.getProcessVariables(BEARER_SERVICE_TOKEN, processInstanceId)).thenReturn(processVariables);
-        when(idamApi.token(ArgumentMatchers.<Map<String, Object>>any())).thenReturn(new Token(userToken, "scope"));
+        when(camundaServiceApi.getProcessVariables(BEARER_SERVICE_TOKEN, processInstanceId))
+            .thenReturn(processVariables);
+        when(idamServiceApi.token(ArgumentMatchers.<Map<String, Object>>any()))
+            .thenReturn(new Token(userToken, "scope"));
         when(serviceAuthTokenGenerator.generate()).thenReturn(BEARER_SERVICE_TOKEN);
         String caseData = "{ "
                           + "\"jurisdiction\": \"ia\", "
-                          + "\"case_type_id\": \"Asylum\", "
+                          + "\"case_type\": \"Asylum\", "
                           + "\"security_classification\": \"PUBLIC\","
                           + "\"data\": {}"
                           + " }";
-        when(ccdClient.getCase("Bearer " + userToken, BEARER_SERVICE_TOKEN, caseId)).thenReturn(caseData);
-        when(camundaClient.evaluateDmnTable(
+        when(ccdDataServiceApi.getCase("Bearer " + userToken, BEARER_SERVICE_TOKEN, caseId))
+            .thenReturn(caseData);
+        when(camundaServiceApi.evaluateDmnTable(
             BEARER_SERVICE_TOKEN,
             WA_TASK_CONFIGURATION_DECISION_TABLE_NAME,
             "ia",
