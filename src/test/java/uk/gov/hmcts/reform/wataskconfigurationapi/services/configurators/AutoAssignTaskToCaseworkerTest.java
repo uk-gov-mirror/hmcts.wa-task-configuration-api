@@ -8,7 +8,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.wataskconfigurationapi.auth.idam.IdamSystemTokenGenerator;
-import uk.gov.hmcts.reform.wataskconfigurationapi.clients.CamundaServiceApi;
 import uk.gov.hmcts.reform.wataskconfigurationapi.clients.RoleAssignmentServiceApi;
 import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.CamundaTask;
 import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.CamundaValue;
@@ -30,8 +29,6 @@ class AutoAssignTaskToCaseworkerTest {
     public static final String S_2_S_TOKEN = "s2s token";
     @Mock
     private RoleAssignmentServiceApi roleAssignmentServiceApi;
-    @Mock
-    private CamundaServiceApi camundaServiceApi;
     @Mock
     private AuthTokenGenerator serviceAuthTokenGenerator;
     @Mock
