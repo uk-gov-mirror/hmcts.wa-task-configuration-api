@@ -15,7 +15,7 @@ import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.wataskconfigurationapi.auth.idam.IdamSystemTokenGenerator;
 import uk.gov.hmcts.reform.wataskconfigurationapi.auth.idam.entities.UserInfo;
-import uk.gov.hmcts.reform.wataskconfigurationapi.controllers.ConfigureTaskRequest;
+import uk.gov.hmcts.reform.wataskconfigurationapi.controllers.request.ConfigureTaskRequest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.utils.CreateTaskMessage;
 import uk.gov.hmcts.reform.wataskconfigurationapi.utils.RoleAssignmentHelper;
 
@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 
+import static java.util.Collections.emptyMap;
 import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.utils.CreateTaskMessageBuilder.createBasicMessageForTask;
@@ -66,7 +67,7 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
 
         Response result = restApiActions.post(
             ENDPOINT_BEING_TESTED,
-            new ConfigureTaskRequest(taskId),
+            new ConfigureTaskRequest(taskId, emptyMap()),
             authorizationHeadersProvider.getServiceAuthorizationHeader()
         );
 
@@ -108,7 +109,7 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
 
         Response result = restApiActions.post(
             ENDPOINT_BEING_TESTED,
-            new ConfigureTaskRequest(taskId),
+            new ConfigureTaskRequest(taskId, emptyMap()),
             authorizationHeadersProvider.getServiceAuthorizationHeader()
         );
 
