@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.wataskconfigurationapi.services.configurators;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.CamundaTask;
 import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.configuration.TaskToConfigure;
 import uk.gov.hmcts.reform.wataskconfigurationapi.services.CaseConfigurationProviderService;
 
@@ -19,13 +18,11 @@ import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda
 
 class CaseRelatedVariablesConfiguratorTest {
 
-    private CamundaTask task;
     private CaseConfigurationProviderService caseConfigurationProviderService;
     private CaseRelatedVariablesConfigurator caseRelatedVariablesConfigurator;
 
     @BeforeEach
     void setUp() {
-        task = new CamundaTask("id", "processInstanceId", "taskName");
         caseConfigurationProviderService = mock(CaseConfigurationProviderService.class);
         caseRelatedVariablesConfigurator = new CaseRelatedVariablesConfigurator(caseConfigurationProviderService);
     }

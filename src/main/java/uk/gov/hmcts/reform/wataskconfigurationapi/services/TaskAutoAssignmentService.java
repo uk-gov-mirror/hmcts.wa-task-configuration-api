@@ -29,6 +29,19 @@ public class TaskAutoAssignmentService {
         updateTaskStateAndSetAssignee(taskToConfigure, currentTaskState);
     }
 
+    public AutoAssignmentResult getAutoAssignmentVariables(TaskToConfigure task) {
+        List<RoleAssignment> roleAssignments = roleAssignmentService.searchRolesByCaseId(task.getCaseId());
+
+        if (roleAssignments.isEmpty()) {
+            // the user did not have specific role assignment for this case
+            log.info("The case did not have specific users assigned, Setting task state to '{}'", UNASSIGNED);
+            return new AutoAssignmentResult(UNASSIGNED.value(), null);
+        } else {
+            log.info("The case contained specific users assigned, Setting task state to '{}'", ASSIGNED);
+            return new AutoAssignmentResult(ASSIGNED.value(), roleAssignments.get(0).getActorId());
+        }
+    }
+
     @SuppressWarnings({"PMD.LawOfDemeter"})
     private void updateTaskStateAndSetAssignee(TaskToConfigure taskToConfigure,
                                                String currentTaskState) {
@@ -52,22 +65,8 @@ public class TaskAutoAssignmentService {
                 assignee,
                 currentTaskState
             );
+
         }
     }
-
-
-    public AutoAssignmentResult getAutoAssignmentVariables(TaskToConfigure task) {
-        List<RoleAssignment> roleAssignments = roleAssignmentService.searchRolesByCaseId(task.getCaseId());
-
-        if (roleAssignments.isEmpty()) {
-            // the user did not have specific role assignment for this case
-            log.info("The case did not have specific users assigned, Setting task state to '{}'", UNASSIGNED);
-            return new AutoAssignmentResult(UNASSIGNED.value(), null);
-        } else {
-            log.info("The case contained specific users assigned, Setting task state to '{}'", ASSIGNED);
-            return new AutoAssignmentResult(ASSIGNED.value(), roleAssignments.get(0).getActorId());
-        }
-    }
-
 
 }
