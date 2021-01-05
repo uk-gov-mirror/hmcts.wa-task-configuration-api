@@ -63,7 +63,7 @@ public class ConfigureTaskService {
         camundaService.addProcessVariables(taskId, processVariablesToAdd);
 
         CamundaValue<Object> taskStateValue = processVariables.get(TASK_STATE.value());
-        String taskState = (String) taskStateValue.getValue();
+        String taskState = taskStateValue.getValue().toString();
 
         //Attempt to auto assign task if possible
         taskAutoAssignmentService.autoAssignTask(taskToConfigure, taskState);

@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.wataskconfigurationapi.controllers;
 import feign.FeignException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -27,16 +28,19 @@ import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.Decisi
 import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.DmnRequest;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -44,7 +48,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static uk.gov.hmcts.reform.wataskconfigurationapi.controllers.util.CreatorObjectMapper.asJsonString;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.CamundaValue.jsonValue;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.CamundaValue.stringValue;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.CASE_ID;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.TASK_STATE;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.TaskState.UNASSIGNED;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.TaskState.UNCONFIGURED;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.services.DmnEvaluationService.WA_TASK_CONFIGURATION_DECISION_TABLE_NAME;
 
 @SpringBootTest
@@ -75,16 +82,24 @@ public class TaskConfigurationControllerTest {
         HashMap<String, CamundaValue<String>> modifications = configure3rdPartyResponses(taskId, processInstanceId);
 
         mockMvc.perform(
-            post("/configureTask")
+            post("/task/" + taskId)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(asJsonString(new ConfigureTaskRequest(taskId, emptyMap())))
         ).andExpect(status().isOk()).andReturn();
 
-        verify(camundaServiceApi).addLocalVariablesToTask(
-            BEARER_SERVICE_TOKEN,
-            taskId,
-            new AddLocalVariableRequest(modifications)
+
+        ArgumentCaptor<AddLocalVariableRequest> argumentCaptor = ArgumentCaptor.forClass(AddLocalVariableRequest.class);
+        verify(camundaServiceApi, times(2)).addLocalVariablesToTask(
+            eq(BEARER_SERVICE_TOKEN),
+            eq(taskId),
+            argumentCaptor.capture()
         );
+
+        Map<String, CamundaValue<String>> stateUpdate = Map.of(TASK_STATE.value(), stringValue(UNASSIGNED.value()));
+
+        List<AddLocalVariableRequest> capturedArguments = argumentCaptor.getAllValues();
+        assertEquals(new AddLocalVariableRequest(modifications), capturedArguments.get(0));
+        assertEquals(new AddLocalVariableRequest(stateUpdate), capturedArguments.get(1));
     }
 
     @DisplayName("Cannot find task")
@@ -96,7 +111,7 @@ public class TaskConfigurationControllerTest {
         when(serviceAuthTokenGenerator.generate()).thenReturn(BEARER_SERVICE_TOKEN);
 
         mockMvc.perform(
-            post("/configureTask")
+            post("/task/" + taskId)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(asJsonString(new ConfigureTaskRequest(taskId, emptyMap())))
         ).andExpect(status().isNotFound()).andReturn();
@@ -119,10 +134,14 @@ public class TaskConfigurationControllerTest {
 
         when(camundaServiceApi.getTask(BEARER_SERVICE_TOKEN, taskId))
             .thenReturn(new CamundaTask("id", processInstanceId, TASK_NAME));
-        HashMap<String, CamundaValue<Object>> processVariables = new HashMap<>();
+
         String caseId = UUID.randomUUID().toString();
-        processVariables.put("caseId", new CamundaValue<>(caseId, "string"));
-        when(camundaServiceApi.getVariables(BEARER_SERVICE_TOKEN, processInstanceId))
+
+        HashMap<String, CamundaValue<Object>> processVariables = new HashMap<>();
+        processVariables.put(CASE_ID.value(), new CamundaValue<>(caseId, "string"));
+        processVariables.put(TASK_STATE.value(), new CamundaValue<>(UNCONFIGURED, "string"));
+
+        when(camundaServiceApi.getVariables(BEARER_SERVICE_TOKEN, taskId))
             .thenReturn(processVariables);
         when(idamServiceApi.token(ArgumentMatchers.<Map<String, Object>>any()))
             .thenReturn(new Token(userToken, "scope"));
@@ -147,12 +166,12 @@ public class TaskConfigurationControllerTest {
         HashMap<String, CamundaValue<String>> modifications = new HashMap<>();
         modifications.put("name1", stringValue("value1"));
         modifications.put("caseId", stringValue(caseId));
-        modifications.put(TASK_STATE.value(), stringValue("unassigned"));
+        modifications.put(TASK_STATE.value(), stringValue("configured"));
         modifications.put("autoAssigned", stringValue("false"));
         modifications.put("executionType", stringValue("Case Management Task"));
         modifications.put("securityClassification", stringValue("PUBLIC"));
         modifications.put("taskSystem", stringValue("SELF"));
-        modifications.put("caseType", stringValue("Asylum"));
+        modifications.put("caseTypeId", stringValue("Asylum"));
         modifications.put("title", stringValue(TASK_NAME));
         return modifications;
     }
