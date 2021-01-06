@@ -122,8 +122,8 @@ public class TaskConfigurationController {
             configureTaskService.getConfiguration(
                 new TaskToConfigure(
                     taskId,
-                    configureTaskRequest.getTaskName(),
                     configureTaskRequest.getCaseId(),
+                    configureTaskRequest.getTaskName(),
                     configureTaskRequest.getProcessVariables()
                 )
             );

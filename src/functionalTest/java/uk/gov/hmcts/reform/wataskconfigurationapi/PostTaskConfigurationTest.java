@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.wataskconfigurationapi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.restassured.http.Headers;
 import io.restassured.response.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.After;
@@ -16,6 +15,7 @@ import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.wataskconfigurationapi.auth.idam.IdamSystemTokenGenerator;
 import uk.gov.hmcts.reform.wataskconfigurationapi.auth.idam.entities.UserInfo;
+import uk.gov.hmcts.reform.wataskconfigurationapi.controllers.request.ConfigureTaskRequest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.utils.CreateTaskMessage;
 import uk.gov.hmcts.reform.wataskconfigurationapi.utils.RoleAssignmentHelper;
 
@@ -23,14 +23,19 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 
+import static java.util.Collections.emptyMap;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.utils.CreateTaskMessageBuilder.createBasicMessageForTask;
 
 @Slf4j
-public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
+public class PostTaskConfigurationTest extends SpringBootFunctionalBaseTest {
 
-    private static final String ENDPOINT_BEING_TESTED = "/task/{task-id}";
+    private static final String ENDPOINT_BEING_TESTED = "/task/{task-id}/configuration";
+
     @Autowired
     private AuthTokenGenerator serviceAuthTokenGenerator;
 
@@ -53,7 +58,7 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
     }
 
     @Test
-    public void given_configure_task_then_expect_task_state_is_assigned() throws Exception {
+    public void should_return_task_configuration_then_expect_task_is_auto_assigned() throws Exception {
         caseId = createCcdCase();
         createTaskMessage = createBasicMessageForTask()
             .withCaseId(caseId)
@@ -66,76 +71,58 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
         Response result = restApiActions.post(
             ENDPOINT_BEING_TESTED,
             taskId,
-            new Headers(authorizationHeadersProvider.getServiceAuthorizationHeader())
+            new ConfigureTaskRequest(taskId, "task name", emptyMap()),
+            authorizationHeadersProvider.getServiceAuthorizationHeader()
         );
 
         result.then().assertThat()
             .statusCode(HttpStatus.OK.value())
-            .contentType(APPLICATION_JSON_VALUE);
-
-        Response camundaResult = camundaApiActions.get(
-            "/task/{task-id}/variables",
-            taskId,
-            authorizationHeadersProvider.getServiceAuthorizationHeader()
-        );
-
-        camundaResult.then().assertThat()
-            .statusCode(HttpStatus.OK.value())
             .contentType(APPLICATION_JSON_VALUE)
-            .body("caseName.value", is("Bob Smith"))
-            .body("appealType.value", is("protection"))
-            .body("region.value", is("1"))
-            .body("location.value", is("765324"))
-            .body("locationName.value", is("Taylor House"))
-            .body("taskState.value", is("assigned"))
-            .body("caseId.value", is(createTaskMessage.getCaseId()))
-            .body("securityClassification.value", is("PUBLIC"))
-            .body("caseType.value", is("Asylum"))
-            .body("title.value", is("task name"))
-            .body("tribunal-caseworker.value", is("Read,Refer,Own,Manage,Cancel"))
-            .body("senior-tribunal-caseworker.value", is("Read,Refer,Own,Manage,Cancel"));
+            .body("task_id", equalTo(taskId))
+            .body("case_id", equalTo(caseId))
+            .body("assignee", notNullValue())
+            .body("configuration_variables", notNullValue())
+            .body("configuration_variables.caseTypeId", equalTo("Asylum"))
+            .body("configuration_variables.taskState", equalTo("assigned"))
+            .body("configuration_variables.executionType", equalTo("Case Management Task"))
+            .body("configuration_variables.caseId", equalTo(caseId))
+            .body("configuration_variables.securityClassification", equalTo("PUBLIC"))
+            .body("configuration_variables.autoAssigned", equalTo("true"))
+            .body("configuration_variables.taskSystem", equalTo("SELF"));
     }
 
     @Test
-    public void given_configure_task_then_expect_task_state_is_unassigned() throws IOException {
-
+    public void should_return_task_configuration_then_expect_task_is_unassigned() throws Exception {
         caseId = createCcdCase();
         createTaskMessage = createBasicMessageForTask()
             .withCaseId(caseId)
             .build();
         taskId = createTask(createTaskMessage);
 
+        log.info("Creating roles");
+        roleAssignmentHelper.setRoleAssignments(caseId);
+
         Response result = restApiActions.post(
             ENDPOINT_BEING_TESTED,
             taskId,
-            new Headers(authorizationHeadersProvider.getServiceAuthorizationHeader())
+            new ConfigureTaskRequest(taskId, "task name", emptyMap()),
+            authorizationHeadersProvider.getServiceAuthorizationHeader()
         );
 
         result.then().assertThat()
             .statusCode(HttpStatus.OK.value())
-            .contentType(APPLICATION_JSON_VALUE);
-
-        Response camundaResult = camundaApiActions.get(
-            "/task/{task-id}/variables",
-            taskId,
-            authorizationHeadersProvider.getServiceAuthorizationHeader()
-        );
-
-        camundaResult.then().assertThat()
-            .statusCode(HttpStatus.OK.value())
             .contentType(APPLICATION_JSON_VALUE)
-            .body("caseName.value", is("Bob Smith"))
-            .body("appealType.value", is("protection"))
-            .body("region.value", is("1"))
-            .body("location.value", is("765324"))
-            .body("locationName.value", is("Taylor House"))
-            .body("taskState.value", is("unassigned"))
-            .body("caseId.value", is(createTaskMessage.getCaseId()))
-            .body("securityClassification.value", is("PUBLIC"))
-            .body("caseType.value", is("Asylum"))
-            .body("title.value", is("task name"))
-            .body("tribunal-caseworker.value", is("Read,Refer,Own,Manage,Cancel"))
-            .body("senior-tribunal-caseworker.value", is("Read,Refer,Own,Manage,Cancel"));
+            .body("task_id", equalTo(taskId))
+            .body("case_id", equalTo(caseId))
+            .body("assignee", nullValue())
+            .body("configuration_variables", notNullValue())
+            .body("configuration_variables.caseTypeId", equalTo("Asylum"))
+            .body("configuration_variables.taskState", equalTo("unassigned"))
+            .body("configuration_variables.executionType", equalTo("Case Management Task"))
+            .body("configuration_variables.caseId", equalTo(caseId))
+            .body("configuration_variables.securityClassification", equalTo("PUBLIC"))
+            .body("configuration_variables.autoAssigned", equalTo("false"))
+            .body("configuration_variables.taskSystem", equalTo("SELF"));
     }
 
     private String createTask(CreateTaskMessage createTaskMessage) {

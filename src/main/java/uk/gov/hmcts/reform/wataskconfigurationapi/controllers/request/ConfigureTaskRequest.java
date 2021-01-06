@@ -16,8 +16,9 @@ public class ConfigureTaskRequest {
         //No-op constructor for deserialization
     }
 
-    public ConfigureTaskRequest(String caseId, Map<String, Object> processVariables) {
+    public ConfigureTaskRequest(String caseId, String taskName, Map<String, Object> processVariables) {
         this.caseId = caseId;
+        this.taskName = taskName;
         this.processVariables = processVariables;
     }
 

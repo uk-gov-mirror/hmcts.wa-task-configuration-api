@@ -14,6 +14,7 @@ import java.util.Map;
 
 import static java.util.stream.Collectors.toMap;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.CamundaValue.stringValue;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.AUTO_ASSIGNED;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.CASE_ID;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.TASK_STATE;
 
@@ -78,6 +79,10 @@ public class ConfigureTaskService {
             .getAutoAssignmentVariables(taskToConfigure);
 
         configurationVariables.put(TASK_STATE.value(), autoAssignmentResult.getTaskState());
+
+        if (autoAssignmentResult.getAssignee() != null) {
+            configurationVariables.put(AUTO_ASSIGNED.value(), true);
+        }
 
         return new ConfigureTaskResponse(
             taskToConfigure.getId(),

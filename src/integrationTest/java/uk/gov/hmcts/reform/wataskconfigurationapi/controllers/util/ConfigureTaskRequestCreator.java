@@ -21,7 +21,7 @@ public class ConfigureTaskRequestCreator {
     }
 
     public ConfigureTaskRequest build() {
-        return new ConfigureTaskRequest(taskId, emptyMap());
+        return new ConfigureTaskRequest(taskId, "a task name", emptyMap());
     }
 
     public String asString() {
