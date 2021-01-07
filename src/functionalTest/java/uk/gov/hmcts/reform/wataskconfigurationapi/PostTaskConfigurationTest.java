@@ -34,7 +34,7 @@ import static uk.gov.hmcts.reform.wataskconfigurationapi.utils.CreateTaskMessage
 @Slf4j
 public class PostTaskConfigurationTest extends SpringBootFunctionalBaseTest {
 
-    private static final String ENDPOINT_BEING_TESTED = "/task/{task-id}/configuration";
+    private static final String ENDPOINT_BEING_TESTED = "task/{task-id}/configuration";
 
     @Autowired
     private AuthTokenGenerator serviceAuthTokenGenerator;

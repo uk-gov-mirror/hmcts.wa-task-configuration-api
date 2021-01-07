@@ -18,6 +18,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.CASE_ID;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.TASK_STATE;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.TaskState.CONFIGURED;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.TaskState.UNCONFIGURED;
 
 class ConfigureTaskServiceTest {
@@ -77,6 +78,7 @@ class ConfigureTaskServiceTest {
         HashMap<String, Object> mappedValues = new HashMap<>();
         mappedValues.put("key1", "value1");
         mappedValues.put("key2", "value2");
+        mappedValues.put(TASK_STATE.value(), CONFIGURED.value());
 
         when(taskVariableExtractor.getConfigurationVariables(testTaskToConfigure))
             .thenReturn(mappedValues);
@@ -86,6 +88,7 @@ class ConfigureTaskServiceTest {
         HashMap<String, CamundaValue<String>> modifications = new HashMap<>();
         modifications.put("key1", CamundaValue.stringValue("value1"));
         modifications.put("key2", CamundaValue.stringValue("value2"));
+        modifications.put(TASK_STATE.value(), CamundaValue.stringValue(CONFIGURED.value()));
 
         verify(camundaService).addProcessVariables(
             testTaskToConfigure.getId(),
@@ -94,32 +97,40 @@ class ConfigureTaskServiceTest {
     }
 
     @Test
-    void can_configure_atask_with_no_extra_variables() {
+    void can_configure_a_task_with_no_extra_variables() {
 
         String processInstanceId = "processInstanceId";
-        String caseId = "CASE_1234";
 
         CamundaTask camundaTask = new CamundaTask(
             testTaskToConfigure.getId(),
             processInstanceId,
             testTaskToConfigure.getName()
         );
-
         when(camundaService.getTask(testTaskToConfigure.getId())).thenReturn(camundaTask);
 
         HashMap<String, CamundaValue<Object>> processVariables = new HashMap<>();
-        processVariables.put(CASE_ID.value(), new CamundaValue<>(caseId, "String"));
-        processVariables.put(TASK_STATE.value(), new CamundaValue<>(UNCONFIGURED.value(), "String"));
-
+        processVariables.put(
+            CASE_ID.value(),
+            new CamundaValue<>(testTaskToConfigure.getCaseId(), "String")
+        );
+        processVariables.put(
+            TASK_STATE.value(),
+            new CamundaValue<>(UNCONFIGURED.value(), "String")
+        );
         when(camundaService.getVariables(testTaskToConfigure.getId()))
             .thenReturn(processVariables);
 
         HashMap<String, Object> mappedValues = new HashMap<>();
-        when(taskVariableExtractor.getConfigurationVariables(testTaskToConfigure)).thenReturn(mappedValues);
+        mappedValues.put(TASK_STATE.value(), CONFIGURED.value());
+
+        when(taskVariableExtractor.getConfigurationVariables(testTaskToConfigure))
+            .thenReturn(mappedValues);
 
         configureTaskService.configureTask(testTaskToConfigure.getId());
 
         HashMap<String, CamundaValue<String>> modifications = new HashMap<>();
+        modifications.put(TASK_STATE.value(), CamundaValue.stringValue(CONFIGURED.value()));
+
         verify(camundaService).addProcessVariables(
             testTaskToConfigure.getId(),
             modifications

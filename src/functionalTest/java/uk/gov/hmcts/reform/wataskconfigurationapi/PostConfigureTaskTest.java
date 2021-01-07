@@ -30,7 +30,7 @@ import static uk.gov.hmcts.reform.wataskconfigurationapi.utils.CreateTaskMessage
 @Slf4j
 public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
 
-    private static final String ENDPOINT_BEING_TESTED = "/task/{task-id}";
+    private static final String ENDPOINT_BEING_TESTED = "task/{task-id}";
     @Autowired
     private AuthTokenGenerator serviceAuthTokenGenerator;
 
@@ -79,6 +79,8 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
             authorizationHeadersProvider.getServiceAuthorizationHeader()
         );
 
+        camundaResult.prettyPeek();
+
         camundaResult.then().assertThat()
             .statusCode(HttpStatus.OK.value())
             .contentType(APPLICATION_JSON_VALUE)
@@ -90,7 +92,7 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
             .body("taskState.value", is("assigned"))
             .body("caseId.value", is(createTaskMessage.getCaseId()))
             .body("securityClassification.value", is("PUBLIC"))
-            .body("caseType.value", is("Asylum"))
+            .body("caseTypeId.value", is("Asylum"))
             .body("title.value", is("task name"))
             .body("tribunal-caseworker.value", is("Read,Refer,Own,Manage,Cancel"))
             .body("senior-tribunal-caseworker.value", is("Read,Refer,Own,Manage,Cancel"));
@@ -132,7 +134,7 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
             .body("taskState.value", is("unassigned"))
             .body("caseId.value", is(createTaskMessage.getCaseId()))
             .body("securityClassification.value", is("PUBLIC"))
-            .body("caseType.value", is("Asylum"))
+            .body("caseTypeId.value", is("Asylum"))
             .body("title.value", is("task name"))
             .body("tribunal-caseworker.value", is("Read,Refer,Own,Manage,Cancel"))
             .body("senior-tribunal-caseworker.value", is("Read,Refer,Own,Manage,Cancel"));
@@ -180,10 +182,12 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
             "Asylum",
             "startAppeal"
         );
+
         String caseData = new String(
             (Objects.requireNonNull(Thread.currentThread().getContextClassLoader()
                 .getResourceAsStream("case_data.json"))).readAllBytes()
         );
+
         Map data = new ObjectMapper().readValue(caseData, Map.class);
         CaseDataContent caseDataContent = CaseDataContent.builder()
             .eventToken(startCase.getToken())
