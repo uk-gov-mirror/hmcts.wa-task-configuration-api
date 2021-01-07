@@ -71,7 +71,7 @@ public class PostTaskConfigurationTest extends SpringBootFunctionalBaseTest {
         Response result = restApiActions.post(
             ENDPOINT_BEING_TESTED,
             taskId,
-            new ConfigureTaskRequest(taskId, "task name", emptyMap()),
+            new ConfigureTaskRequest(caseId, "task name", emptyMap()),
             authorizationHeadersProvider.getServiceAuthorizationHeader()
         );
 
@@ -105,7 +105,7 @@ public class PostTaskConfigurationTest extends SpringBootFunctionalBaseTest {
         Response result = restApiActions.post(
             ENDPOINT_BEING_TESTED,
             taskId,
-            new ConfigureTaskRequest(taskId, "task name", emptyMap()),
+            new ConfigureTaskRequest(caseId, "task name", emptyMap()),
             authorizationHeadersProvider.getServiceAuthorizationHeader()
         );
 
