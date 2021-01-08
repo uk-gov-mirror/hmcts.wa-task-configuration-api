@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.util.Map;
+import java.util.Objects;
 
 @EqualsAndHashCode
 @ToString
@@ -28,6 +29,8 @@ public class CaseDetails {
                        String caseType,
                        String securityClassification,
                        Map<String, Object> data) {
+        Objects.requireNonNull(jurisdiction, "Case details 'jurisdiction' cannot be null");
+        Objects.requireNonNull(caseType, "Case details 'caseType' cannot be null in ");
         this.jurisdiction = jurisdiction;
         this.caseType = caseType;
         this.securityClassification = securityClassification;

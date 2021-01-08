@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.wataskconfigurationapi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.restassured.http.Headers;
 import io.restassured.response.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.After;
@@ -15,7 +16,6 @@ import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.wataskconfigurationapi.auth.idam.IdamSystemTokenGenerator;
 import uk.gov.hmcts.reform.wataskconfigurationapi.auth.idam.entities.UserInfo;
-import uk.gov.hmcts.reform.wataskconfigurationapi.controllers.ConfigureTaskRequest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.utils.CreateTaskMessage;
 import uk.gov.hmcts.reform.wataskconfigurationapi.utils.RoleAssignmentHelper;
 
@@ -30,8 +30,7 @@ import static uk.gov.hmcts.reform.wataskconfigurationapi.utils.CreateTaskMessage
 @Slf4j
 public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
 
-    private static final String ENDPOINT_BEING_TESTED = "/configureTask";
-
+    private static final String ENDPOINT_BEING_TESTED = "task/{task-id}";
     @Autowired
     private AuthTokenGenerator serviceAuthTokenGenerator;
 
@@ -66,8 +65,8 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
 
         Response result = restApiActions.post(
             ENDPOINT_BEING_TESTED,
-            new ConfigureTaskRequest(taskId),
-            authorizationHeadersProvider.getServiceAuthorizationHeader()
+            taskId,
+            new Headers(authorizationHeadersProvider.getServiceAuthorizationHeader())
         );
 
         result.then().assertThat()
@@ -80,6 +79,8 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
             authorizationHeadersProvider.getServiceAuthorizationHeader()
         );
 
+        camundaResult.prettyPeek();
+
         camundaResult.then().assertThat()
             .statusCode(HttpStatus.OK.value())
             .contentType(APPLICATION_JSON_VALUE)
@@ -91,7 +92,7 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
             .body("taskState.value", is("assigned"))
             .body("caseId.value", is(createTaskMessage.getCaseId()))
             .body("securityClassification.value", is("PUBLIC"))
-            .body("caseType.value", is("Asylum"))
+            .body("caseTypeId.value", is("Asylum"))
             .body("title.value", is("task name"))
             .body("tribunal-caseworker.value", is("Read,Refer,Own,Manage,Cancel"))
             .body("senior-tribunal-caseworker.value", is("Read,Refer,Own,Manage,Cancel"));
@@ -108,8 +109,8 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
 
         Response result = restApiActions.post(
             ENDPOINT_BEING_TESTED,
-            new ConfigureTaskRequest(taskId),
-            authorizationHeadersProvider.getServiceAuthorizationHeader()
+            taskId,
+            new Headers(authorizationHeadersProvider.getServiceAuthorizationHeader())
         );
 
         result.then().assertThat()
@@ -133,7 +134,7 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
             .body("taskState.value", is("unassigned"))
             .body("caseId.value", is(createTaskMessage.getCaseId()))
             .body("securityClassification.value", is("PUBLIC"))
-            .body("caseType.value", is("Asylum"))
+            .body("caseTypeId.value", is("Asylum"))
             .body("title.value", is("task name"))
             .body("tribunal-caseworker.value", is("Read,Refer,Own,Manage,Cancel"))
             .body("senior-tribunal-caseworker.value", is("Read,Refer,Own,Manage,Cancel"));
@@ -181,10 +182,12 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
             "Asylum",
             "startAppeal"
         );
+
         String caseData = new String(
             (Objects.requireNonNull(Thread.currentThread().getContextClassLoader()
                 .getResourceAsStream("case_data.json"))).readAllBytes()
         );
+
         Map data = new ObjectMapper().readValue(caseData, Map.class);
         CaseDataContent caseDataContent = CaseDataContent.builder()
             .eventToken(startCase.getToken())

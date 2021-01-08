@@ -45,16 +45,16 @@ public interface CamundaServiceApi {
                                  AddLocalVariableRequest addLocalVariableRequest);
 
     @PostMapping(value = "/task/{id}/assignee", produces = MediaType.APPLICATION_JSON_VALUE)
-    void setAssignee(@RequestHeader(SERVICE_AUTHORIZATION) String serviceAuthorisation,
-                     @PathVariable("id") String taskId,
-                     @RequestBody AssigneeRequest assigneeRequest);
+    void assignTask(@RequestHeader(SERVICE_AUTHORIZATION) String serviceAuthorisation,
+                    @PathVariable("id") String taskId,
+                    @RequestBody AssigneeRequest assigneeRequest);
 
     @GetMapping(value = "/task/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     CamundaTask getTask(@RequestHeader(SERVICE_AUTHORIZATION) String serviceAuthorisation,
                         @PathVariable("id") String taskId);
 
-    @GetMapping(value = "/process-instance/{id}/variables", produces = MediaType.APPLICATION_JSON_VALUE)
-    Map<String, CamundaValue<Object>> getProcessVariables(
+    @GetMapping(value = "/task/{id}/variables", produces = MediaType.APPLICATION_JSON_VALUE)
+    Map<String, CamundaValue<Object>> getVariables(
         @RequestHeader(SERVICE_AUTHORIZATION) String serviceAuthorisation,
         @PathVariable("id") String processInstanceId);
 }
