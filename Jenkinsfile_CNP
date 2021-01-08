@@ -28,7 +28,7 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 }
 
 
-withCamundaOnlyPipeline(type, product, component) {
+withPipeline(type, product, component) {
   disableLegacyDeployment()
 
   env.IDAM_URL = "https://idam-api.aat.platform.hmcts.net"
