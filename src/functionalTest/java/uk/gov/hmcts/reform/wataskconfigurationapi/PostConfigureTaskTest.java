@@ -63,6 +63,8 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
         log.info("Creating roles");
         roleAssignmentHelper.setRoleAssignments(caseId);
 
+        log.info("{} task", taskId);
+
         Response result = restApiActions.post(
             ENDPOINT_BEING_TESTED,
             taskId,
@@ -78,8 +80,6 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
             taskId,
             authorizationHeadersProvider.getServiceAuthorizationHeader()
         );
-
-        camundaResult.prettyPeek();
 
         camundaResult.then().assertThat()
             .statusCode(HttpStatus.OK.value())
