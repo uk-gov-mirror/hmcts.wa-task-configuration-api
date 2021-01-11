@@ -63,13 +63,14 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
         log.info("Creating roles");
         roleAssignmentHelper.setRoleAssignments(caseId);
 
-        log.info("{} task", taskId);
 
         Response result = restApiActions.post(
             ENDPOINT_BEING_TESTED,
             taskId,
             new Headers(authorizationHeadersProvider.getServiceAuthorizationHeader())
         );
+
+        result.prettyPrint();
 
         result.then().assertThat()
             .statusCode(HttpStatus.OK.value())
