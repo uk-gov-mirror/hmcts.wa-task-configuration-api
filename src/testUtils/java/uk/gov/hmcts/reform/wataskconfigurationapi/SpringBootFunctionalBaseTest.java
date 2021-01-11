@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.wataskconfigurationapi;
 
 import io.restassured.http.Headers;
 import io.restassured.response.Response;
+import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -23,6 +24,7 @@ import static org.hamcrest.CoreMatchers.is;
 @RunWith(SpringIntegrationSerenityRunner.class)
 @SpringBootTest
 @ActiveProfiles("functional")
+@Slf4j
 public abstract class SpringBootFunctionalBaseTest {
     public static final DateTimeFormatter CAMUNDA_DATA_TIME_FORMATTER = ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
     private static final String ENDPOINT_COMPLETE_TASK = "task/{task-id}/complete";
@@ -48,7 +50,7 @@ public abstract class SpringBootFunctionalBaseTest {
     }
 
     public void cleanUp(String taskId) {
-
+        log.info("Attempting to clean up task wit id: {}", taskId);
         camundaApiActions.post(
             ENDPOINT_COMPLETE_TASK,
             taskId,
