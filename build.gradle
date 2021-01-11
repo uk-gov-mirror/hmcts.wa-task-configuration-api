@@ -166,8 +166,8 @@ project.tasks['sonarqube'].dependsOn test, integration, jacocoTestReport
 
 // Ensures that functional tests index page is generated
 // Functional tests should run two tasks "functional" and "aggregate"
-gradle.startParameter.continueOnFailure = true
-functional.finalizedBy aggregate
+//gradle.startParameter.continueOnFailure = true
+//functional.finalizedBy aggregate
 
 sonarqube {
   properties {
