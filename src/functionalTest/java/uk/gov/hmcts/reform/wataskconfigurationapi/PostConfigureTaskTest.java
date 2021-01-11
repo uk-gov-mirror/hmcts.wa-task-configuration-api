@@ -43,13 +43,13 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
     @Autowired
     private RoleAssignmentHelper roleAssignmentHelper;
 
-    private String taskId;
     private CreateTaskMessage createTaskMessage;
+    private String taskId;
     private String caseId;
 
     @After
     public void cleanUp() {
-        super.cleanUp(taskId);
+        cleanUp(taskId);
     }
 
     @Test
