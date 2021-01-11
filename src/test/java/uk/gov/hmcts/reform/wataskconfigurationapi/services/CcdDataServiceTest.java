@@ -41,7 +41,7 @@ public class CcdDataServiceTest {
 
         String caseData = "{ "
                           + "\"jurisdiction\": \"ia\", "
-                          + "\"case_type_id\": \"Asylum\", "
+                          + "\"case_type\": \"Asylum\", "
                           + "\"security_classification\": \"PUBLIC\","
                           + "\"data\": {}"
                           + " }";

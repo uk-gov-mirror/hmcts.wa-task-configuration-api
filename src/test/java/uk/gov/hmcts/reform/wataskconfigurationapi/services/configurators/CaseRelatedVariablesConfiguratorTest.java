@@ -13,7 +13,7 @@ import static org.hamcrest.core.IsSame.sameInstance;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.CASE_TYPE_ID;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.CASE_TYPE;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.SECURITY_CLASSIFICATION;
 
 class CaseRelatedVariablesConfiguratorTest {
@@ -55,7 +55,7 @@ class CaseRelatedVariablesConfiguratorTest {
 
         Map<String, Object> expectedValues = Map.of(
             SECURITY_CLASSIFICATION.value(), "PUBLIC",
-            CASE_TYPE_ID.value(), "IA");
+            CASE_TYPE.value(), "Asylum");
 
         when(caseConfigurationProviderService.getCaseRelatedConfiguration(caseId))
             .thenReturn(expectedValues);

@@ -42,7 +42,7 @@ class DmnEvaluationServiceTest {
     void should_succeed_and_return_a_list_of_permissions() {
         String ccdData = "{"
                          + "\"jurisdiction\": \"ia\","
-                         + "\"case_type_id\": \"Asylum\","
+                         + "\"case_type\": \"Asylum\","
                          + "\"security_classification\": \"PUBLIC\","
                          + "\"data\": {}"
                          + "}";
@@ -79,7 +79,7 @@ class DmnEvaluationServiceTest {
     void should_throw_illegal_state_exception_when_feign_exception_is_caught() {
         String ccdData = "{"
                          + "\"jurisdiction\": \"ia\","
-                         + "\"case_type_id\": \"Asylum\","
+                         + "\"case_type\": \"Asylum\","
                          + "\"security_classification\": \"PUBLIC\","
                          + "\"data\": {}"
                          + "}";

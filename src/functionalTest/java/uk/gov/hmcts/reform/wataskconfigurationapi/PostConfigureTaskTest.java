@@ -79,8 +79,6 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
             authorizationHeadersProvider.getServiceAuthorizationHeader()
         );
 
-        camundaResult.prettyPeek();
-
         camundaResult.then().assertThat()
             .statusCode(HttpStatus.OK.value())
             .contentType(APPLICATION_JSON_VALUE)
@@ -92,7 +90,7 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
             .body("taskState.value", is("assigned"))
             .body("caseId.value", is(createTaskMessage.getCaseId()))
             .body("securityClassification.value", is("PUBLIC"))
-            .body("caseTypeId.value", is("Asylum"))
+            .body("caseType.value", is("Asylum"))
             .body("title.value", is("task name"))
             .body("tribunal-caseworker.value", is("Read,Refer,Own,Manage,Cancel"))
             .body("senior-tribunal-caseworker.value", is("Read,Refer,Own,Manage,Cancel"));
@@ -134,7 +132,7 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
             .body("taskState.value", is("unassigned"))
             .body("caseId.value", is(createTaskMessage.getCaseId()))
             .body("securityClassification.value", is("PUBLIC"))
-            .body("caseTypeId.value", is("Asylum"))
+            .body("caseType.value", is("Asylum"))
             .body("title.value", is("task name"))
             .body("tribunal-caseworker.value", is("Read,Refer,Own,Manage,Cancel"))
             .body("senior-tribunal-caseworker.value", is("Read,Refer,Own,Manage,Cancel"));

@@ -70,7 +70,7 @@ class CaseConfigurationProviderServiceTest {
         expectedMappedData.put("tribunalCaseworker", "Read,Refer,Own,Manage,Cancel");
         expectedMappedData.put("seniorTribunalCaseworker", "Read,Refer,Own,Manage,Cancel");
         expectedMappedData.put("securityClassification", "PUBLIC");
-        expectedMappedData.put("caseTypeId", "Asylum");
+        expectedMappedData.put("caseType", "Asylum");
         Map<String, Object> mappedData = caseConfigurationProviderService.getCaseRelatedConfiguration(someCaseId);
 
         assertThat(mappedData, is(expectedMappedData));
@@ -114,7 +114,7 @@ class CaseConfigurationProviderServiceTest {
             "name1", "value1",
             "name2", "value2",
             "securityClassification", "PUBLIC",
-            "caseTypeId", "Asylum");
+            "caseType", "Asylum");
 
         Map<String, Object> mappedData = caseConfigurationProviderService.getCaseRelatedConfiguration(someCaseId);
 

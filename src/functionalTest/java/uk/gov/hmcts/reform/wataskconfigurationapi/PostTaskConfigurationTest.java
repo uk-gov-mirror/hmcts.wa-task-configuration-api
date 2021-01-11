@@ -23,12 +23,13 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 
-import static java.util.Collections.emptyMap;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.CASE_ID;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.NAME;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.utils.CreateTaskMessageBuilder.createBasicMessageForTask;
 
 @Slf4j
@@ -60,18 +61,23 @@ public class PostTaskConfigurationTest extends SpringBootFunctionalBaseTest {
     @Test
     public void should_return_task_configuration_then_expect_task_is_auto_assigned() throws Exception {
         caseId = createCcdCase();
+
+        log.info("Creating roles");
+        roleAssignmentHelper.setRoleAssignments(caseId);
+
         createTaskMessage = createBasicMessageForTask()
             .withCaseId(caseId)
             .build();
         taskId = createTask(createTaskMessage);
 
-        log.info("Creating roles");
-        roleAssignmentHelper.setRoleAssignments(caseId);
-
+        Map<String, Object> requiredProcessVariables = Map.of(
+            CASE_ID.value(), caseId,
+            NAME.value(), "task name"
+            );
         Response result = restApiActions.post(
             ENDPOINT_BEING_TESTED,
             taskId,
-            new ConfigureTaskRequest(caseId, "task name", emptyMap()),
+            new ConfigureTaskRequest(requiredProcessVariables),
             authorizationHeadersProvider.getServiceAuthorizationHeader()
         );
 
@@ -82,7 +88,7 @@ public class PostTaskConfigurationTest extends SpringBootFunctionalBaseTest {
             .body("case_id", equalTo(caseId))
             .body("assignee", notNullValue())
             .body("configuration_variables", notNullValue())
-            .body("configuration_variables.caseTypeId", equalTo("Asylum"))
+            .body("configuration_variables.caseType", equalTo("Asylum"))
             .body("configuration_variables.taskState", equalTo("assigned"))
             .body("configuration_variables.executionType", equalTo("Case Management Task"))
             .body("configuration_variables.caseId", equalTo(caseId))
@@ -99,10 +105,16 @@ public class PostTaskConfigurationTest extends SpringBootFunctionalBaseTest {
             .build();
         taskId = createTask(createTaskMessage);
 
+
+        Map<String, Object> requiredProcessVariables = Map.of(
+            CASE_ID.value(), caseId,
+            NAME.value(), "task name"
+        );
+
         Response result = restApiActions.post(
             ENDPOINT_BEING_TESTED,
             taskId,
-            new ConfigureTaskRequest(caseId, "task name", emptyMap()),
+            new ConfigureTaskRequest(requiredProcessVariables),
             authorizationHeadersProvider.getServiceAuthorizationHeader()
         );
 
@@ -113,7 +125,7 @@ public class PostTaskConfigurationTest extends SpringBootFunctionalBaseTest {
             .body("case_id", equalTo(caseId))
             .body("assignee", nullValue())
             .body("configuration_variables", notNullValue())
-            .body("configuration_variables.caseTypeId", equalTo("Asylum"))
+            .body("configuration_variables.caseType", equalTo("Asylum"))
             .body("configuration_variables.taskState", equalTo("unassigned"))
             .body("configuration_variables.executionType", equalTo("Case Management Task"))
             .body("configuration_variables.caseId", equalTo(caseId))
