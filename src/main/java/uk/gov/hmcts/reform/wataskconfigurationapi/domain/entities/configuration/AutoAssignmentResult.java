@@ -1,5 +1,10 @@
 package uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.configuration;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+@EqualsAndHashCode
+@ToString
 public class AutoAssignmentResult {
     private final String taskState;
     private final String assignee;

@@ -3,8 +3,10 @@ package uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @EqualsAndHashCode
+@ToString
 @JsonNaming
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public final class AssigneeRequest {
