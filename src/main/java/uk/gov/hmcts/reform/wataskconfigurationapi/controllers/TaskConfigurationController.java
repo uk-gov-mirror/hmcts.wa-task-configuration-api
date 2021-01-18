@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.wataskconfigurationapi.controllers.request.ConfigureTaskRequest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.controllers.response.ConfigureTaskResponse;
-import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.configuration.TaskToConfigure;
 import uk.gov.hmcts.reform.wataskconfigurationapi.exceptions.ConfigureTaskException;
 import uk.gov.hmcts.reform.wataskconfigurationapi.services.ConfigureTaskService;
 
@@ -120,12 +119,8 @@ public class TaskConfigurationController {
 
         ConfigureTaskResponse response =
             configureTaskService.getConfiguration(
-                new TaskToConfigure(
-                    taskId,
-                    configureTaskRequest.getCaseId(),
-                    configureTaskRequest.getTaskName(),
-                    configureTaskRequest.getProcessVariables()
-                )
+                taskId,
+                configureTaskRequest.getProcessVariables()
             );
         return ResponseEntity
             .ok()
