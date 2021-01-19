@@ -22,6 +22,7 @@ import uk.gov.hmcts.reform.wataskconfigurationapi.utils.RoleAssignmentHelper;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import static java.util.Collections.emptyMap;
 import static org.hamcrest.CoreMatchers.is;
@@ -137,6 +138,8 @@ public class PostTaskConfigurationTest extends SpringBootFunctionalBaseTest {
 
         String filter = "?processVariables=" + "caseId_eq_" + createTaskMessage.getCaseId();
 
+        waitSeconds(1);
+
         Response camundaGetTaskResult = camundaApiActions.get(
             "/task" + filter,
             authorizationHeadersProvider.getServiceAuthorizationHeader()
@@ -225,4 +228,11 @@ public class PostTaskConfigurationTest extends SpringBootFunctionalBaseTest {
         return caseDetails.getId().toString();
     }
 
+    private void waitSeconds(int seconds) {
+        try {
+            TimeUnit.SECONDS.sleep(seconds);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }

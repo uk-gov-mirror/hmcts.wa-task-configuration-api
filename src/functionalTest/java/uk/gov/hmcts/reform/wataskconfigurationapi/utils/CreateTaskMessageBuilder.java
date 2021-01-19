@@ -3,6 +3,8 @@ package uk.gov.hmcts.reform.wataskconfigurationapi.utils;
 import uk.gov.hmcts.reform.wataskconfigurationapi.PostConfigureTaskTest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.CamundaValue;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -45,6 +47,10 @@ public class CreateTaskMessageBuilder {
             stringValue(now().plusDays(2).format(PostConfigureTaskTest.CAMUNDA_DATA_TIME_FORMATTER))
         );
         processVariables.put("name", stringValue("task name"));
+        processVariables.put(
+            "delayUntil",
+            stringValue(ZonedDateTime.now()
+                .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
         return new CreateTaskMessageBuilder()
             .withMessageName("createTaskMessage")
             .withProcessVariables(processVariables);
