@@ -19,8 +19,6 @@ role-assignment-service:
 
 camunda:
   url: ${CAMUNDA_URL:http://camunda-bpm/engine-rest}
-  PostTaskConfigurationTest.java
-  Viewed
 
 ccd:
   url: ${CCD_URL:http://ccd-data-store-api}
