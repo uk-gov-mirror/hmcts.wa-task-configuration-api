@@ -12,10 +12,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.wataskconfigurationapi.controllers.request.ConfigureTaskRequest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.controllers.response.ConfigureTaskResponse;
+import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.configuration.TaskToConfigure;
 import uk.gov.hmcts.reform.wataskconfigurationapi.exceptions.ConfigureTaskException;
 import uk.gov.hmcts.reform.wataskconfigurationapi.services.ConfigureTaskService;
 
+import java.util.Map;
+
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.CASE_ID;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.NAME;
 
 @RequestMapping(
     path = "/task",
@@ -117,11 +122,20 @@ public class TaskConfigurationController {
         @PathVariable(TASK_ID) String taskId,
         @RequestBody ConfigureTaskRequest configureTaskRequest) {
 
+        Map<String, Object> variables = configureTaskRequest.getProcessVariables();
+        String caseId = (String) variables.get(CASE_ID.value());
+        String taskName = (String) variables.get(NAME.value());
+
         ConfigureTaskResponse response =
             configureTaskService.getConfiguration(
-                taskId,
-                configureTaskRequest.getProcessVariables()
+                new TaskToConfigure(
+                    taskId,
+                    caseId,
+                    taskName,
+                    configureTaskRequest.getProcessVariables()
+                )
             );
+
         return ResponseEntity
             .ok()
             .cacheControl(CacheControl.noCache())

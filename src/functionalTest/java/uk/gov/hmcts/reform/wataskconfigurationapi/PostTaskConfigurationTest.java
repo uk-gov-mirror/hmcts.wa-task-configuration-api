@@ -24,12 +24,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-import static java.util.Collections.emptyMap;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.CASE_ID;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.NAME;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.utils.CreateTaskMessageBuilder.createBasicMessageForTask;
 
 @Slf4j
@@ -66,13 +67,19 @@ public class PostTaskConfigurationTest extends SpringBootFunctionalBaseTest {
             .build();
         taskId = createTask(createTaskMessage);
 
+
+        Map<String, Object> requiredProcessVariables = Map.of(
+            CASE_ID.value(), caseId,
+            NAME.value(), "task name"
+        );
+
         log.info("Creating roles");
         roleAssignmentHelper.setRoleAssignments(caseId);
 
         Response result = restApiActions.post(
             ENDPOINT_BEING_TESTED,
             taskId,
-            new ConfigureTaskRequest(caseId, "task name", emptyMap()),
+            new ConfigureTaskRequest(requiredProcessVariables),
             authorizationHeadersProvider.getServiceAuthorizationHeader()
         );
 
@@ -100,10 +107,15 @@ public class PostTaskConfigurationTest extends SpringBootFunctionalBaseTest {
             .build();
         taskId = createTask(createTaskMessage);
 
+        Map<String, Object> requiredProcessVariables = Map.of(
+            CASE_ID.value(), caseId,
+            NAME.value(), "task name"
+        );
+
         Response result = restApiActions.post(
             ENDPOINT_BEING_TESTED,
             taskId,
-            new ConfigureTaskRequest(caseId, "task name", emptyMap()),
+            new ConfigureTaskRequest(requiredProcessVariables),
             authorizationHeadersProvider.getServiceAuthorizationHeader()
         );
 

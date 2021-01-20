@@ -16,7 +16,6 @@ import static java.util.stream.Collectors.toMap;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.CamundaValue.stringValue;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.AUTO_ASSIGNED;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.CASE_ID;
-import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.NAME;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.TASK_STATE;
 
 @Component
@@ -72,16 +71,7 @@ public class ConfigureTaskService {
 
     }
 
-    public ConfigureTaskResponse getConfiguration(String taskId, Map<String, Object> processVariables) {
-        String caseId = (String) processVariables.get(CASE_ID.value());
-        String taskName = (String) processVariables.get(NAME.value());
-
-        TaskToConfigure taskToConfigure = new TaskToConfigure(
-            taskId,
-            caseId,
-            taskName,
-            processVariables
-        );
+    public ConfigureTaskResponse getConfiguration(TaskToConfigure taskToConfigure) {
 
         Map<String, Object> configurationVariables = getConfigurationVariables(taskToConfigure);
 
@@ -96,7 +86,7 @@ public class ConfigureTaskService {
 
         return new ConfigureTaskResponse(
             taskToConfigure.getId(),
-            caseId,
+            taskToConfigure.getCaseId(),
             autoAssignmentResult.getAssignee(),
             configurationVariables
         );
