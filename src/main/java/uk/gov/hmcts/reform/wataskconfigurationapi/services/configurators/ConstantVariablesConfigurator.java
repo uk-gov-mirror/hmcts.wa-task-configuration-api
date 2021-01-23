@@ -8,6 +8,7 @@ import java.util.Map;
 
 import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.AUTO_ASSIGNED;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.EXECUTION_TYPE;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.HAS_WARNINGS;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.TASK_STATE;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.TASK_SYSTEM;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.TaskState.CONFIGURED;
@@ -23,6 +24,7 @@ public class ConstantVariablesConfigurator implements TaskConfigurator {
             TASK_STATE.value(), CONFIGURED.value(),
             AUTO_ASSIGNED.value(), false,
             EXECUTION_TYPE.value(), "Case Management Task",
-            TASK_SYSTEM.value(), "SELF");
+            TASK_SYSTEM.value(), "SELF",
+            HAS_WARNINGS.value(), false);
     }
 }
