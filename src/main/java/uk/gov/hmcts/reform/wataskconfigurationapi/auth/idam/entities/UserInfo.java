@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.wataskconfigurationapi.auth.idam.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -13,6 +14,7 @@ import java.util.List;
 @Builder
 @EqualsAndHashCode
 @ToString
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserInfo {
 
     @JsonProperty("sub")
