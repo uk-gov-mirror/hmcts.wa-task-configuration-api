@@ -69,6 +69,8 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
             taskId,
             new Headers(authorizationHeadersProvider.getServiceAuthorizationHeader())
         );
+        result.prettyPeek();
+
 
         result.then().assertThat()
             .statusCode(HttpStatus.OK.value())
@@ -79,6 +81,8 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
             taskId,
             authorizationHeadersProvider.getServiceAuthorizationHeader()
         );
+
+        camundaResult.prettyPeek();
 
         camundaResult.then().assertThat()
             .statusCode(HttpStatus.OK.value())
@@ -95,6 +99,7 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
             .body("title.value", is("task name"))
             .body("tribunal-caseworker.value", is("Read,Refer,Own,Manage,Cancel"))
             .body("senior-tribunal-caseworker.value", is("Read,Refer,Own,Manage,Cancel"));
+
     }
 
     @Test
