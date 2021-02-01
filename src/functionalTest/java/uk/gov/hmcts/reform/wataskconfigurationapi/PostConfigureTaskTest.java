@@ -80,6 +80,9 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
             authorizationHeadersProvider.getServiceAuthorizationHeader()
         );
 
+        result.prettyPeek();
+
+        camundaResult.prettyPeek();
         camundaResult.then().assertThat()
             .statusCode(HttpStatus.OK.value())
             .contentType(APPLICATION_JSON_VALUE)
