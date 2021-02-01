@@ -84,6 +84,7 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
 
         camundaResult.prettyPeek();
 
+
         camundaResult.then().assertThat()
             .statusCode(HttpStatus.OK.value())
             .contentType(APPLICATION_JSON_VALUE)
