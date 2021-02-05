@@ -217,7 +217,7 @@ class TaskConfigurationControllerTest {
                                   + "    \"autoAssigned\": true,\n"
                                   + "    \"taskSystem\": \"SELF\",\n"
                                   + "    \"title\": \"taskName\",\n"
-                                  + "    \"name1\": \"value1\"\n"
+                                  + "    \"hasWarnings\": false\n"
                                   + "  }\n"
                                   + "}";
 
@@ -258,7 +258,8 @@ class TaskConfigurationControllerTest {
                                   + "    \"autoAssigned\": false,\n"
                                   + "    \"taskSystem\": \"SELF\",\n"
                                   + "    \"title\": \"taskName\",\n"
-                                  + "    \"name1\": \"value1\"\n"
+                                  + "    \"name1\": \"value1\",\n"
+                                  + "    \"hasWarnings\": false\n"
                                   + "  }\n"
                                   + "}";
 
@@ -356,6 +357,7 @@ class TaskConfigurationControllerTest {
         modifications.put("taskSystem", stringValue("SELF"));
         modifications.put("caseTypeId", stringValue("Asylum"));
         modifications.put("title", stringValue(TASK_NAME));
+        modifications.put("hasWarnings", stringValue("false"));
         return modifications;
     }
 }

@@ -69,6 +69,8 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
             taskId,
             new Headers(authorizationHeadersProvider.getServiceAuthorizationHeader())
         );
+        result.prettyPeek();
+
 
         result.then().assertThat()
             .statusCode(HttpStatus.OK.value())
@@ -79,6 +81,8 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
             taskId,
             authorizationHeadersProvider.getServiceAuthorizationHeader()
         );
+
+        camundaResult.prettyPeek();
 
         camundaResult.then().assertThat()
             .statusCode(HttpStatus.OK.value())
@@ -93,8 +97,10 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
             .body("securityClassification.value", is("PUBLIC"))
             .body("caseTypeId.value", is("Asylum"))
             .body("title.value", is("task name"))
+            .body("hasWarnings.value", is("false"))
             .body("tribunal-caseworker.value", is("Read,Refer,Own,Manage,Cancel"))
             .body("senior-tribunal-caseworker.value", is("Read,Refer,Own,Manage,Cancel"));
+
     }
 
     @Test
