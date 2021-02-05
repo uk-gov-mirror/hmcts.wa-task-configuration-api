@@ -20,6 +20,7 @@ public enum CamundaVariableDefinition {
     TYPE("type"),
     FORM_KEY("formKey"),
     CASE_ID("caseId"),
+    NAME("name"),
     HAS_WARNINGS("hasWarnings");
 
     private final String value;

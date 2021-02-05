@@ -35,6 +35,8 @@ public class RoleAssignmentHelper {
         String s2sToken = serviceAuthTokenGenerator.generate();
         UserInfo userInfo = systemTokenGenerator.getUserInfo(bearerUserToken);
         createRoleAssignmentInThisOrder(caseId, bearerUserToken, s2sToken, userInfo);
+        log.info("Role Assignments created");
+
     }
 
     private void createRoleAssignmentInThisOrder(String caseId,

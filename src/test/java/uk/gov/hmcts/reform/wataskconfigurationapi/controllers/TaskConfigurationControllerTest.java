@@ -11,10 +11,12 @@ import uk.gov.hmcts.reform.wataskconfigurationapi.controllers.request.ConfigureT
 import uk.gov.hmcts.reform.wataskconfigurationapi.controllers.response.ConfigureTaskResponse;
 import uk.gov.hmcts.reform.wataskconfigurationapi.services.ConfigureTaskService;
 
-import java.util.Collections;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.CASE_ID;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.NAME;
 
 @ExtendWith(MockitoExtension.class)
 class TaskConfigurationControllerTest {
@@ -64,6 +66,12 @@ class TaskConfigurationControllerTest {
 
     private ConfigureTaskRequest getConfigureTaskRequest() {
 
-        return new ConfigureTaskRequest(caseId, taskName, Collections.emptyMap());
+
+        return new ConfigureTaskRequest(
+            Map.of(
+                CASE_ID.value(), caseId,
+                NAME.value(), taskName
+            )
+        );
     }
 }
