@@ -40,8 +40,8 @@ idam:
     secret: ${S2S_SECRET_TASK_CONFIGURATION_API:AAAAAAAAAAAAAAAC}
     name: wa_task_configuration_api
   system:
-    username: ${TEST_LAW_FIRM_A_USERNAME:some_user@hmcts.net}
-    password: ${TEST_LAW_FIRM_A_PASSWORD:password}
+    username: ${TEST_WA_LAW_FIRM_USERNAME:some_user@hmcts.net}
+    password: ${TEST_WA_LAW_FIRM_PASSWORD:password}
     scope: "openid profile roles"
 
 spring:

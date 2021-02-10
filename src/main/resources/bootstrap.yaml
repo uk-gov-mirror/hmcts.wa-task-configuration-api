@@ -6,8 +6,8 @@ spring:
       paths: /mnt/secrets/wa
       aliases:
         AppInsightsInstrumentationKey: azure.application-insights.instrumentation-key
-        test-law-firm-a-username: TEST_LAW_FIRM_A_USERNAME
-        test-law-firm-a-password: TEST_LAW_FIRM_A_PASSWORD
+        wa-test-law-firm-a-username: TEST_WA_LAW_FIRM_USERNAME
+        wa-test-law-firm-a-password: TEST_WA_LAW_FIRM_PASSWORD
         wa-idam-client-id: WA_IDAM_CLIENT_ID
         wa-idam-client-secret: WA_IDAM_CLIENT_SECRET
         s2s-secret-task-configuration-api: S2S_SECRET_TASK_CONFIGURATION_API
