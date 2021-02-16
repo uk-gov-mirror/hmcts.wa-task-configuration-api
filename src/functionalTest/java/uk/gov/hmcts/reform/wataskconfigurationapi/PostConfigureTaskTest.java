@@ -23,7 +23,9 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
+import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.utils.CreateTaskMessageBuilder.createBasicMessageForTask;
@@ -71,16 +73,11 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
         );
         result.prettyPeek();
 
-
         result.then().assertThat()
             .statusCode(HttpStatus.OK.value())
             .contentType(APPLICATION_JSON_VALUE);
 
-        Response camundaResult = camundaApiActions.get(
-            "/task/{task-id}/variables",
-            taskId,
-            authorizationHeadersProvider.getServiceAuthorizationHeader()
-        );
+        Response camundaResult = retrieveCamundaDetails().get();
 
         camundaResult.prettyPeek();
 
@@ -122,11 +119,7 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
             .statusCode(HttpStatus.OK.value())
             .contentType(APPLICATION_JSON_VALUE);
 
-        Response camundaResult = camundaApiActions.get(
-            "/task/{task-id}/variables",
-            taskId,
-            authorizationHeadersProvider.getServiceAuthorizationHeader()
-        );
+        Response camundaResult = retrieveCamundaDetails().get();
 
         camundaResult.then().assertThat()
             .statusCode(HttpStatus.OK.value())
@@ -160,12 +153,7 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
 
         String filter = "?processVariables=" + "caseId_eq_" + createTaskMessage.getCaseId();
 
-        waitSeconds(3);
-
-        Response camundaGetTaskResult = camundaApiActions.get(
-            "/task" + filter,
-            authorizationHeadersProvider.getServiceAuthorizationHeader()
-        );
+        Response camundaGetTaskResult = retrieveTaskResult(filter).get();
 
         return camundaGetTaskResult.then().assertThat()
             .statusCode(HttpStatus.OK.value())
@@ -260,5 +248,44 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    private AtomicReference<Response> retrieveTaskResult(String filter) {
+        AtomicReference<Response> response = new AtomicReference<>();
+        await().ignoreException(AssertionError.class)
+            .pollInterval(500, TimeUnit.MILLISECONDS)
+            .atMost(10, TimeUnit.SECONDS)
+            .until(
+                () -> {
+                    Response camundaGetTaskResult = camundaApiActions.get(
+                        "/task" + filter,
+                        authorizationHeadersProvider.getServiceAuthorizationHeader()
+                    );
+
+                    response.set(camundaGetTaskResult);
+                    return true;
+                });
+
+        return response;
+    }
+
+    private AtomicReference<Response> retrieveCamundaDetails() {
+        AtomicReference<Response> response = new AtomicReference<>();
+        await().ignoreException(AssertionError.class)
+            .pollInterval(500, TimeUnit.MILLISECONDS)
+            .atMost(10, TimeUnit.SECONDS)
+            .until(
+                () -> {
+                    Response camundaResult = camundaApiActions.get(
+                        "/task/{task-id}/variables",
+                        taskId,
+                        authorizationHeadersProvider.getServiceAuthorizationHeader()
+                    );
+
+                    response.set(camundaResult);
+                    return true;
+                });
+
+        return response;
     }
 }
