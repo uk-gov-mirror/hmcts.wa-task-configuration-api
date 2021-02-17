@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.wataskconfigurationapi;
 
 import io.restassured.http.Headers;
 import io.restassured.response.Response;
+import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -20,6 +21,7 @@ import static com.fasterxml.jackson.databind.PropertyNamingStrategy.SNAKE_CASE;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static org.hamcrest.CoreMatchers.is;
 
+@Slf4j
 @RunWith(SpringIntegrationSerenityRunner.class)
 @SpringBootTest
 @ActiveProfiles("functional")
@@ -48,12 +50,13 @@ public abstract class SpringBootFunctionalBaseTest {
     }
 
     public void cleanUp(String taskId) {
-
+        log.info(String.format("Completing the task: %s", taskId));
         camundaApiActions.post(
             ENDPOINT_COMPLETE_TASK,
             taskId,
             new Headers(authorizationHeadersProvider.getServiceAuthorizationHeader()));
 
+        log.info(String.format("Searching for completed task: %s", taskId));
         Response result = camundaApiActions.get(
             ENDPOINT_HISTORY_TASK + "?taskId=" + taskId,
             authorizationHeadersProvider.getServiceAuthorizationHeader()
@@ -63,6 +66,7 @@ public abstract class SpringBootFunctionalBaseTest {
             .statusCode(HttpStatus.OK.value())
             .body("[0].deleteReason", is("completed"));
 
+        log.info(String.format("Test completed for task: %s", taskId));
     }
 
 }
