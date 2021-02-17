@@ -8,26 +8,14 @@ import java.util.Map;
 @EqualsAndHashCode
 @ToString
 public class ConfigureTaskRequest {
-    private String caseId;
-    private String taskName;
     private Map<String, Object> processVariables;
 
     private ConfigureTaskRequest() {
         //No-op constructor for deserialization
     }
 
-    public ConfigureTaskRequest(String caseId, String taskName, Map<String, Object> processVariables) {
-        this.caseId = caseId;
-        this.taskName = taskName;
+    public ConfigureTaskRequest(Map<String, Object> processVariables) {
         this.processVariables = processVariables;
-    }
-
-    public String getCaseId() {
-        return caseId;
-    }
-
-    public String getTaskName() {
-        return taskName;
     }
 
     public Map<String, Object> getProcessVariables() {

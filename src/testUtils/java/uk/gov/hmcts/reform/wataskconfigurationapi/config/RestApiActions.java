@@ -11,9 +11,11 @@ import io.restassured.http.Header;
 import io.restassured.http.Headers;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import lombok.extern.slf4j.Slf4j;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+@Slf4j
 public class RestApiActions {
 
     private final String baseUri;
@@ -66,19 +68,24 @@ public class RestApiActions {
     }
 
     public Response get(String path, String resourceId, String contentType, String accept, Headers headers) {
-        return (resourceId != null)
-            ? given()
-            .contentType(contentType)
-            .accept(accept)
-            .headers(headers)
-            .when()
-            .get(path, resourceId)
-            : given()
-            .contentType(contentType)
-            .accept(accept)
-            .headers(headers)
-            .when()
-            .get(path);
+
+        if (resourceId != null) {
+            log.info("Calling GET {} with resource id: {}", path, resourceId);
+            return given()
+                .contentType(contentType)
+                .accept(accept)
+                .headers(headers)
+                .when()
+                .get(path, resourceId);
+        } else {
+            log.info("Calling GET {}", path);
+            return given()
+                .contentType(contentType)
+                .accept(accept)
+                .headers(headers)
+                .when()
+                .get(path);
+        }
     }
 
     public Response post(String path, String resourceId, Headers headers) {
@@ -110,21 +117,26 @@ public class RestApiActions {
                                   String contentType,
                                   String accept,
                                   Headers headers) {
-        return (resourceId != null)
-            ? given()
-            .contentType(contentType)
-            .accept(accept)
-            .headers(headers)
-            .body(body)
-            .when()
-            .post(path, resourceId)
-            : given()
-            .contentType(contentType)
-            .accept(accept)
-            .headers(headers)
-            .body(body)
-            .when()
-            .post(path);
+        if (resourceId != null) {
+            log.info("Calling POST {} with resource id: {}", path, resourceId);
+
+            return given()
+                .contentType(contentType)
+                .accept(accept)
+                .headers(headers)
+                .body(body)
+                .when()
+                .post(path, resourceId);
+        } else {
+            log.info("Calling POST {}", path);
+            return given()
+                .contentType(contentType)
+                .accept(accept)
+                .headers(headers)
+                .body(body)
+                .when()
+                .post(path);
+        }
     }
 
     private Response postWithoutBody(String path,
@@ -132,19 +144,26 @@ public class RestApiActions {
                                      String contentType,
                                      String accept,
                                      Headers headers) {
-        return (resourceId != null)
-            ? given()
-            .contentType(contentType)
-            .accept(accept)
-            .headers(headers)
-            .when()
-            .post(path, resourceId)
-            : given()
-            .contentType(contentType)
-            .accept(accept)
-            .headers(headers)
-            .when()
-            .post(path);
+
+        if (resourceId != null) {
+            log.info("Calling POST {} with resource id: {}", path, resourceId);
+
+            return given()
+                .contentType(contentType)
+                .accept(accept)
+                .headers(headers)
+                .when()
+                .post(path, resourceId);
+        } else {
+            log.info("Calling POST {}", path);
+            return given()
+                .contentType(contentType)
+                .accept(accept)
+                .headers(headers)
+                .when()
+                .post(path);
+        }
     }
 
 }
+

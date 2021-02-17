@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.wataskconfigurationapi.controllers;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,8 +17,13 @@ import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.configuration.
 import uk.gov.hmcts.reform.wataskconfigurationapi.exceptions.ConfigureTaskException;
 import uk.gov.hmcts.reform.wataskconfigurationapi.services.ConfigureTaskService;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import java.util.Map;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.CASE_ID;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.NAME;
+
+@Slf4j
 @RequestMapping(
     path = "/task",
     consumes = APPLICATION_JSON_VALUE,
@@ -117,16 +123,23 @@ public class TaskConfigurationController {
     public ResponseEntity<ConfigureTaskResponse> getConfigurationForTask(
         @PathVariable(TASK_ID) String taskId,
         @RequestBody ConfigureTaskRequest configureTaskRequest) {
+        log.info("Received call to configure task: {}", taskId);
+        Map<String, Object> variables = configureTaskRequest.getProcessVariables();
+        log.info("{}", variables);
+
+        String caseId = (String) variables.get(CASE_ID.value());
+        String taskName = (String) variables.get(NAME.value());
 
         ConfigureTaskResponse response =
             configureTaskService.getConfiguration(
                 new TaskToConfigure(
                     taskId,
-                    configureTaskRequest.getCaseId(),
-                    configureTaskRequest.getTaskName(),
+                    caseId,
+                    taskName,
                     configureTaskRequest.getProcessVariables()
                 )
             );
+
         return ResponseEntity
             .ok()
             .cacheControl(CacheControl.noCache())
