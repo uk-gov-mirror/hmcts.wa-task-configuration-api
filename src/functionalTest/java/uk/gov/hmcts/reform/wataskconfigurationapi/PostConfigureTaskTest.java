@@ -242,14 +242,6 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
         return caseDetails.getId().toString();
     }
 
-    private void waitSeconds(int seconds) {
-        try {
-            TimeUnit.SECONDS.sleep(seconds);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
     private AtomicReference<Response> retrieveTaskResult(String filter) {
         AtomicReference<Response> response = new AtomicReference<>();
         await().ignoreException(AssertionError.class)

@@ -14,10 +14,13 @@ import uk.gov.hmcts.reform.wataskconfigurationapi.config.RestApiActions;
 import uk.gov.hmcts.reform.wataskconfigurationapi.services.AuthorizationHeadersProvider;
 
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.fasterxml.jackson.databind.PropertyNamingStrategy.LOWER_CAMEL_CASE;
 import static com.fasterxml.jackson.databind.PropertyNamingStrategy.SNAKE_CASE;
 import static java.time.format.DateTimeFormatter.ofPattern;
+import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.is;
 
 @RunWith(SpringIntegrationSerenityRunner.class)
@@ -48,21 +51,41 @@ public abstract class SpringBootFunctionalBaseTest {
     }
 
     public void cleanUp(String taskId) {
-
+        waitSeconds(2);
         camundaApiActions.post(
             ENDPOINT_COMPLETE_TASK,
             taskId,
-            new Headers(authorizationHeadersProvider.getServiceAuthorizationHeader()));
-
-        Response result = camundaApiActions.get(
-            ENDPOINT_HISTORY_TASK + "?taskId=" + taskId,
-            authorizationHeadersProvider.getServiceAuthorizationHeader()
+            new Headers(authorizationHeadersProvider.getServiceAuthorizationHeader())
         );
 
+        AtomicReference<Response> response = new AtomicReference<>();
+        await().ignoreException(AssertionError.class)
+            .pollInterval(500, TimeUnit.MILLISECONDS)
+            .atMost(10, TimeUnit.SECONDS)
+            .until(
+                () -> {
+                    Response result = camundaApiActions.get(
+                        ENDPOINT_HISTORY_TASK + "?taskId=" + taskId,
+                        authorizationHeadersProvider.getServiceAuthorizationHeader()
+                    );
+
+                    response.set(result);
+                    return true;
+                });
+
+        Response result = response.get();
         result.then().assertThat()
             .statusCode(HttpStatus.OK.value())
             .body("[0].deleteReason", is("completed"));
 
+    }
+
+    public void waitSeconds(int seconds) {
+        try {
+            TimeUnit.SECONDS.sleep(seconds);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 }
