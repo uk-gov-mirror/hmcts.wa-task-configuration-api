@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.wataskconfigurationapi;
 
 import io.restassured.http.Headers;
 import io.restassured.response.Response;
+import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -23,6 +24,7 @@ import static java.time.format.DateTimeFormatter.ofPattern;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.is;
 
+@Slf4j
 @RunWith(SpringIntegrationSerenityRunner.class)
 @SpringBootTest
 @ActiveProfiles("functional")
@@ -51,6 +53,7 @@ public abstract class SpringBootFunctionalBaseTest {
     }
 
     public void cleanUp(String taskId) {
+        log.info(String.format("Completing the task: %s", taskId));
         waitSeconds(2);
         camundaApiActions.post(
             ENDPOINT_COMPLETE_TASK,
@@ -58,6 +61,7 @@ public abstract class SpringBootFunctionalBaseTest {
             new Headers(authorizationHeadersProvider.getServiceAuthorizationHeader())
         );
 
+        log.info(String.format("Searching for task: %s", taskId));
         AtomicReference<Response> response = new AtomicReference<>();
         await().ignoreException(AssertionError.class)
             .pollInterval(500, TimeUnit.MILLISECONDS)
@@ -77,6 +81,8 @@ public abstract class SpringBootFunctionalBaseTest {
         result.then().assertThat()
             .statusCode(HttpStatus.OK.value())
             .body("[0].deleteReason", is("completed"));
+
+        log.info(String.format("Test completed for task: %s", taskId));
 
     }
 
