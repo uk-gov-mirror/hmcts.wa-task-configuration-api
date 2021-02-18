@@ -12,6 +12,8 @@ def product = "wa"
 def component = "task-configuration-api"
 
 withNightlyPipeline(type, product, component) {
+
+  enableSecurityScan()
   enableMutationTest()
   enableSlackNotifications('#wa-build')
 }
