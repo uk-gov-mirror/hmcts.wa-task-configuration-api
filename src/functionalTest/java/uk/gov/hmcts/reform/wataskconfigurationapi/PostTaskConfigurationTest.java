@@ -20,7 +20,6 @@ import uk.gov.hmcts.reform.wataskconfigurationapi.utils.CreateTaskMessage;
 import uk.gov.hmcts.reform.wataskconfigurationapi.utils.RoleAssignmentHelper;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -162,31 +161,29 @@ public class PostTaskConfigurationTest extends SpringBootFunctionalBaseTest {
         AtomicReference<String> response = new AtomicReference<>();
         await().ignoreException(AssertionError.class)
             .pollInterval(500, MILLISECONDS)
-            .atMost(20, SECONDS)
+            .atMost(50, SECONDS)
             .until(
                 () -> {
-                  Response camundaGetTaskResult = camundaApiActions.get(
-                  "/task" + filter,
-                  authorizationHeadersProvider.getServiceAuthorizationHeader()
-        );
+                    Response camundaGetTaskResult = camundaApiActions.get(
+                        "/task" + filter,
+                        authorizationHeadersProvider.getServiceAuthorizationHeader()
+                    );
 
-                  camundaGetTaskResult.then().assertThat()
-                   .statusCode(HttpStatus.OK.value())
-                    .contentType(APPLICATION_JSON_VALUE)
-                    .body("size()", is(1))
-                    .body("[0].name", is(taskName))
-                    .extract()
-                    .path("[0].id");
+                    camundaGetTaskResult.then().assertThat()
+                        .statusCode(HttpStatus.OK.value())
+                        .contentType(APPLICATION_JSON_VALUE)
+                        .body("size()", is(1))
+                        .body("[0].name", is(taskName))
+                        .extract()
+                        .path("[0].id");
 
-                  response.set(
-                      camundaGetTaskResult.then()
-                          .body("[0].name", is(taskName))
-                          .extract()
-                          .path("[0].id")
-                  );
-
-                  return true;
-
+                    response.set(
+                        camundaGetTaskResult.then()
+                            .body("[0].name", is(taskName))
+                            .extract()
+                            .path("[0].id")
+                    );
+                    return true;
                 });
 
         return response.get();

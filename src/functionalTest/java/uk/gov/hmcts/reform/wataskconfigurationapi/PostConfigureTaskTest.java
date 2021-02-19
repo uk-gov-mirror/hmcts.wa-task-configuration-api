@@ -23,7 +23,11 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.utils.CreateTaskMessageBuilder.createBasicMessageForTask;
@@ -160,21 +164,35 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
 
         String filter = "?processVariables=" + "caseId_eq_" + createTaskMessage.getCaseId();
 
-        waitSeconds(3);
+        AtomicReference<String> response = new AtomicReference<>();
+        await().ignoreException(AssertionError.class)
+            .pollInterval(500, MILLISECONDS)
+            .atMost(20, SECONDS)
+            .until(
+                () -> {
+                    Response camundaGetTaskResult = camundaApiActions.get(
+                        "/task" + filter,
+                        authorizationHeadersProvider.getServiceAuthorizationHeader()
+                    );
 
-        Response camundaGetTaskResult = camundaApiActions.get(
-            "/task" + filter,
-            authorizationHeadersProvider.getServiceAuthorizationHeader()
-        );
+                    camundaGetTaskResult.then().assertThat()
+                        .statusCode(HttpStatus.OK.value())
+                        .contentType(APPLICATION_JSON_VALUE)
+                        .body("size()", is(1))
+                        .body("[0].name", is(taskName))
+                        .extract()
+                        .path("[0].id");
 
-        return camundaGetTaskResult.then().assertThat()
-            .statusCode(HttpStatus.OK.value())
-            .contentType(APPLICATION_JSON_VALUE)
-            .body("size()", is(1))
-            .body("[0].name", is(taskName))
-            .extract()
-            .path("[0].id");
+                    response.set(
+                        camundaGetTaskResult.then()
+                            .body("[0].name", is(taskName))
+                            .extract()
+                            .path("[0].id")
+                    );
+                    return true;
+                });
 
+        return response.get();
     }
 
     private String createCcdCase() throws IOException {
