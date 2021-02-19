@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -160,21 +161,9 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
 
         String filter = "?processVariables=" + "caseId_eq_" + createTaskMessage.getCaseId();
 
-        waitSeconds(3);
+        AtomicReference<String> response = getTaskId(taskName, filter);
 
-        Response camundaGetTaskResult = camundaApiActions.get(
-            "/task" + filter,
-            authorizationHeadersProvider.getServiceAuthorizationHeader()
-        );
-
-        return camundaGetTaskResult.then().assertThat()
-            .statusCode(HttpStatus.OK.value())
-            .contentType(APPLICATION_JSON_VALUE)
-            .body("size()", is(1))
-            .body("[0].name", is(taskName))
-            .extract()
-            .path("[0].id");
-
+        return response.get();
     }
 
     private String createCcdCase() throws IOException {
