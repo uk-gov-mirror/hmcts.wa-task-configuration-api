@@ -158,35 +158,6 @@ public class PostTaskConfigurationTest extends SpringBootFunctionalBaseTest {
 
         String filter = "?processVariables=" + "caseId_eq_" + createTaskMessage.getCaseId();
 
-
-        AtomicReference<String> response = new AtomicReference<>();
-        await().ignoreException(AssertionError.class)
-            .pollInterval(500, MILLISECONDS)
-            .atMost(50, SECONDS)
-            .until(
-                () -> {
-                    Response camundaGetTaskResult = camundaApiActions.get(
-                        "/task" + filter,
-                        authorizationHeadersProvider.getServiceAuthorizationHeader()
-                    );
-
-                    camundaGetTaskResult.then().assertThat()
-                        .statusCode(HttpStatus.OK.value())
-                        .contentType(APPLICATION_JSON_VALUE)
-                        .body("size()", is(1))
-                        .body("[0].name", is(taskName))
-                        .extract()
-                        .path("[0].id");
-
-                    response.set(
-                        camundaGetTaskResult.then()
-                            .body("[0].name", is(taskName))
-                            .extract()
-                            .path("[0].id")
-                    );
-                    return true;
-                });
-
         AtomicReference<String> response = getTaskId(taskName, filter);
         return response.get();
 
