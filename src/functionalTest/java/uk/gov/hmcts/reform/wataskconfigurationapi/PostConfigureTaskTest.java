@@ -191,7 +191,7 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
                     );
                     return true;
                 });
-
+        AtomicReference<String> response = getTaskId(taskName, filter);
         return response.get();
     }
 
