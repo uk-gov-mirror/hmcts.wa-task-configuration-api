@@ -4,6 +4,7 @@
 export LC_ALL=C.UTF-8
 export LANG=C.UTF-8
 
+
 echo "${TEST_URL}"
 echo "${TEST_URL}"
 echo "{TEST_URL}"
