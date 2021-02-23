@@ -155,7 +155,6 @@ public class PostTaskConfigurationTest extends SpringBootFunctionalBaseTest {
 
         AtomicReference<String> response = getTaskId(taskName, filter);
         return response.get();
-
     }
 
     private String createCcdCase() throws IOException {
