@@ -162,7 +162,7 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
         String filter = "?processVariables=" + "caseId_eq_" + createTaskMessage.getCaseId();
 
         AtomicReference<String> response = getTaskId(taskName, filter);
-
+        
         return response.get();
     }
 

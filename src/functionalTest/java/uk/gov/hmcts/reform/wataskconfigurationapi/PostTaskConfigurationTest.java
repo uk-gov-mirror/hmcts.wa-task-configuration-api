@@ -154,9 +154,9 @@ public class PostTaskConfigurationTest extends SpringBootFunctionalBaseTest {
         String filter = "?processVariables=" + "caseId_eq_" + createTaskMessage.getCaseId();
 
         AtomicReference<String> response = getTaskId(taskName, filter);
-
+        
         return response.get();
-
+        
     }
 
     private String createCcdCase() throws IOException {
