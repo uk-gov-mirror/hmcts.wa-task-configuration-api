@@ -12,6 +12,8 @@ def secrets = [
       secret('wa-test-law-firm-a-password', 'TEST_WA_LAW_FIRM_PASSWORD'),
       secret('wa-idam-client-id', 'WA_IDAM_CLIENT_ID'),
       secret('wa-idam-client-secret', 'WA_IDAM_CLIENT_SECRET'),
+      secret('launch-darkly-sdk-key', 'LAUNCH_DARKLY_SDK_KEY'),
+
   ],
   's2s-${env}' : [
       secret('microservicekey-wa-task-configuration-api', 'S2S_SECRET_TASK_CONFIGURATION_API')
