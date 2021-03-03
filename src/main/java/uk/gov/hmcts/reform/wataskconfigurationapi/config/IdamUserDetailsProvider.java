@@ -6,7 +6,7 @@ import uk.gov.hmcts.reform.wataskconfigurationapi.clients.IdamServiceApi;
 import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.IdamUserDetails;
 import uk.gov.hmcts.reform.wataskconfigurationapi.exceptions.IdentityManagerResponseException;
 
-
+@SuppressWarnings({"PMD.DataflowAnomalyAnalysis","PMD.CyclomaticComplexity"})
 public class IdamUserDetailsProvider implements UserDetailsProvider {
 
     private final AccessTokenProvider accessTokenProvider;
@@ -21,6 +21,7 @@ public class IdamUserDetailsProvider implements UserDetailsProvider {
         this.idamServiceApi = idamServiceApi;
     }
 
+    @Override
     public IdamUserDetails getUserDetails() {
 
         String accessToken = accessTokenProvider.getAccessToken();

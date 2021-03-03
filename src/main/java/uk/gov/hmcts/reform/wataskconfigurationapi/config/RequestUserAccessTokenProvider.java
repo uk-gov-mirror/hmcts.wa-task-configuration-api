@@ -13,11 +13,13 @@ public class RequestUserAccessTokenProvider implements AccessTokenProvider {
 
     private static final String AUTHORIZATION = "Authorization";
 
+    @Override
     public String getAccessToken() {
         return tryGetAccessToken()
             .orElseThrow(() -> new IllegalStateException("Request access token not present"));
     }
 
+    @Override
     public Optional<String> tryGetAccessToken() {
 
         if (RequestContextHolder.getRequestAttributes() == null) {
