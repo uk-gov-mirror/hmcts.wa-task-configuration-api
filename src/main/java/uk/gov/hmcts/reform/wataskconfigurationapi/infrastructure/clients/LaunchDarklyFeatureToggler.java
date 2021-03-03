@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.wataskconfigurationapi.infrastructure.clients;
 
-import com.launchdarkly.client.LDClientInterface;
-import com.launchdarkly.client.LDUser;
+import com.launchdarkly.sdk.server.interfaces.LDClientInterface;
+import com.launchdarkly.sdk.LDUser;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.UserDetails;
 import uk.gov.hmcts.reform.wataskconfigurationapi.domain.service.FeatureToggler;
