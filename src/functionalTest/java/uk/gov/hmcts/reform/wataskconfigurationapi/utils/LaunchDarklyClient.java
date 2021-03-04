@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.wataskconfigurationapi.util;
+package uk.gov.hmcts.reform.wataskconfigurationapi.utils;
 
 import com.launchdarkly.sdk.LDUser;
 import com.launchdarkly.sdk.server.interfaces.LDClientInterface;
@@ -6,12 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class LaunchDarklyFunctionalTestClient {
+public class LaunchDarklyClient {
 
     private final LDClientInterface ldClient;
 
     @Autowired
-    public LaunchDarklyFunctionalTestClient(LDClientInterface ldClient) {
+    public LaunchDarklyClient(LDClientInterface ldClient) {
         this.ldClient = ldClient;
     }
 

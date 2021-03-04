@@ -2,24 +2,27 @@ package uk.gov.hmcts.reform.wataskconfigurationapi;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import uk.gov.hmcts.reform.wataskconfigurationapi.util.LaunchDarklyFunctionalTestClient;
+import uk.gov.hmcts.reform.wataskconfigurationapi.utils.LaunchDarklyClient;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class LaunchDarklyFunctionalTest extends SpringBootFunctionalBaseTest {
 
-    private final LaunchDarklyFunctionalTestClient launchDarklyFunctionalTestClient;
-
     @Autowired
-    public LaunchDarklyFunctionalTest(LaunchDarklyFunctionalTestClient launchDarklyFunctionalTestClient) {
-        this.launchDarklyFunctionalTestClient = launchDarklyFunctionalTestClient;
+    private LaunchDarklyClient launchDarklyClient;
+
+    @Test
+    public void should_hit_launch_darkly_and_return_true() {
+        boolean launchDarklyFeature = launchDarklyClient.getKey("tester");
+
+        assertThat(launchDarklyFeature, is(true));
     }
 
     @Test
-    public void should_hit_launch_darkly() {
-        boolean launchDarklyFeature = launchDarklyFunctionalTestClient.getKey("tester");
+    public void should_hit_launch_darkly_with_non_existent_key_and_return_false() {
+        boolean launchDarklyFeature = launchDarklyClient.getKey("non-existent");
 
-        assertThat(launchDarklyFeature, is(true));
+        assertThat(launchDarklyFeature, is(false));
     }
 }
