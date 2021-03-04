@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.wataskconfigurationapi.infrastructure.config;
+package uk.gov.hmcts.reform.wataskconfigurationapi.config;
 
 import com.launchdarkly.sdk.server.Components;
 import com.launchdarkly.sdk.server.LDClient;

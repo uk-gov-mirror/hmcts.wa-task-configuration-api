@@ -8,10 +8,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class LaunchDarklyFunctionalTestClient {
 
+    private final LDClientInterface ldClient;
+
     @Autowired
-    private LDClientInterface ldClient;
+    public LaunchDarklyFunctionalTestClient(LDClientInterface ldClient) {
+        this.ldClient = ldClient;
+    }
 
     public boolean getKey(String key) {
+
 
         LDUser ldUser =  new LDUser.Builder("wa-task-configuration-api")
             .build();

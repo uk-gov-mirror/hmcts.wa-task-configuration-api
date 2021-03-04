@@ -19,7 +19,7 @@ def component = "task-configuration-api"
 
 def secrets = [
   'wa-${env}' : [
-secret('launch-darkly-sdk-key', 'LAUNCH_DARKLY_SDK_KEY'),
+    secret('ld-secret', 'LAUNCH_DARKLY_SDK_KEY'),
   ],
 ]
 

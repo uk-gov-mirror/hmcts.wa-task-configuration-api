@@ -6,6 +6,7 @@ import uk.gov.hmcts.reform.wataskconfigurationapi.domain.service.FeatureToggler;
 
 @Service
 public class LaunchDarklyFeatureToggler implements FeatureToggler {
+
     private final LDClientInterface ldClient;
 
     public LaunchDarklyFeatureToggler(LDClientInterface ldClient) {
