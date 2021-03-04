@@ -2,16 +2,17 @@ package uk.gov.hmcts.reform.wataskconfigurationapi;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import uk.gov.hmcts.reform.wataskconfigurationapi.services.AuthorizationHeadersProvider;
+import org.springframework.beans.factory.annotation.Value;
 import uk.gov.hmcts.reform.wataskconfigurationapi.util.LaunchDarklyFunctionalTestClient;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class LaunchDarklyFunctionalTest  extends SpringBootFunctionalBaseTest {
+public class LaunchDarklyFunctionalTest extends SpringBootFunctionalBaseTest {
 
-    @Autowired
-    private AuthorizationHeadersProvider authorizationHeadersProvider;
+
+    @Value("${launchDarkly.sdkKey}")
+    private String sdkKey;
 
     @Autowired
     private LaunchDarklyFunctionalTestClient launchDarklyFunctionalTestClient;
@@ -19,9 +20,8 @@ public class LaunchDarklyFunctionalTest  extends SpringBootFunctionalBaseTest {
 
     @Test
     public void should_hit_launch_darkly() {
-        String accessToken = authorizationHeadersProvider.getServiceAuthorizationHeader().getValue();
-        boolean launchDarklyFeature = launchDarklyFunctionalTestClient.getKey("", accessToken);
+        boolean launchDarklyFeature = launchDarklyFunctionalTestClient.getKey(sdkKey);
 
-        assertThat(launchDarklyFeature, is(true));
+        assertThat(launchDarklyFeature, is(false));
     }
 }

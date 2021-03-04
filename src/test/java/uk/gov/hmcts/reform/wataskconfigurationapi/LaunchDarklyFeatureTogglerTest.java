@@ -1,17 +1,13 @@
 package uk.gov.hmcts.reform.wataskconfigurationapi;
 
-import com.launchdarkly.sdk.LDUser;
 import com.launchdarkly.sdk.server.interfaces.LDClientInterface;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.UserDetails;
-import uk.gov.hmcts.reform.wataskconfigurationapi.exceptions.IdentityManagerResponseException;
 import uk.gov.hmcts.reform.wataskconfigurationapi.infrastructure.clients.LaunchDarklyFeatureToggler;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -21,8 +17,6 @@ class LaunchDarklyFeatureTogglerTest {
     @Mock
     private LDClientInterface ldClient;
 
-    @Mock
-    private UserDetails userDetails;
 
     @InjectMocks
     private LaunchDarklyFeatureToggler launchDarklyFeatureToggler;
@@ -30,18 +24,10 @@ class LaunchDarklyFeatureTogglerTest {
     @Test
     void should_return_default_value_when_key_does_not_exist() {
         String notExistingKey = "not-existing-key";
-        when(userDetails.getId()).thenReturn("id");
-        when(userDetails.getForename()).thenReturn("forename");
-        when(userDetails.getSurname()).thenReturn("surname");
-        when(userDetails.getEmailAddress()).thenReturn("emailAddress");
 
         when(ldClient.boolVariation(
             notExistingKey,
-            new LDUser.Builder(userDetails.getId())
-                .firstName(userDetails.getForename())
-                .lastName(userDetails.getSurname())
-                .email(userDetails.getEmailAddress())
-                .build(),
+            null,
             true)
         ).thenReturn(true);
 
@@ -51,28 +37,12 @@ class LaunchDarklyFeatureTogglerTest {
     @Test
     void should_return_value_when_key_exists() {
         String existingKey = "existing-key";
-        when(userDetails.getId()).thenReturn("id");
-        when(userDetails.getForename()).thenReturn("forename");
-        when(userDetails.getSurname()).thenReturn("surname");
-        when(userDetails.getEmailAddress()).thenReturn("emailAddress");
         when(ldClient.boolVariation(
             existingKey,
-            new LDUser.Builder(userDetails.getId())
-                .firstName(userDetails.getForename())
-                .lastName(userDetails.getSurname())
-                .email(userDetails.getEmailAddress())
-                .build(),
+            null,
             false)
         ).thenReturn(true);
 
         assertTrue(launchDarklyFeatureToggler.getValue(existingKey, false));
-    }
-
-    @Test
-    void throw_exception_when_user_details_provider_unavailable() {
-        when(userDetails.getId()).thenThrow(IdentityManagerResponseException.class);
-
-        assertThatThrownBy(() -> launchDarklyFeatureToggler.getValue("existing-key", true))
-            .isExactlyInstanceOf(IdentityManagerResponseException.class);
     }
 }
