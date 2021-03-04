@@ -13,11 +13,9 @@ public class LaunchDarklyFunctionalTestClient {
 
     public boolean getKey(String key) {
 
-        ldClient = new LDClient(key);
-
         LDUser ldUser =  new LDUser.Builder("wa-task-configuration-api")
             .build();
 
-        return ldClient.boolVariation("tester", ldUser, false);
+        return ldClient.boolVariation(key, ldUser, false);
     }
 }
