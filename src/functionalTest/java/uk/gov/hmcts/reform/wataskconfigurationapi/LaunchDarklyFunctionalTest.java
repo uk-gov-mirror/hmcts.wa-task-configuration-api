@@ -17,6 +17,6 @@ public class LaunchDarklyFunctionalTest extends SpringBootFunctionalBaseTest {
     public void should_hit_launch_darkly() {
         boolean launchDarklyFeature = launchDarklyFunctionalTestClient.getKey("tester");
 
-        assertThat(launchDarklyFeature, is(false));
+        assertThat(launchDarklyFeature, is(true));
     }
 }
