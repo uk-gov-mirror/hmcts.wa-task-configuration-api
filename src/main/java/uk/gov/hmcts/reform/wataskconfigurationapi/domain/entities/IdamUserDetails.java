@@ -1,10 +1,20 @@
 package uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 import java.util.Collections;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
+@EqualsAndHashCode
+@ToString
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class IdamUserDetails implements UserDetails {
 
     private final String accessToken;
