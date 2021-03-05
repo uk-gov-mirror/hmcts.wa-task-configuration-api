@@ -61,8 +61,9 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
             .withCaseId(caseId)
             .build();
         taskId = createTask(createTaskMessage);
+        log.info("task found [{}]", taskId);
 
-        log.info("Creating roles");
+        log.info("Creating roles...");
         roleAssignmentHelper.setRoleAssignments(caseId);
 
         Response result = restApiActions.post(
@@ -71,7 +72,6 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
             new Headers(authorizationHeadersProvider.getServiceAuthorizationHeader())
         );
         result.prettyPeek();
-
 
         result.then().assertThat()
             .statusCode(HttpStatus.OK.value())
@@ -101,17 +101,16 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
             .body("hasWarnings.value", is("false"))
             .body("tribunal-caseworker.value", is("Read,Refer,Own,Manage,Cancel"))
             .body("senior-tribunal-caseworker.value", is("Read,Refer,Own,Manage,Cancel"));
-
     }
 
     @Test
     public void given_configure_task_then_expect_task_state_is_unassigned() throws IOException {
-
         caseId = createCcdCase();
         createTaskMessage = createBasicMessageForTask()
             .withCaseId(caseId)
             .build();
         taskId = createTask(createTaskMessage);
+        log.info("task found [{}]", taskId);
 
         Response result = restApiActions.post(
             ENDPOINT_BEING_TESTED,
@@ -162,7 +161,7 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
         String filter = "?processVariables=" + "caseId_eq_" + createTaskMessage.getCaseId();
 
         AtomicReference<String> response = getTaskId(taskName, filter);
-        
+
         return response.get();
     }
 
@@ -181,17 +180,17 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
 
         String caseData = new String(
             (Objects.requireNonNull(Thread.currentThread().getContextClassLoader()
-                .getResourceAsStream("case_data.json"))).readAllBytes()
+                                        .getResourceAsStream("case_data.json"))).readAllBytes()
         );
 
-        Map data = new ObjectMapper().readValue(caseData, Map.class);
+        var data = new ObjectMapper().readValue(caseData, Map.class);
         CaseDataContent caseDataContent = CaseDataContent.builder()
             .eventToken(startCase.getToken())
             .event(Event.builder()
-                .id(startCase.getEventId())
-                .summary("summary")
-                .description("description")
-                .build())
+                       .id(startCase.getEventId())
+                       .summary("summary")
+                       .description("description")
+                       .build())
             .data(data)
             .build();
 
@@ -220,10 +219,10 @@ public class PostConfigureTaskTest extends SpringBootFunctionalBaseTest {
         CaseDataContent submitCaseDataContent = CaseDataContent.builder()
             .eventToken(submitCase.getToken())
             .event(Event.builder()
-                .id(submitCase.getEventId())
-                .summary("summary")
-                .description("description")
-                .build())
+                       .id(submitCase.getEventId())
+                       .summary("summary")
+                       .description("description")
+                       .build())
             .data(data)
             .build();
         coreCaseDataApi.submitEventForCaseWorker(

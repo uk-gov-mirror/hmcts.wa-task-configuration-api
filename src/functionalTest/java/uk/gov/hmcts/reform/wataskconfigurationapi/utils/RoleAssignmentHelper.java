@@ -35,8 +35,7 @@ public class RoleAssignmentHelper {
         String s2sToken = serviceAuthTokenGenerator.generate();
         UserInfo userInfo = systemTokenGenerator.getUserInfo(bearerUserToken);
         createRoleAssignmentInThisOrder(caseId, bearerUserToken, s2sToken, userInfo);
-        log.info("Role Assignments created");
-
+        log.info("Role Assignments created successfully");
     }
 
     private void createRoleAssignmentInThisOrder(String caseId,
@@ -44,7 +43,7 @@ public class RoleAssignmentHelper {
                                                  String s2sToken,
                                                  UserInfo userInfo) throws IOException {
 
-        log.info("Creating Organizational Role");
+        log.info("Creating Organizational Role...");
         postRoleAssignment(
             caseId,
             bearerUserToken,
@@ -53,7 +52,7 @@ public class RoleAssignmentHelper {
             "set-rules-assignment-request.json"
         );
 
-        log.info("Creating Restricted role-assignment");
+        log.info("Creating Restricted role-assignment...");
         postRoleAssignment(
             caseId,
             bearerUserToken,
