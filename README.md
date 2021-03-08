@@ -86,10 +86,15 @@ This will do compilation, checkstyle, PMD checks , run tests , but not integrati
        ```
          ./gradlew bootRun
        ```
-    - Run ia-case-documents-api
+    - Run wa-case-event-handler
        ```
          ./gradlew bootRun
        ```
+    - Upload the ia-ccd-definition
+      ```
+         yarn upload-wa
+      ```
+
     Note: If you see any environment variables missing, do source ~/.bash_profile.
           Make sure you have got the environment variables in bash_profile.
 

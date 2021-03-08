@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.wataskconfigurationapi.utils;
 
 import uk.gov.hmcts.reform.wataskconfigurationapi.PostConfigureTaskTest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.CamundaValue;
+import uk.gov.hmcts.reform.wataskconfigurationapi.services.CreateTaskMessage;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
