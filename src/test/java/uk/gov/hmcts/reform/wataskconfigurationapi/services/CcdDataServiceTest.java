@@ -6,7 +6,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.idam.IdamSystemTokenGenerator;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.idam.IdamTokenGenerator;
 import uk.gov.hmcts.reform.wataskconfigurationapi.clients.CcdDataServiceApi;
 
 import java.util.UUID;
@@ -24,13 +24,13 @@ public class CcdDataServiceTest {
     AuthTokenGenerator authTokenGenerator;
 
     @Mock
-    IdamSystemTokenGenerator idamSystemTokenGenerator;
+    IdamTokenGenerator idamTokenGenerator;
 
     private CcdDataService ccdDataService;
 
     @Before
     public void setUp() {
-        ccdDataService = new CcdDataService(ccdDataServiceApi, authTokenGenerator, idamSystemTokenGenerator);
+        ccdDataService = new CcdDataService(ccdDataServiceApi, authTokenGenerator, idamTokenGenerator);
     }
 
     @Test
@@ -46,7 +46,7 @@ public class CcdDataServiceTest {
                           + "\"data\": {}"
                           + " }";
 
-        when(idamSystemTokenGenerator.generate()).thenReturn(userToken);
+        when(idamTokenGenerator.generate()).thenReturn(userToken);
         when(authTokenGenerator.generate()).thenReturn(serviceToken);
 
         when(ccdDataServiceApi.getCase(userToken, serviceToken, caseId)).thenReturn(caseData);

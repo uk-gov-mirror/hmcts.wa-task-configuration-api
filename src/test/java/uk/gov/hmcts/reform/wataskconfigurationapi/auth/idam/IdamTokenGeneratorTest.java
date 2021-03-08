@@ -8,6 +8,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import uk.gov.hmcts.reform.wataskconfigurationapi.auth.idam.entities.Token;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.idam.entities.UserIdamTokenGeneratorInfo;
 import uk.gov.hmcts.reform.wataskconfigurationapi.auth.idam.entities.UserInfo;
 import uk.gov.hmcts.reform.wataskconfigurationapi.clients.IdamServiceApi;
 
@@ -15,7 +16,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class IdamSystemTokenGeneratorTest {
+public class IdamTokenGeneratorTest {
+
+    @Mock
+    IdamServiceApi idamServiceApi;
+    @Mock
+    Token token;
+    @Mock
+    UserInfo userInfo;
+
+    private IdamTokenGenerator idamTokenGenerator;
 
     final String idamRedirectUrl = "idamRedirectUrl";
     final String idamClientId = "idamClientId";
@@ -24,26 +34,19 @@ public class IdamSystemTokenGeneratorTest {
     final String systemUserPass = "systemUserPass";
     final String systemUserScope = "systemUserScope";
 
-    @Mock
-    IdamServiceApi idamServiceApi;
-
-    @Mock
-    Token token;
-
-    @Mock
-    UserInfo userInfo;
-
-    private IdamSystemTokenGenerator idamSystemTokenGenerator;
-
     @Before
     public void setUp() {
-        idamSystemTokenGenerator = new IdamSystemTokenGenerator(
-            systemUserName,
-            systemUserPass,
-            idamRedirectUrl,
-            systemUserScope,
-            idamClientId,
-            idamClientSecret,
+        UserIdamTokenGeneratorInfo userIdamTokenGeneratorInfo = UserIdamTokenGeneratorInfo.builder()
+            .idamClientId(idamClientId)
+            .idamClientSecret(idamClientSecret)
+            .idamRedirectUrl(idamRedirectUrl)
+            .userName(systemUserName)
+            .userPassword(systemUserPass)
+            .idamScope(systemUserScope)
+            .build();
+
+        idamTokenGenerator = new IdamTokenGenerator(
+            userIdamTokenGeneratorInfo,
             idamServiceApi
         );
     }
@@ -64,7 +67,7 @@ public class IdamSystemTokenGeneratorTest {
         when(idamServiceApi.token(map)).thenReturn(token);
         when(token.getAccessToken()).thenReturn(returnToken);
 
-        final String actualToken = idamSystemTokenGenerator.generate();
+        final String actualToken = idamTokenGenerator.generate();
 
         assertEquals("Bearer " + returnToken, actualToken);
     }
@@ -74,7 +77,7 @@ public class IdamSystemTokenGeneratorTest {
         final String bearerAccessToken = "Bearer accessToken";
         when(idamServiceApi.userInfo(bearerAccessToken)).thenReturn(userInfo);
 
-        final UserInfo actualUserInfo = idamSystemTokenGenerator.getUserInfo(bearerAccessToken);
+        final UserInfo actualUserInfo = idamTokenGenerator.getUserInfo(bearerAccessToken);
 
         assertEquals(actualUserInfo, userInfo);
     }

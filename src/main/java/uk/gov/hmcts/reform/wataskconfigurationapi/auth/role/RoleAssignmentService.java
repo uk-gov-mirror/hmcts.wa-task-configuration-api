@@ -4,7 +4,7 @@ import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.idam.IdamSystemTokenGenerator;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.idam.IdamTokenGenerator;
 import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.Attributes;
 import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.QueryRequest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleAssignment;
@@ -29,15 +29,15 @@ public class RoleAssignmentService {
 
     private final RoleAssignmentServiceApi roleAssignmentServiceApi;
 
-    private final IdamSystemTokenGenerator idamSystemTokenGenerator;
+    private final IdamTokenGenerator systemUserIdamToken;
 
     @Autowired
     public RoleAssignmentService(RoleAssignmentServiceApi roleAssignmentServiceApi,
                                  AuthTokenGenerator serviceAuthTokenGenerator,
-                                 IdamSystemTokenGenerator idamSystemTokenGenerator) {
+                                 IdamTokenGenerator systemUserIdamToken) {
         this.roleAssignmentServiceApi = roleAssignmentServiceApi;
         this.serviceAuthTokenGenerator = serviceAuthTokenGenerator;
-        this.idamSystemTokenGenerator = idamSystemTokenGenerator;
+        this.systemUserIdamToken = systemUserIdamToken;
     }
 
     public List<RoleAssignment> searchRolesByCaseId(String caseId) {
@@ -52,7 +52,7 @@ public class RoleAssignmentService {
     private RoleAssignmentResource performSearch(String caseId) {
         try {
             return roleAssignmentServiceApi.queryRoleAssignments(
-                idamSystemTokenGenerator.generate(),
+                systemUserIdamToken.generate(),
                 serviceAuthTokenGenerator.generate(),
                 buildQueryRequest(caseId)
             );

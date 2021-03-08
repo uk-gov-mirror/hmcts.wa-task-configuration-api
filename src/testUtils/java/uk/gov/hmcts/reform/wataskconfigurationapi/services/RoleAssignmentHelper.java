@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.wataskconfigurationapi.utils;
+package uk.gov.hmcts.reform.wataskconfigurationapi.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.idam.IdamSystemTokenGenerator;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.idam.IdamTokenGenerator;
 import uk.gov.hmcts.reform.wataskconfigurationapi.auth.idam.entities.UserInfo;
 
 import java.io.IOException;
@@ -21,19 +21,19 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Slf4j
 public class RoleAssignmentHelper {
 
-    @Value("${targets.role-assignment}")
+    @Value("${role-assignment-service.url}")
     protected String roleAssignmentUrl;
 
     @Autowired
     private AuthTokenGenerator serviceAuthTokenGenerator;
 
     @Autowired
-    private IdamSystemTokenGenerator systemTokenGenerator;
+    private IdamTokenGenerator systemUserIdamToken;
 
     public void setRoleAssignments(String caseId) throws IOException {
-        String bearerUserToken = systemTokenGenerator.generate();
+        String bearerUserToken = systemUserIdamToken.generate();
         String s2sToken = serviceAuthTokenGenerator.generate();
-        UserInfo userInfo = systemTokenGenerator.getUserInfo(bearerUserToken);
+        UserInfo userInfo = systemUserIdamToken.getUserInfo(bearerUserToken);
         createRoleAssignmentInThisOrder(caseId, bearerUserToken, s2sToken, userInfo);
         log.info("Role Assignments created successfully");
     }
