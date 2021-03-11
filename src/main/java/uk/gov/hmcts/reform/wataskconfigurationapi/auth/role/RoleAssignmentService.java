@@ -1,16 +1,15 @@
 package uk.gov.hmcts.reform.wataskconfigurationapi.auth.role;
 
 import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.wataskconfigurationapi.auth.idam.IdamTokenGenerator;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.Attributes;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.QueryRequest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleAssignment;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleAssignmentResource;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleName;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleType;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.enums.RoleType;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.request.QueryRequest;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.response.RoleAssignmentResource;
 import uk.gov.hmcts.reform.wataskconfigurationapi.clients.RoleAssignmentServiceApi;
 import uk.gov.hmcts.reform.wataskconfigurationapi.exceptions.ServerErrorException;
 
@@ -21,6 +20,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
 import static java.util.Objects.requireNonNull;
 
+@Slf4j
 @Service
 @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 public class RoleAssignmentService {
@@ -65,9 +65,9 @@ public class RoleAssignmentService {
     private QueryRequest buildQueryRequest(String caseId) {
         return QueryRequest.builder()
             .roleType(singletonList(RoleType.CASE))
-            .roleName(singletonList(RoleName.TRIBUNAL_CASEWORKER))
+            .roleName(singletonList("tribunal-caseworker"))
             .validAt(LocalDateTime.now())
-            .attributes(singletonMap(Attributes.CASE_ID, singletonList(caseId)))
+            .attributes(singletonMap("caseId", singletonList(caseId)))
             .build();
     }
 

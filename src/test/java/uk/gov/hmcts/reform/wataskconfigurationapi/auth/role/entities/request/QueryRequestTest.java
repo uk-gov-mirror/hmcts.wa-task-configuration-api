@@ -1,8 +1,8 @@
-package uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.roleassignment;
+package uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.request;
 
 import org.junit.jupiter.api.Test;
 import pl.pojo.tester.api.assertion.Method;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.QueryRequest;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.request.QueryRequest;
 
 import static pl.pojo.tester.api.assertion.Assertions.assertPojoMethodsFor;
 

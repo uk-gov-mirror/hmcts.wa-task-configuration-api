@@ -1,8 +1,9 @@
-package uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities;
+package uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.EqualsAndHashCode;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleAssignment;
 
 import java.util.List;
 

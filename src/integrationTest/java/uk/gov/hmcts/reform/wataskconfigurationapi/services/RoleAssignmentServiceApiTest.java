@@ -9,16 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.util.ResourceUtils;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.ActorIdType;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.Attributes;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.Classification;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.GrantType;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.QueryRequest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleAssignment;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleAssignmentResource;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleCategory;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleName;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleType;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleAttributeDefinition;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.enums.ActorIdType;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.enums.Classification;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.enums.GrantType;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.enums.RoleCategory;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.enums.RoleType;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.request.QueryRequest;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.response.RoleAssignmentResource;
 import uk.gov.hmcts.reform.wataskconfigurationapi.clients.RoleAssignmentServiceApi;
 
 import java.io.IOException;
@@ -68,13 +67,53 @@ public class RoleAssignmentServiceApiTest {
             .actorIdType(ActorIdType.IDAM)
             .actorId("122f8de4-2eb6-4dcf-91c9-16c2c8aaa422")
             .roleType(RoleType.CASE)
-            .roleName(RoleName.TRIBUNAL_CASEWORKER)
+            .roleName("tribunal-caseworker")
             .classification(Classification.RESTRICTED)
             .grantType(GrantType.SPECIFIC)
-            .roleCategory(RoleCategory.STAFF)
+            .roleCategory(RoleCategory.LEGAL_OPERATIONS)
             .readOnly(false)
             .created(LocalDateTime.parse("2020-11-09T14:32:23.693195"))
-            .attributes(Map.of(Attributes.CASE_ID, "1604929600826893"))
+            .attributes(Map.of(
+                RoleAttributeDefinition.CASE_ID.value(), "1604929600826893",
+                RoleAttributeDefinition.JURISDICTION.value(), "IA",
+                RoleAttributeDefinition.CASE_TYPE.value(), "Asylum"
+            ))
+            .authorisations(Collections.emptyList())
+            .build();
+
+        assertThat(roleAssignmentResource.getRoleAssignmentResponse()).isNotEmpty();
+        assertThat(roleAssignmentResource.getRoleAssignmentResponse().get(0)).isEqualTo(expectedRoleAssignment);
+    }
+
+    @Test
+    void queryRoleAssignmentTestWhenValuesAreUnknown() throws IOException {
+
+        String roleAssignmentsResponseAsJsonString = loadJsonFileResourceWithUknownValues();
+
+        stubRoleAssignmentApiResponse(roleAssignmentsResponseAsJsonString);
+
+        RoleAssignmentResource roleAssignmentResource = roleAssignmentServiceApi.queryRoleAssignments(
+            "user token",
+            "s2s token",
+            QueryRequest.builder().build()
+        );
+
+        RoleAssignment expectedRoleAssignment = RoleAssignment.builder()
+            .id("428971b1-3954-4783-840f-c2718732b466")
+            .actorIdType(ActorIdType.UNKNOWN)
+            .actorId("122f8de4-2eb6-4dcf-91c9-16c2c8aaa422")
+            .roleType(RoleType.UNKNOWN)
+            .roleName("tribunal-caseworker")
+            .classification(Classification.UNKNOWN)
+            .grantType(GrantType.UNKNOWN)
+            .roleCategory(RoleCategory.UNKNOWN)
+            .readOnly(false)
+            .created(LocalDateTime.parse("2020-11-09T14:32:23.693195"))
+            .attributes(Map.of(
+                RoleAttributeDefinition.CASE_ID.value(), "1604929600826893",
+                RoleAttributeDefinition.JURISDICTION.value(), "IA",
+                RoleAttributeDefinition.CASE_TYPE.value(), "Asylum"
+            ))
             .authorisations(Collections.emptyList())
             .build();
 
@@ -99,6 +138,12 @@ public class RoleAssignmentServiceApiTest {
         return FileUtils.readFileToString(ResourceUtils.getFile(
             "classpath:uk/gov/hmcts/reform/wataskconfigurationapi/ccdmapping/variableextractors/"
             + "roleAssignmentsResponse.json"));
+    }
+
+    private String loadJsonFileResourceWithUknownValues() throws IOException {
+        return FileUtils.readFileToString(ResourceUtils.getFile(
+            "classpath:uk/gov/hmcts/reform/wataskconfigurationapi/ccdmapping/variableextractors/"
+                + "roleAssignmentsResponseUnknownValues.json"));
     }
 
 }

@@ -1,16 +1,16 @@
-package uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.roleassignment;
+package uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.enums;
 
 import org.junit.jupiter.api.Test;
 import pl.pojo.tester.api.assertion.Method;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.Attributes;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.enums.GrantType;
 
 import static pl.pojo.tester.api.assertion.Assertions.assertPojoMethodsFor;
 
-class AttributesTest {
+class GrantTypeTest {
 
     @Test
     void isWellImplemented() {
-        final Class<?> classUnderTest = Attributes.class;
+        final Class<?> classUnderTest = GrantType.class;
 
         assertPojoMethodsFor(classUnderTest)
             .testing(Method.GETTER)

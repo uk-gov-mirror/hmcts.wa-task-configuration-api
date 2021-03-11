@@ -16,14 +16,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.wataskconfigurationapi.auth.idam.IdamTokenGenerator;
 import uk.gov.hmcts.reform.wataskconfigurationapi.auth.idam.entities.Token;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.ActorIdType;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.Classification;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.QueryRequest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleAssignment;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleAssignmentResource;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleCategory;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleName;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleType;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.enums.ActorIdType;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.enums.Classification;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.enums.RoleCategory;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.enums.RoleType;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.request.QueryRequest;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.response.RoleAssignmentResource;
 import uk.gov.hmcts.reform.wataskconfigurationapi.clients.CamundaServiceApi;
 import uk.gov.hmcts.reform.wataskconfigurationapi.clients.CcdDataServiceApi;
 import uk.gov.hmcts.reform.wataskconfigurationapi.clients.IdamServiceApi;
@@ -291,8 +290,8 @@ class TaskConfigurationControllerTest {
                 .id("someId")
                 .actorIdType(ActorIdType.IDAM)
                 .actorId(testUserId)
-                .roleName(RoleName.TRIBUNAL_CASEWORKER)
-                .roleCategory(RoleCategory.STAFF)
+                .roleName("tribunal-caseworker")
+                .roleCategory(RoleCategory.LEGAL_OPERATIONS)
                 .roleType(RoleType.ORGANISATION)
                 .classification(Classification.PUBLIC)
                 .build();

@@ -6,12 +6,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.RoleAssignmentService;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.ActorIdType;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.Classification;
 import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleAssignment;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleCategory;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleName;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleType;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.enums.ActorIdType;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.enums.Classification;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.enums.RoleCategory;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.enums.RoleType;
 import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.configuration.AutoAssignmentResult;
 import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.configuration.TaskToConfigure;
 
@@ -72,8 +71,8 @@ class TaskAutoAssignmentServiceTest {
             .id("someId")
             .actorIdType(ActorIdType.IDAM)
             .actorId("someUserId")
-            .roleName(RoleName.TRIBUNAL_CASEWORKER)
-            .roleCategory(RoleCategory.STAFF)
+            .roleName("tribunal-caseworker")
+            .roleCategory(RoleCategory.LEGAL_OPERATIONS)
             .roleType(RoleType.ORGANISATION)
             .classification(Classification.PUBLIC)
             .build();
@@ -111,8 +110,8 @@ class TaskAutoAssignmentServiceTest {
             .id("someId")
             .actorIdType(ActorIdType.IDAM)
             .actorId("someUserId")
-            .roleName(RoleName.TRIBUNAL_CASEWORKER)
-            .roleCategory(RoleCategory.STAFF)
+            .roleName("tribunal-caseworker")
+            .roleCategory(RoleCategory.LEGAL_OPERATIONS)
             .roleType(RoleType.ORGANISATION)
             .classification(Classification.PUBLIC)
             .build();

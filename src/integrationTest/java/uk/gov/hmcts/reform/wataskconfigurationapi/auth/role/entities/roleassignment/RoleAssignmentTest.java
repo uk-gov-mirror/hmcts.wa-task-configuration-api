@@ -7,15 +7,14 @@ import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.json.ObjectContent;
 import org.springframework.test.context.junit4.SpringRunner;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.ActorIdType;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.Attributes;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.Classification;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.GrantType;
 import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleAssignment;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleAssignmentResource;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleCategory;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleName;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleType;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleAttributeDefinition;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.enums.ActorIdType;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.enums.Classification;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.enums.GrantType;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.enums.RoleCategory;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.enums.RoleType;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.response.RoleAssignmentResource;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -39,13 +38,17 @@ class RoleAssignmentTest {
             .actorIdType(ActorIdType.IDAM)
             .actorId("4afa7d5c-02fa-4a82-82c2-0a9ad7467d30")
             .roleType(RoleType.CASE)
-            .roleName(RoleName.TRIBUNAL_CASEWORKER)
+            .roleName("tribunal-caseworker")
             .classification(Classification.RESTRICTED)
             .grantType(GrantType.SPECIFIC)
-            .roleCategory(RoleCategory.STAFF)
+            .roleCategory(RoleCategory.LEGAL_OPERATIONS)
             .readOnly(false)
             .created(LocalDateTime.parse("2020-11-06T17:15:36.960886"))
-            .attributes(Map.of(Attributes.CASE_ID, "1604584759556245"))
+            .attributes(Map.of(
+                RoleAttributeDefinition.CASE_ID.value(), "1604584759556245",
+                RoleAttributeDefinition.JURISDICTION.value(), "IA",
+                RoleAttributeDefinition.CASE_TYPE.value(), "Asylum"
+                ))
             .authorisations(Collections.emptyList())
             .build();
 
