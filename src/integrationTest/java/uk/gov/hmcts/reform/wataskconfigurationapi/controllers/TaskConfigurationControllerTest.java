@@ -210,6 +210,7 @@ class TaskConfigurationControllerTest {
                                   + "  \"case_id\": \"" + testCaseId + "\",\n"
                                   + "  \"assignee\": \"" + testUserId + "\",\n"
                                   + "  \"configuration_variables\": {\n"
+                                  + "    \"jurisdiction\": \"IA\",\n"
                                   + "    \"caseTypeId\": \"Asylum\",\n"
                                   + "    \"taskState\": \"assigned\",\n"
                                   + "    \"executionType\": \"Case Management Task\",\n"
@@ -251,6 +252,7 @@ class TaskConfigurationControllerTest {
                                   + "  \"task_id\": \"" + testTaskId + "\",\n"
                                   + "  \"case_id\": \"" + testCaseId + "\",\n"
                                   + "  \"configuration_variables\": {\n"
+                                  + "    \"jurisdiction\": \"IA\",\n"
                                   + "    \"caseTypeId\": \"Asylum\",\n"
                                   + "    \"taskState\": \"unassigned\",\n"
                                   + "    \"executionType\": \"Case Management Task\",\n"
@@ -356,6 +358,7 @@ class TaskConfigurationControllerTest {
         modifications.put("executionType", stringValue("Case Management Task"));
         modifications.put("securityClassification", stringValue("PUBLIC"));
         modifications.put("taskSystem", stringValue("SELF"));
+        modifications.put("jurisdiction", stringValue("IA"));
         modifications.put("caseTypeId", stringValue("Asylum"));
         modifications.put("title", stringValue(TASK_NAME));
         modifications.put("hasWarnings", stringValue("false"));
