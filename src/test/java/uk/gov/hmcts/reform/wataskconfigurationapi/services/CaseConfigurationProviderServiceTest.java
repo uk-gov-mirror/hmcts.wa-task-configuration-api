@@ -65,11 +65,11 @@ class CaseConfigurationProviderServiceTest {
                     stringValue("seniorTribunalCaseworker"), stringValue("Read,Refer,Own,Manage,Cancel"))
             ));
 
-
         Map<String, Object> expectedMappedData = new HashMap<>();
         expectedMappedData.put("tribunalCaseworker", "Read,Refer,Own,Manage,Cancel");
         expectedMappedData.put("seniorTribunalCaseworker", "Read,Refer,Own,Manage,Cancel");
         expectedMappedData.put("securityClassification", "PUBLIC");
+        expectedMappedData.put("jurisdiction", "IA");
         expectedMappedData.put("caseTypeId", "Asylum");
         Map<String, Object> mappedData = caseConfigurationProviderService.getCaseRelatedConfiguration(someCaseId);
 
@@ -114,6 +114,7 @@ class CaseConfigurationProviderServiceTest {
             "name1", "value1",
             "name2", "value2",
             "securityClassification", "PUBLIC",
+            "jurisdiction", "IA",
             "caseTypeId", "Asylum");
 
         Map<String, Object> mappedData = caseConfigurationProviderService.getCaseRelatedConfiguration(someCaseId);
