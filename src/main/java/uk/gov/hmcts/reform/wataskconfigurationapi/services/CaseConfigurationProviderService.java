@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toMap;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.CASE_TYPE_ID;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.JURISDICTION;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.SECURITY_CLASSIFICATION;
 
 @Component
@@ -65,6 +66,7 @@ public class CaseConfigurationProviderService {
         // Enrich case configuration variables with extra variables
         HashMap<String, Object> allCaseConfigurationValues = new HashMap<>(caseConfigurationVariables);
         allCaseConfigurationValues.put(SECURITY_CLASSIFICATION.value(), caseDetails.getSecurityClassification());
+        allCaseConfigurationValues.put(JURISDICTION.value(), caseDetails.getJurisdiction());
         allCaseConfigurationValues.put(CASE_TYPE_ID.value(), caseDetails.getCaseType());
         return allCaseConfigurationValues;
 

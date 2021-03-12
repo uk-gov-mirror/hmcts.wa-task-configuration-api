@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.CASE_TYPE_ID;
+import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.JURISDICTION;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.CamundaVariableDefinition.SECURITY_CLASSIFICATION;
 
 class CaseRelatedVariablesConfiguratorTest {
@@ -55,7 +56,8 @@ class CaseRelatedVariablesConfiguratorTest {
 
         Map<String, Object> expectedValues = Map.of(
             SECURITY_CLASSIFICATION.value(), "PUBLIC",
-            CASE_TYPE_ID.value(), "IA");
+            JURISDICTION.value(), "IA",
+            CASE_TYPE_ID.value(), "Asylum");
 
         when(caseConfigurationProviderService.getCaseRelatedConfiguration(caseId))
             .thenReturn(expectedValues);
