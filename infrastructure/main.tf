@@ -23,15 +23,3 @@ resource "azurerm_key_vault_secret" "s2s_secret_task_configuration_api" {
   value        = data.azurerm_key_vault_secret.s2s_secret.value
   key_vault_id = data.azurerm_key_vault.wa_key_vault.id
 }
-
-resource "azurerm_key_vault_secret" "wa-test-law-firm-a-username" {
-  name         = "wa-test-law-firm-a-username"
-  value        = data.azurerm_key_vault_secret.s2s_secret.value
-  key_vault_id = data.azurerm_key_vault.wa_key_vault.id
-}
-
-resource "azurerm_key_vault_secret" "wa-test-law-firm-a-password" {
-  name         = "wa-test-law-firm-a-password"
-  value        = data.azurerm_key_vault_secret.s2s_secret.value
-  key_vault_id = data.azurerm_key_vault.wa_key_vault.id
-}
