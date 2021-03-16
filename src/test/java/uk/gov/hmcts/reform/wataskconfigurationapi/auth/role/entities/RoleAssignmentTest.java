@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.roleassignment;
+package uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities;
 
 import org.junit.jupiter.api.Test;
 import pl.pojo.tester.api.assertion.Method;
@@ -6,8 +6,7 @@ import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.Assignment;
 
 import static pl.pojo.tester.api.assertion.Assertions.assertPojoMethodsFor;
 
-
-class AssignmentTest {
+class RoleAssignmentTest {
 
     @Test
     void isWellImplemented() {
@@ -21,5 +20,6 @@ class AssignmentTest {
             .testing(Method.HASH_CODE)
             .areWellImplemented();
     }
+
 
 }

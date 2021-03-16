@@ -6,15 +6,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.idam.IdamSystemTokenGenerator;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.ActorIdType;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.Classification;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.QueryRequest;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.idam.IdamTokenGenerator;
 import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleAssignment;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleAssignmentResource;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleCategory;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleName;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleType;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.enums.ActorIdType;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.enums.Classification;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.enums.RoleCategory;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.enums.RoleType;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.request.QueryRequest;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.response.RoleAssignmentResource;
 import uk.gov.hmcts.reform.wataskconfigurationapi.clients.RoleAssignmentServiceApi;
 
 import java.util.ArrayList;
@@ -37,7 +36,7 @@ class RoleAssignmentServiceTest {
     private RoleAssignmentServiceApi roleAssignmentServiceApi;
 
     @Mock
-    private IdamSystemTokenGenerator idamSystemTokenGenerator;
+    private IdamTokenGenerator idamTokenGenerator;
 
     private RoleAssignmentService roleAssignmentService;
 
@@ -45,7 +44,8 @@ class RoleAssignmentServiceTest {
     public void setUp() {
         roleAssignmentService = new RoleAssignmentService(roleAssignmentServiceApi,
             serviceAuthTokenGenerator,
-            idamSystemTokenGenerator);
+                                                          idamTokenGenerator
+        );
     }
 
     @Test
@@ -64,7 +64,7 @@ class RoleAssignmentServiceTest {
         final String userToken = "userToken";
         final String s2sToken = "s2sToken";
 
-        when(idamSystemTokenGenerator.generate()).thenReturn(userToken);
+        when(idamTokenGenerator.generate()).thenReturn(userToken);
         when(serviceAuthTokenGenerator.generate()).thenReturn(s2sToken);
 
         when(roleAssignmentServiceApi.queryRoleAssignments(eq(userToken),
@@ -84,8 +84,8 @@ class RoleAssignmentServiceTest {
             .id("someId")
             .actorIdType(ActorIdType.IDAM)
             .actorId(testUserId)
-            .roleName(RoleName.TRIBUNAL_CASEWORKER)
-            .roleCategory(RoleCategory.STAFF)
+            .roleName("tribunal-caseworker")
+            .roleCategory(RoleCategory.LEGAL_OPERATIONS)
             .roleType(RoleType.ORGANISATION)
             .classification(Classification.PUBLIC)
             .build();

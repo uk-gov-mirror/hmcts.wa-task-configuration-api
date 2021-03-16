@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.wataskconfigurationapi.utils;
+package uk.gov.hmcts.reform.wataskconfigurationapi.services;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.CamundaValue;

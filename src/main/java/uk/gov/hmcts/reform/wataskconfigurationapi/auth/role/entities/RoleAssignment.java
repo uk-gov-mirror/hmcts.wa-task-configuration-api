@@ -4,6 +4,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.enums.ActorIdType;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.enums.Classification;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.enums.GrantType;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.enums.RoleCategory;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.enums.RoleType;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,13 +29,13 @@ public final class RoleAssignment extends Assignment {
                            ActorIdType actorIdType,
                            String actorId,
                            RoleType roleType,
-                           RoleName roleName,
+                           String roleName,
                            RoleCategory roleCategory,
                            Classification classification,
                            GrantType grantType,
                            Boolean readOnly,
                            LocalDateTime created,
-                           Map<Attributes, String> attributes,
+                           Map<String, String> attributes,
                            List<String> authorisations) {
         super(actorIdType, actorId, roleType, roleName, roleCategory, classification, grantType, readOnly, attributes);
         this.id = id;

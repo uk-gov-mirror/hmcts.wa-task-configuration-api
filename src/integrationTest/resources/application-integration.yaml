@@ -1,2 +1,8 @@
 role-assignment-service:
   url: http://localhost:8888
+
+idam:
+  test:
+    username: ${TEST_WA_LAW_FIRM_USERNAME:some_user@hmcts.net}
+    password: ${TEST_WA_LAW_FIRM_PASSWORD:password}
+
