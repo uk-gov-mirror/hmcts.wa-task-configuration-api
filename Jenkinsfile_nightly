@@ -17,10 +17,6 @@ def type = "java"
 def product = "wa"
 def component = "task-configuration-api"
 
-def secrets = [
-  'wa-${env}' : [
-  ],
-]
 
 withNightlyPipeline(type, product, component) {
   env.TEST_URL = params.URL_TO_TEST
