@@ -57,3 +57,8 @@ spring:
           oidc:
             client-id: ${WA_IDAM_CLIENT_ID:wa}
             client-secret: ${WA_IDAM_CLIENT_SECRET:something}
+
+launchDarkly:
+  sdkKey: ${LAUNCH_DARKLY_SDK_KEY:sdk-key}
+  connectionTimeout: 5000
+  socketTimeout: 5000

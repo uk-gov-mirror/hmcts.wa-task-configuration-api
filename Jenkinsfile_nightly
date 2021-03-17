@@ -17,6 +17,7 @@ def type = "java"
 def product = "wa"
 def component = "task-configuration-api"
 
+
 withNightlyPipeline(type, product, component) {
   env.TEST_URL = params.URL_TO_TEST
   env.Rules = params.SecurityRules
