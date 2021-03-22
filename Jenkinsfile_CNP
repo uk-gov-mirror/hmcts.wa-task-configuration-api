@@ -2,6 +2,8 @@
 
 @Library("Infrastructure")
 
+import uk.gov.hmcts.contino.AppPipelineDsl
+
 def type = "java"
 def product = "wa"
 def component = "task-configuration-api"
@@ -39,6 +41,8 @@ withPipeline(type, product, component) {
   env.CAMUNDA_URL = "http://camunda-api-aat.service.core-compute-aat.internal/engine-rest"
   env.CCD_URL = "http://ccd-data-store-api-aat.service.core-compute-aat.internal"
   env.ROLE_ASSIGNMENT_URL = "http://am-role-assignment-service-aat.service.core-compute-aat.internal"
+  env.PACT_BROKER_FULL_URL = "https://pact-broker.platform.hmcts.net"
+
 
   loadVaultSecrets(secrets)
 
@@ -55,4 +59,7 @@ withPipeline(type, product, component) {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/site/serenity/**/*'
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/reports/tests/functional/**/*'
   }
+
+  enablePactAs([AppPipelineDsl.PactRoles.CONSUMER])
+
 }
