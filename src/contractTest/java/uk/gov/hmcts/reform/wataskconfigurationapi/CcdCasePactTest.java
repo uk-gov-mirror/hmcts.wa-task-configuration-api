@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.wataskconfigurationapi;
 
 import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.Pact;
+import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.model.RequestResponsePact;
@@ -11,7 +12,6 @@ import net.serenitybdd.rest.SerenityRest;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
@@ -21,55 +21,87 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class CcdCasePactTest extends SpringBootContractBaseTest {
 
-
     private static final String TEST_CASE_ID = "1607103938250138";
     private static final String CCD_CASE_URL = "/cases/" + TEST_CASE_ID;
 
-    @Pact(provider = "ccd_case", consumer = "wa_task_configuration_api")
-    public RequestResponsePact executeGetCaseById(PactDslWithProvider builder) {
+    @Pact(provider = "ccd_data_store", consumer = "wa_task_configuration_api")
+    public RequestResponsePact ccdGetCasesId(PactDslWithProvider builder) {
 
-        Map<String, String> responseheaders = Maps.newHashMap();
-        responseheaders.put("Content-Type", "application/json");
+        Map<String, String> responseHeaders = Maps.newHashMap();
+        responseHeaders.put("Content-Type", "application/json");
 
         return builder
             .given("a case exists")
-            .uponReceiving("Provider receives a Get /cases/{case_id} request from a WA API")
+            .uponReceiving("Provider receives a GET /cases/{caseId} request from a WA API")
             .path(CCD_CASE_URL)
             .method(HttpMethod.GET.toString())
             .willRespondWith()
             .status(HttpStatus.OK.value())
-            .headers(responseheaders)
-            .body("kjnkbhgvfg")
+            .headers(responseHeaders)
+            .body(createCasesResponse())
             .toPact();
     }
 
     @Test
-    @PactTestFor(pactMethod = "executeGetCaseById")
-    public void should_get_case_id_and_receive_access_token_with_200_response(MockServer mockServer)
+    @PactTestFor(pactMethod = "ccdGetCasesId")
+    public void should_post_to_token_endpoint_and_receive_access_token_with_200_response(MockServer mockServer)
         throws JSONException {
-
-        Map<String, String> headers = Maps.newHashMap();
-        headers.put(HttpHeaders.AUTHORIZATION, SpringBootContractBaseTest.AUTHORIZATION_BEARER_TOKEN);
-        headers.put("ServiceAuthorization", SpringBootContractBaseTest.SERVICE_BEARER_TOKEN);
-        headers.put("experimental","true");
-
-
-
         String actualResponseBody =
             SerenityRest
                 .given()
                 .contentType(ContentType.URLENC)
-                .headers(headers)
                 .log().all(true)
-                .pathParam("caseId", TEST_CASE_ID)
                 .get(mockServer.getUrl() + CCD_CASE_URL)
                 .then()
                 .extract().asString();
 
         JSONObject response = new JSONObject(actualResponseBody);
 
-        System.out.println(response);
         assertThat(response).isNotNull();
+        assertThat(response.getString("callback_response_status")).isNotBlank();
+        assertThat(response.getString("callback_response_status_code")).isEqualTo("0");
+        assertThat(response.getString("case_type")).isNotBlank();
+
+    }
+
+    private PactDslJsonBody createCasesResponse() {
+
+        return new PactDslJsonBody()
+            .object("after_submit_callback_response")
+                .stringType("confirmation_body", "string")
+                .stringType("confirmation_header", "string")
+            .close()
+            .asBody()
+            .stringValue("callback_response_status", "string")
+            .numberValue("callback_response_status_code", 0)
+            .stringValue("case_type", "string")
+            .stringValue("created_on", "2021-03-24T09:08:32.869Z")
+            .close()
+            .object("data")
+                .object("additionalProp1", new PactDslJsonBody())
+                .object("additionalProp2", new PactDslJsonBody())
+                .object("additionalProp3", new PactDslJsonBody())
+            .close()
+            .object("data_classification")
+            .object("additionalProp1", new PactDslJsonBody())
+            .object("additionalProp2", new PactDslJsonBody())
+            .object("additionalProp3", new PactDslJsonBody())
+            .close()
+            .asBody()
+                 .stringValue("delete_draft_response_status", "string")
+                 .numberValue("delete_draft_response_status_code", 0)
+                 .stringValue("id", "string")
+                 .stringValue("jurisdiction", "string")
+                 .stringValue("last_modified_on", "2021-03-24T09:08:32.869Z")
+                 .stringValue("last_state_modified_on", "2021-03-24T09:08:32.869Z")
+            .close()
+            .object("links")
+                .booleanValue("empty", true)
+            .close()
+            .asBody()
+                    .stringValue("security_classification", "PRIVATE")
+                    .stringValue("state", "string");
 
     }
 }
+
