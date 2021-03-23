@@ -16,8 +16,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestPropertySource(locations = {"classpath:application.properties"})
 public abstract class SpringBootContractBaseTest {
-
-
     public static final String EXPERIMENTAL = "true";
     public static final String PACT_TEST_EMAIL_VALUE = "ia-caseofficer@fake.hmcts.net";
     public static final String PACT_TEST_PASSWORD_VALUE = "London01";
