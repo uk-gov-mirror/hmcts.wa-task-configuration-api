@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.wataskconfigurationapi;
 
 import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.Pact;
-import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.model.RequestResponsePact;
@@ -12,89 +11,65 @@ import net.serenitybdd.rest.SerenityRest;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
 import java.util.Map;
-import java.util.TreeMap;
 
-import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CcdCasePactTest extends SpringBootContractBaseTest {
 
-    private static final String CCD_CASE_URL = "/cases/testCase";
+
+    private static final String TEST_CASE_ID = "1607103938250138";
+    private static final String CCD_CASE_URL = "/cases/" + TEST_CASE_ID;
 
     @Pact(provider = "ccd_case", consumer = "wa_task_configuration_api")
-    public RequestResponsePact executeGetIdamAccessTokenAndGet200(PactDslWithProvider builder) {
+    public RequestResponsePact executeGetCaseById(PactDslWithProvider builder) {
 
         Map<String, String> responseheaders = Maps.newHashMap();
         responseheaders.put("Content-Type", "application/json");
 
-        Map<String, Object> params = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-        params.put("email", PACT_TEST_EMAIL_VALUE);
-        params.put("password", PACT_TEST_PASSWORD_VALUE);
-        params.put("forename", "Case");
-        params.put("surname", "Officer");
-        params.put("roles", singletonList(PACT_TEST_ROLES_VALUE));
-
         return builder
-            .given("a user exists", params)
-            .uponReceiving("Provider receives a POST /o/token request from a WA API")
+            .given("a case exists")
+            .uponReceiving("Provider receives a Get /cases/{case_id} request from a WA API")
             .path(CCD_CASE_URL)
-            .method(HttpMethod.POST.toString())
-            .body(
-                "client_id=" + PACT_TEST_CLIENT_ID_VALUE
-                + "&client_secret=" + PACT_TEST_CLIENT_SECRET_VALUE
-                + "&grant_type=password"
-                + "&scope=" + PACT_TEST_SCOPES_VALUE
-                + "&username=" + PACT_TEST_EMAIL_VALUE
-                + "&password=" + PACT_TEST_PASSWORD_VALUE
-                + "&redirect_uri=http%3A%2F%2Fwww.dummy-pact-service.com%2Fcallback",
-                ContentType.URLENC.toString())
+            .method(HttpMethod.GET.toString())
             .willRespondWith()
             .status(HttpStatus.OK.value())
             .headers(responseheaders)
-            .body(createAuthResponse())
+            .body("kjnkbhgvfg")
             .toPact();
     }
 
     @Test
-    @PactTestFor(pactMethod = "executeGetIdamAccessTokenAndGet200")
-    public void should_post_to_token_endpoint_and_receive_access_token_with_200_response(MockServer mockServer)
+    @PactTestFor(pactMethod = "executeGetCaseById")
+    public void should_get_case_id_and_receive_access_token_with_200_response(MockServer mockServer)
         throws JSONException {
+
+        Map<String, String> headers = Maps.newHashMap();
+        headers.put(HttpHeaders.AUTHORIZATION, SpringBootContractBaseTest.AUTHORIZATION_BEARER_TOKEN);
+        headers.put("ServiceAuthorization", SpringBootContractBaseTest.SERVICE_BEARER_TOKEN);
+        headers.put("experimental","true");
+
+
+
         String actualResponseBody =
             SerenityRest
                 .given()
                 .contentType(ContentType.URLENC)
-                .formParam("redirect_uri", "http://www.dummy-pact-service.com/callback")
-                .formParam("client_id", PACT_TEST_CLIENT_ID_VALUE)
-                .formParam("client_secret", PACT_TEST_CLIENT_SECRET_VALUE)
-                .formParam("grant_type", "password")
-                .formParam("username", PACT_TEST_EMAIL_VALUE)
-                .formParam("password", PACT_TEST_PASSWORD_VALUE)
-                .formParam("scope", PACT_TEST_SCOPES_VALUE)
-                .post(mockServer.getUrl() + CCD_CASE_URL)
+                .headers(headers)
+                .log().all(true)
+                .pathParam("caseId", TEST_CASE_ID)
+                .get(mockServer.getUrl() + CCD_CASE_URL)
                 .then()
                 .extract().asString();
 
         JSONObject response = new JSONObject(actualResponseBody);
 
+        System.out.println(response);
         assertThat(response).isNotNull();
-        assertThat(response.getString("access_token")).isNotBlank();
-        assertThat(response.getString("token_type")).isEqualTo("Bearer");
-        assertThat(response.getString("expires_in")).isNotBlank();
 
-    }
-
-    private PactDslJsonBody createAuthResponse() {
-
-        return new PactDslJsonBody()
-            .stringType("access_token", "eyJ0eXAiOiJKV1QiLCJraWQiOiJiL082T3ZWdjEre")
-            .stringType("refresh_token", "eyJ0eXAiOiJKV1QiLCJ6aXAiOiJOT05FIiwia2lkIjoiYi9PNk92V")
-            .stringType("scope", PACT_TEST_SCOPES_VALUE)
-            .stringType("id_token", "eyJ0eXAiOiJKV1QiLCJraWQiOiJiL082T3ZWdjEre")
-            .stringType("token_type", "Bearer")
-            .stringType("expires_in", "28798");
     }
 }
