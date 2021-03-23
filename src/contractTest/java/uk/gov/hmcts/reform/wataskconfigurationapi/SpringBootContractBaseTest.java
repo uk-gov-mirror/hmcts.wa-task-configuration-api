@@ -17,6 +17,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @TestPropertySource(locations = {"classpath:application.properties"})
 public abstract class SpringBootContractBaseTest {
 
+
+    public static final String EXPERIMENTAL = "true";
     public static final String PACT_TEST_EMAIL_VALUE = "ia-caseofficer@fake.hmcts.net";
     public static final String PACT_TEST_PASSWORD_VALUE = "London01";
     public static final String PACT_TEST_CLIENT_ID_VALUE = "pact";
@@ -31,6 +33,7 @@ public abstract class SpringBootContractBaseTest {
         HttpHeaders headers = new HttpHeaders();
         headers.add("ServiceAuthorization", SERVICE_BEARER_TOKEN);
         headers.add("Authorization", AUTHORIZATION_BEARER_TOKEN);
+        headers.add("Experimental", EXPERIMENTAL);
         return headers;
     }
 }
