@@ -244,7 +244,7 @@ repositories {
 }
 
 def versions = [
-  junit           : '5.7.0',
+  junit           : '5.7.1',
   junitPlatform   : '1.7.0',
   reformLogging   : '5.1.5',
   springBoot      : '2.4.2',
@@ -324,8 +324,8 @@ dependencies {
   contractTestCompile group: 'au.com.dius.pact.consumer', name: 'junit5', version: versions.pactVersion
   contractTestCompile group: 'au.com.dius.pact.consumer', name: 'java8', version: versions.pactVersion
 
-  contractTestCompile("org.junit.jupiter:junit-jupiter-api:5.6.2")
-  contractTestRuntime("org.junit.jupiter:junit-jupiter-engine:5.6.2")
+  contractTestCompile("org.junit.jupiter:junit-jupiter-api:5.7.1")
+  contractTestRuntime("org.junit.jupiter:junit-jupiter-engine:5.7.1")
   contractTestImplementation('org.junit.jupiter:junit-jupiter-api:5.6.2')
 
   testUtilsImplementation sourceSets.main.runtimeClasspath
