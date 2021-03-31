@@ -96,6 +96,7 @@ public class IdamConsumerTestForPostUserInfo extends SpringBootContractBaseTest 
             .stringValue("sub", PACT_TEST_EMAIL_VALUE)
             .stringValue("givenName", "Case")
             .stringValue("familyName", "Officer")
-            .minArrayLike("roles", 1, PactDslJsonRootValue.stringType("caseworker-ia-legalrep-solicitor"), 1);
+            .minArrayLike("roles", 1,
+                          PactDslJsonRootValue.stringType("caseworker-ia-legalrep-solicitor"), 1);
     }
 }
