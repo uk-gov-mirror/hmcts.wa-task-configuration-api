@@ -6,7 +6,6 @@ import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import com.google.common.collect.Maps;
-import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -66,7 +65,7 @@ public class RoleAssignmentQueryConsumerTest extends SpringBootContractBaseTest 
 
 
     @Pact(provider = "am_roleAssignment_queryAssignment", consumer = "wa_task_configuration_api")
-    public RequestResponsePact generatePactFragmentForQueryRoleAssignments(PactDslWithProvider builder) throws JSONException {
+    public RequestResponsePact generatePactFragmentForQueryRoleAssignments(PactDslWithProvider builder) {
         return builder
             .given("A list of role assignments for the search query")
             .uponReceiving("A query request for roles by caseId")
