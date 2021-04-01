@@ -19,9 +19,6 @@ import uk.gov.hmcts.reform.wataskconfigurationapi.SpringBootContractBaseTest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.auth.idam.IdamTokenGenerator;
 import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.RoleAssignmentService;
 import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleAssignment;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.enums.Classification;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.enums.GrantType;
-import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.enums.RoleType;
 import uk.gov.hmcts.reform.wataskconfigurationapi.clients.RoleAssignmentServiceApi;
 
 import java.util.List;
@@ -87,11 +84,8 @@ public class RoleAssignmentQueryConsumerTest extends SpringBootContractBaseTest 
         List<RoleAssignment> queryRoleAssignmentResponse = roleAssignmentService
             .searchRolesByCaseId(caseId);
 
-        assertThat(queryRoleAssignmentResponse.get(0).getRoleType(), is(RoleType.CASE));
-        assertThat(queryRoleAssignmentResponse.get(0).getClassification(), is(Classification.RESTRICTED));
-        assertThat(queryRoleAssignmentResponse.get(0).getGrantType(), is(GrantType.SPECIFIC));
-        assertThat(queryRoleAssignmentResponse.get(0).getAttributes(), isNotNull());
-        assertThat(queryRoleAssignmentResponse.get(0).getAttributes().get("caseId"), is(caseId));
+        assertThat(queryRoleAssignmentResponse.get(0).getActorId(), isNotNull());
+        assertThat(queryRoleAssignmentResponse.get(0).getActorId(), is(assigneeId));
 
     }
 
@@ -99,19 +93,7 @@ public class RoleAssignmentQueryConsumerTest extends SpringBootContractBaseTest 
         return newJsonBody(o -> o
             .minArrayLike("roleAssignmentResponse", 1, 1,
                 roleAssignmentResponse -> roleAssignmentResponse
-                    .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
-                    .stringValue("actorIdType", "IDAM")
                     .stringType("actorId", assigneeId)
-                    .stringValue("roleType", "CASE")
-                    .stringValue("roleName", "tribunal-caseworker")
-                    .stringValue("classification", "RESTRICTED")
-                    .stringValue("grantType", "SPECIFIC")
-                    .stringValue("roleCategory", "LEGAL_OPERATIONS")
-                    .booleanType("readOnly", false)
-                    .object("attributes", attribute -> attribute
-                        .stringValue("caseId", caseId)
-                        .stringType("jurisdiction", "IA")
-                        .stringType("primaryLocation", "500A2S"))
             )).build();
     }
 
@@ -121,7 +103,7 @@ public class RoleAssignmentQueryConsumerTest extends SpringBootContractBaseTest 
                + "\"roleName\": [\"tribunal-caseworker\"],\n"
                + "\"validAt\": \"2021-12-04T00:00:00\",\n"
                + "\"attributes\": {\n"
-               + "\"caseId\": [\"" + caseId + "\"],\n"
+               + "\"caseId\": [\"" + caseId + "\"]\n"
                + "}\n"
                + "}";
 
