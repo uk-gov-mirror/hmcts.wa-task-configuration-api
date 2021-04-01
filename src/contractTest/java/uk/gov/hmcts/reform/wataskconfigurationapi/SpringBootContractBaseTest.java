@@ -22,7 +22,6 @@ public abstract class SpringBootContractBaseTest {
     public static final String PACT_TEST_CLIENT_ID_VALUE = "pact";
     public static final String PACT_TEST_CLIENT_SECRET_VALUE = "pactsecret";
     public static final String PACT_TEST_SCOPES_VALUE = "openid profile roles";
-    public static final String PACT_TEST_ROLES_VALUE = "caseworker";
     public static final String AUTHORIZATION_BEARER_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJraWQiOiJiL082T3ZWdeRre";
     public static final String SERVICE_BEARER_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJ6aXAiOiJOT05FIiwia2lkIjoiYi9PNk92V";
     public static final String AUTH_TOKEN = "Bearer someAuthorizationToken";

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import uk.gov.hmcts.reform.wataskconfigurationapi.SpringBootContractBaseTest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.auth.idam.entities.Token;
@@ -46,7 +47,7 @@ public class IdamConsumerTestForPostToken extends SpringBootContractBaseTest {
                   + "&password=" + PACT_TEST_PASSWORD_VALUE
                   + "&client_secret=" + PACT_TEST_CLIENT_SECRET_VALUE
                   + "&scope=" + PACT_TEST_SCOPES_VALUE,
-                  "application/x-www-form-urlencoded")
+                  MediaType.APPLICATION_FORM_URLENCODED_VALUE)
             .willRespondWith()
             .status(HttpStatus.OK.value())
             .headers(responseheaders)
@@ -73,7 +74,8 @@ public class IdamConsumerTestForPostToken extends SpringBootContractBaseTest {
             .put("password", PACT_TEST_PASSWORD_VALUE)
             .put("scope", PACT_TEST_SCOPES_VALUE)
             .build();
-        return tokenRequestMap;
+
+        return  tokenRequestMap;
     }
 
     private PactDslJsonBody createAuthResponse() {
