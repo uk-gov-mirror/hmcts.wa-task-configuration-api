@@ -25,6 +25,8 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 @ContextConfiguration(classes = {IdamConsumerApplication.class})
 public class IdamConsumerTestForPostUserInfo extends SpringBootContractBaseTest {
 
+    private static final String ENDPOINT_BEING_TESTED = "/o/userinfo";
+
     @Autowired
     IdamServiceApi idamApi;
 
@@ -34,7 +36,7 @@ public class IdamConsumerTestForPostUserInfo extends SpringBootContractBaseTest 
         return builder
             .given("userinfo is requested")
             .uponReceiving("A request for a UserInfo")
-            .path("/o/userinfo")
+            .path(ENDPOINT_BEING_TESTED)
             .method(HttpMethod.GET.toString())
             .matchHeader(AUTHORIZATION, AUTH_TOKEN)
             .matchHeader(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)

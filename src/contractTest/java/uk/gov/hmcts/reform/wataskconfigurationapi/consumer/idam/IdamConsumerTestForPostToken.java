@@ -47,7 +47,7 @@ public class IdamConsumerTestForPostToken extends SpringBootContractBaseTest {
                   + "&password=" + PACT_TEST_PASSWORD_VALUE
                   + "&client_secret=" + PACT_TEST_CLIENT_SECRET_VALUE
                   + "&scope=" + PACT_TEST_SCOPES_VALUE,
-                  MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                MediaType.APPLICATION_FORM_URLENCODED_VALUE)
             .willRespondWith()
             .status(HttpStatus.OK.value())
             .headers(responseheaders)
