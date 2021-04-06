@@ -85,8 +85,6 @@ public class RoleAssignmentQueryConsumerTest extends SpringBootContractBaseTest 
         List<RoleAssignment> queryRoleAssignmentResponse = roleAssignmentService
             .performSearch(buildQueryRequest()).getRoleAssignmentResponse();
 
-
-        assertThat(queryRoleAssignmentResponse.get(0).getActorId(), isNotNull());
         assertThat(queryRoleAssignmentResponse.get(0).getActorId(), is(assigneeId));
 
     }
