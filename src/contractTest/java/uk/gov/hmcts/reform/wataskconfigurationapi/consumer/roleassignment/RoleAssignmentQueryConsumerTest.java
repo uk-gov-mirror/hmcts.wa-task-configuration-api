@@ -8,7 +8,6 @@ import au.com.dius.pact.core.model.annotations.Pact;
 import com.google.common.collect.Maps;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
@@ -46,7 +45,7 @@ public class RoleAssignmentQueryConsumerTest extends SpringBootContractBaseTest 
     @MockBean
     AuthTokenGenerator authTokenGenerator;
 
-    @Mock
+    @MockBean
     private IdamTokenGenerator idamTokenGenerator;
 
     private RoleAssignmentService roleAssignmentService;
@@ -54,12 +53,10 @@ public class RoleAssignmentQueryConsumerTest extends SpringBootContractBaseTest 
     @BeforeEach
     void setUp() {
         when(authTokenGenerator.generate()).thenReturn(SERVICE_AUTH_TOKEN);
-
         when(idamTokenGenerator.generate()).thenReturn(AUTH_TOKEN);
 
         roleAssignmentService = new RoleAssignmentService(roleAssignmentApi, authTokenGenerator, idamTokenGenerator);
     }
-
 
     @Pact(provider = "am_roleAssignment_queryAssignment", consumer = "wa_task_configuration_api")
     public RequestResponsePact generatePactFragmentForQueryRoleAssignments(PactDslWithProvider builder) {
@@ -106,7 +103,6 @@ public class RoleAssignmentQueryConsumerTest extends SpringBootContractBaseTest 
                + "\"caseId\": [\"" + caseId + "\"]\n"
                + "}\n"
                + "}";
-
     }
 
     private Map<String, String> getResponseHeaders() {
