@@ -35,6 +35,7 @@ auth:
 idam:
   baseUrl: ${IDAM_URL:http://sidam-api}
   redirectUrl: ${IA_IDAM_REDIRECT_URI:http://localhost:3002/oauth2/callback}
+  scope: "openid profile roles"
   s2s-auth:
     url: ${S2S_URL:http://service-auth-provider-api}
     secret: ${S2S_SECRET_TASK_CONFIGURATION_API:AAAAAAAAAAAAAAAC}
@@ -42,7 +43,8 @@ idam:
   system:
     username: ${WA_SYSTEM_USERNAME:some_user@hmcts.net}
     password: ${WA_SYSTEM_PASSWORD:password}
-  scope: "openid profile roles"
+  api:
+    baseUrl: ${IDAM_API_URL:http://sidam-api}
 
 spring:
   application:
