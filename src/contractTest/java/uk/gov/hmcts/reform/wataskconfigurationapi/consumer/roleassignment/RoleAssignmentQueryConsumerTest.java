@@ -34,7 +34,6 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @ContextConfiguration(classes = {RoleAssignmentConsumerApplication.class})
 public class RoleAssignmentQueryConsumerTest extends SpringBootContractBaseTest {
 
-    private static final String ENDPOINT_BEING_TESTED = "/am/role-assignments/query";
 
     private final String assigneeId = "14a21569-eb80-4681-b62c-6ae2ed069e5f";
     private final String caseId = "1212121212121213";
@@ -63,7 +62,7 @@ public class RoleAssignmentQueryConsumerTest extends SpringBootContractBaseTest 
         return builder
             .given("A list of role assignments for the search query")
             .uponReceiving("A query request for roles by caseId")
-            .path(ENDPOINT_BEING_TESTED)
+            .path("/am/role-assignments/query")
             .method(HttpMethod.POST.toString())
             .matchHeader(AUTHORIZATION, AUTH_TOKEN)
             .matchHeader(SERVICE_AUTHORIZATION, SERVICE_AUTH_TOKEN)
