@@ -18,12 +18,16 @@ import uk.gov.hmcts.reform.wataskconfigurationapi.SpringBootContractBaseTest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.auth.idam.IdamTokenGenerator;
 import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.RoleAssignmentService;
 import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleAssignment;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.enums.RoleType;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.request.QueryRequest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.clients.RoleAssignmentServiceApi;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
+import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.isNotNull;
@@ -37,6 +41,7 @@ public class RoleAssignmentQueryConsumerTest extends SpringBootContractBaseTest 
 
     private final String assigneeId = "14a21569-eb80-4681-b62c-6ae2ed069e5f";
     private final String caseId = "1212121212121213";
+    private final LocalDateTime validAtDate = LocalDateTime.parse("2021-12-04T00:00:00");
 
     @Autowired
     RoleAssignmentServiceApi roleAssignmentApi;
@@ -78,11 +83,22 @@ public class RoleAssignmentQueryConsumerTest extends SpringBootContractBaseTest 
     @PactTestFor(pactMethod = "generatePactFragmentForQueryRoleAssignments")
     public void verifyQueryRoleAssignments() {
         List<RoleAssignment> queryRoleAssignmentResponse = roleAssignmentService
-            .searchRolesByCaseId(caseId);
+            .performSearch(buildQueryRequest()).getRoleAssignmentResponse();
+
 
         assertThat(queryRoleAssignmentResponse.get(0).getActorId(), isNotNull());
         assertThat(queryRoleAssignmentResponse.get(0).getActorId(), is(assigneeId));
 
+    }
+
+    private QueryRequest buildQueryRequest() {
+
+        return QueryRequest.builder()
+            .roleType(singletonList(RoleType.CASE))
+            .roleName(singletonList("tribunal-caseworker"))
+            .validAt(validAtDate)
+            .attributes(Map.of("caseId", List.of(caseId)))
+            .build();
     }
 
     private DslPart createRoleAssignmentResponseSearchQueryResponse() {
