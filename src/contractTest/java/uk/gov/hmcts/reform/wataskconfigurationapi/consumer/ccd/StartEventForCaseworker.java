@@ -26,7 +26,7 @@ public class StartEventForCaseworker extends SpringBootContractBaseTest {
                                                            + "asylum/event-triggers/tester/token";
 
     @Pact(provider = "ccd_data_store", consumer = "wa_task_configuration_api")
-    public RequestResponsePact executeStartForCaseworker(PactDslWithProvider builder) {
+    public RequestResponsePact executeStartEventForCaseworker(PactDslWithProvider builder) {
 
         Map<String, String> responseHeaders = Maps.newHashMap();
         responseHeaders.put("Content-Type", "application/json");
@@ -45,7 +45,7 @@ public class StartEventForCaseworker extends SpringBootContractBaseTest {
 
 
     @Test
-    @PactTestFor(pactMethod = "executeStartForCaseworker")
+    @PactTestFor(pactMethod = "executeStartEventForCaseworker")
     public void should_get_start_for_caseworker_to_token_endpoint(MockServer mockServer)
         throws JSONException {
         String actualResponseBody =
