@@ -24,8 +24,10 @@ public class CcdCasePactTest extends SpringBootContractBaseTest {
 
     private static final String TEST_CASE_ID = "1607103938250138";
     private static final String CCD_CASE_URL = "/cases/" + TEST_CASE_ID;
-    private static final String CCD_START_FOR_CASEWORKER = "/caseworkers/0000/jurisdictions/ia/case-types/asylum/event-triggers/tester/token";
-    private static final String CCD_SUBMIT_EVENT_FOR_CASEWORKER = "/caseworkers/00/jurisdictions/ia/case-types/asylum/cases/0000/events";
+    private static final String CCD_START_FOR_CASEWORKER = "/caseworkers/0000/jurisdictions/ia/case-types/"
+                                                           + "asylum/event-triggers/tester/token";
+    private static final String CCD_SUBMIT_EVENT_FOR_CASEWORKER = "/caseworkers/00/jurisdictions/ia/"
+                                                                  + "case-types/asylum/cases/0000/events";
 
     @Pact(provider = "ccd_data_store", consumer = "wa_task_configuration_api")
     public RequestResponsePact ccdGetCasesId(PactDslWithProvider builder) {
@@ -52,8 +54,8 @@ public class CcdCasePactTest extends SpringBootContractBaseTest {
         responseHeaders.put("Content-Type", "application/json");
 
         return builder
-            .given("a start event for caseworker")
-            .uponReceiving("Provider receives a POST /cases/{caseId} request from a WA API")
+            .given("Submit event creation as Case worker")
+            .uponReceiving("Complete the event creation processrequest from a WA API")
             .path(CCD_SUBMIT_EVENT_FOR_CASEWORKER)
             .method(HttpMethod.POST.toString())
             .willRespondWith()
@@ -70,8 +72,8 @@ public class CcdCasePactTest extends SpringBootContractBaseTest {
         responseHeaders.put("Content-Type", "application/json");
 
         return builder
-            .given("a submit event for caseworker")
-            .uponReceiving("Provider receives a GET /cases/{caseId} request from a WA API")
+            .given("Start event creation as Case worker")
+            .uponReceiving("Start the event creation process for an existing case from a WA API")
             .path(CCD_START_FOR_CASEWORKER)
             .method(HttpMethod.GET.toString())
             .willRespondWith()
@@ -107,7 +109,7 @@ public class CcdCasePactTest extends SpringBootContractBaseTest {
 
     @Test
     @PactTestFor(pactMethod = "startForCaseworker")
-    public void should_post_to_submit_event_for_caseworker_endpoint_and_receive_access_token_with_200_response(MockServer mockServer)
+    public void should_get_start_for_caseworker_to_token_endpoint(MockServer mockServer)
         throws JSONException {
         String actualResponseBody =
             SerenityRest
@@ -126,7 +128,7 @@ public class CcdCasePactTest extends SpringBootContractBaseTest {
 
     @Test
     @PactTestFor(pactMethod = "submitEventForCaseworker")
-    public void should_get_start_for_caseworker_to_token_endpoint_and_receive_access_token_with_200_response(MockServer mockServer)
+    public void should_post_to_submit_event_for_caseworker_endpoint_with_200_response(MockServer mockServer)
         throws JSONException {
         String actualResponseBody =
             SerenityRest
@@ -144,8 +146,8 @@ public class CcdCasePactTest extends SpringBootContractBaseTest {
 
 
     }
-    private PactDslJsonBody createCasesResponse() {
 
+    private PactDslJsonBody createCasesResponse() {
         return new PactDslJsonBody()
             .object("after_submit_callback_response")
                 .stringType("confirmation_body", "string")
