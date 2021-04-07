@@ -20,68 +20,67 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class CcdCasePactTest extends SpringBootContractBaseTest {
+public class StartEventForCaseworker extends SpringBootContractBaseTest {
 
-    private static final String TEST_CASE_ID = "1607103938250138";
-    private static final String CCD_CASE_URL = "/cases/" + TEST_CASE_ID;
+    private static final String CCD_START_FOR_CASEWORKER = "/caseworkers/0000/jurisdictions/ia/case-types/"
+                                                           + "asylum/event-triggers/tester/token";
 
     @Pact(provider = "ccd_data_store", consumer = "wa_task_configuration_api")
-    public RequestResponsePact executeCcdGetCasesByCaseId(PactDslWithProvider builder) {
+    public RequestResponsePact executeStartForCaseworker(PactDslWithProvider builder) {
 
         Map<String, String> responseHeaders = Maps.newHashMap();
         responseHeaders.put("Content-Type", "application/json");
 
         return builder
-            .given("a case exists")
-            .uponReceiving("Provider receives a GET /cases/{caseId} request from a WA API")
-            .path(CCD_CASE_URL)
+            .given("Start event creation as Case worker")
+            .uponReceiving("Start the event creation process for an existing case from a WA API")
+            .path(CCD_START_FOR_CASEWORKER)
             .method(HttpMethod.GET.toString())
             .willRespondWith()
             .status(HttpStatus.OK.value())
             .headers(responseHeaders)
-            .body(createCasesResponse())
+            .body(startForCaseworkerResponse())
             .toPact();
     }
 
+
     @Test
-    @PactTestFor(pactMethod = "executeCcdGetCasesByCaseId")
-    public void should_post_to_token_endpoint_and_receive_access_token_with_200_response(MockServer mockServer)
+    @PactTestFor(pactMethod = "executeStartForCaseworker")
+    public void should_get_start_for_caseworker_to_token_endpoint(MockServer mockServer)
         throws JSONException {
         String actualResponseBody =
             SerenityRest
                 .given()
                 .contentType(ContentType.URLENC)
                 .log().all(true)
-                .get(mockServer.getUrl() + CCD_CASE_URL)
+                .get(mockServer.getUrl() + CCD_START_FOR_CASEWORKER)
                 .then()
                 .extract().asString();
 
         JSONObject response = new JSONObject(actualResponseBody);
 
         assertThat(response).isNotNull();
-        assertThat(response.getString("callback_response_status")).isNotBlank();
-        assertThat(response.getString("callback_response_status_code")).isEqualTo("0");
-        assertThat(response.getString("case_type")).isNotBlank();
-
     }
 
-    private PactDslJsonBody createCasesResponse() {
+    private PactDslJsonBody startForCaseworkerResponse() {
+
         return new PactDslJsonBody()
+            .object("case_details")
             .object("after_submit_callback_response")
-            .stringType("confirmation_body", "string")
-            .stringType("confirmation_header", "string")
+            .stringValue("confirmation_body", "string")
+            .stringValue("confirmation_header", "string")
             .close()
             .asBody()
-            .stringValue("callback_response_status", "string")
+            .stringType("callback_response_status", "string")
             .numberValue("callback_response_status_code", 0)
-            .stringValue("case_type", "string")
-            .stringValue("created_on", "2021-03-24T09:08:32.869Z")
-            .close()
-            .object("data")
+            .object("case_data")
             .object("additionalProp1", new PactDslJsonBody())
             .object("additionalProp2", new PactDslJsonBody())
             .object("additionalProp3", new PactDslJsonBody())
             .close()
+            .asBody()
+            .stringValue("case_type_id", "string")
+            .stringValue("created_date", "2021-04-07T08:51:52.452Z")
             .object("data_classification")
             .object("additionalProp1", new PactDslJsonBody())
             .object("additionalProp2", new PactDslJsonBody())
@@ -94,16 +93,28 @@ public class CcdCasePactTest extends SpringBootContractBaseTest {
             .stringValue("jurisdiction", "string")
             .stringValue("last_modified_on", "2021-03-24T09:08:32.869Z")
             .stringValue("last_state_modified_on", "2021-03-24T09:08:32.869Z")
-            .close()
-            .object("links")
-            .booleanValue("empty", true)
+            .stringValue("security_classification", "PRIVATE")
+            .object("security_classifications")
+            .object("additionalProp1", new PactDslJsonBody())
+            .object("additionalProp2", new PactDslJsonBody())
+            .object("additionalProp3", new PactDslJsonBody())
             .close()
             .asBody()
-            .stringValue("security_classification", "PRIVATE")
-            .stringValue("state", "string");
+            .stringValue("state", "string")
+           .object("supplementary_data")
+            .object("additionalProp1", new PactDslJsonBody())
+            .object("additionalProp2", new PactDslJsonBody())
+            .object("additionalProp3", new PactDslJsonBody())
+            .close()
+            .asBody()
+            .numberValue("version", 0)
+            .close()
+            .asBody()
+            .stringValue("event_id", "string")
+            .stringValue("token", "string");
+
 
     }
+
 }
-
-
 
