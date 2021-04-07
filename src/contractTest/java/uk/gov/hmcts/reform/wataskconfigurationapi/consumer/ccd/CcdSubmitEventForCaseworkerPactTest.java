@@ -20,7 +20,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SubmitEventForCaseworker extends SpringBootContractBaseTest {
+public class CcdSubmitEventForCaseworkerPactTest extends SpringBootContractBaseTest {
 
 
     private static final String CCD_SUBMIT_EVENT_FOR_CASEWORKER = "/caseworkers/00/jurisdictions/ia/"
@@ -64,8 +64,8 @@ public class SubmitEventForCaseworker extends SpringBootContractBaseTest {
 
 
     }
-    private PactDslJsonBody eventsCasesResponse() {
 
+    private PactDslJsonBody eventsCasesResponse() {
         return new PactDslJsonBody()
             .stringType("case_reference", "string")
             .object("data")

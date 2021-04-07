@@ -20,7 +20,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class CcdCasePactTest extends SpringBootContractBaseTest {
+public class CcdGetCasesByCaseIdPactTest extends SpringBootContractBaseTest {
 
     private static final String TEST_CASE_ID = "1607103938250138";
     private static final String CCD_CASE_URL = "/cases/" + TEST_CASE_ID;

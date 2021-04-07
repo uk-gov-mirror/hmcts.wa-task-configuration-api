@@ -20,7 +20,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class StartEventForCaseworker extends SpringBootContractBaseTest {
+public class CcdStartEventForCaseworkerPactTest extends SpringBootContractBaseTest {
 
     private static final String CCD_START_FOR_CASEWORKER = "/caseworkers/0000/jurisdictions/ia/case-types/"
                                                            + "asylum/event-triggers/tester/token";
