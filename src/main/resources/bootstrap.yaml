@@ -11,3 +11,5 @@ spring:
         wa-idam-client-id: WA_IDAM_CLIENT_ID
         wa-idam-client-secret: WA_IDAM_CLIENT_SECRET
         s2s-secret-task-configuration-api: S2S_SECRET_TASK_CONFIGURATION_API
+        ld-secret: LAUNCH_DARKLY_SDK_KEY
+
