@@ -1,35 +1,62 @@
 package uk.gov.hmcts.reform.wataskconfigurationapi.consumer.ccd;
 
-import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
-import com.google.common.collect.Maps;
-import io.restassured.http.ContentType;
-import net.serenitybdd.rest.SerenityRest;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.ContextConfiguration;
+import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.wataskconfigurationapi.SpringBootContractBaseTest;
+import uk.gov.hmcts.reform.wataskconfigurationapi.auth.idam.IdamTokenGenerator;
+import uk.gov.hmcts.reform.wataskconfigurationapi.clients.CcdDataServiceApi;
+import uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.ccd.CaseDetails;
+import uk.gov.hmcts.reform.wataskconfigurationapi.services.CcdDataService;
 
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.when;
 
+@PactTestFor(providerName = "ccd_data_store_get_case_by_id", port = "8890")
+@ContextConfiguration(classes = {CcdConsumerApplication.class})
 public class CcdGetCasesByCaseIdPactTest extends SpringBootContractBaseTest {
 
     private static final String TEST_CASE_ID = "1607103938250138";
     private static final String CCD_CASE_URL = "/cases/" + TEST_CASE_ID;
 
-    @Pact(provider = "ccd_data_store", consumer = "wa_task_configuration_api")
+    @Autowired
+    CcdDataServiceApi ccdDataServiceApi;
+
+    @MockBean
+    AuthTokenGenerator authTokenGenerator;
+
+    @MockBean
+    IdamTokenGenerator systemTokenGenerator;
+
+    private CcdDataService ccdDataService;
+
+    @BeforeEach
+    void setUp() {
+        when(authTokenGenerator.generate()).thenReturn(SERVICE_AUTH_TOKEN);
+        when(systemTokenGenerator.generate()).thenReturn(AUTH_TOKEN);
+        ccdDataService = new CcdDataService(ccdDataServiceApi, authTokenGenerator, systemTokenGenerator);
+    }
+
+
+    @Pact(provider = "ccd_data_store_get_case_by_id", consumer = "wa_task_configuration_api")
     public RequestResponsePact executeCcdGetCasesByCaseId(PactDslWithProvider builder) {
 
-        Map<String, String> responseHeaders = Maps.newHashMap();
-        responseHeaders.put("Content-Type", "application/json");
+        Map<String, String> responseHeaders = Map.of("Content-Type", "application/json");
 
         return builder
             .given("a case exists")
@@ -45,63 +72,34 @@ public class CcdGetCasesByCaseIdPactTest extends SpringBootContractBaseTest {
 
     @Test
     @PactTestFor(pactMethod = "executeCcdGetCasesByCaseId")
-    public void should_post_to_token_endpoint_and_receive_access_token_with_200_response(MockServer mockServer)
-        throws JSONException {
-        String actualResponseBody =
-            SerenityRest
-                .given()
-                .contentType(ContentType.URLENC)
-                .log().all(true)
-                .get(mockServer.getUrl() + CCD_CASE_URL)
-                .then()
-                .extract().asString();
+    public void verifyGetCaseById() {
 
-        JSONObject response = new JSONObject(actualResponseBody);
+        String caseData = ccdDataService.getCaseData(TEST_CASE_ID);
 
-        assertThat(response).isNotNull();
-        assertThat(response.getString("callback_response_status")).isNotBlank();
-        assertThat(response.getString("callback_response_status_code")).isEqualTo("0");
-        assertThat(response.getString("case_type")).isNotBlank();
+        CaseDetails caseDetails = read(caseData, TEST_CASE_ID);
 
+        assertThat(caseDetails.getSecurityClassification(), is("PRIVATE"));
+        assertThat(caseDetails.getJurisdiction(), is("IA"));
+        assertThat(caseDetails.getCaseType(), is("Asylum"));
     }
 
     private PactDslJsonBody createCasesResponse() {
         return new PactDslJsonBody()
-            .object("after_submit_callback_response")
-            .stringType("confirmation_body", "string")
-            .stringType("confirmation_header", "string")
-            .close()
-            .asBody()
-            .stringValue("callback_response_status", "string")
-            .numberValue("callback_response_status_code", 0)
-            .stringValue("case_type", "string")
-            .stringValue("created_on", "2021-03-24T09:08:32.869Z")
-            .close()
-            .object("data")
-            .object("additionalProp1", new PactDslJsonBody())
-            .object("additionalProp2", new PactDslJsonBody())
-            .object("additionalProp3", new PactDslJsonBody())
-            .close()
-            .object("data_classification")
-            .object("additionalProp1", new PactDslJsonBody())
-            .object("additionalProp2", new PactDslJsonBody())
-            .object("additionalProp3", new PactDslJsonBody())
-            .close()
-            .asBody()
-            .stringValue("delete_draft_response_status", "string")
-            .numberValue("delete_draft_response_status_code", 0)
-            .stringValue("id", "string")
-            .stringValue("jurisdiction", "string")
-            .stringValue("last_modified_on", "2021-03-24T09:08:32.869Z")
-            .stringValue("last_state_modified_on", "2021-03-24T09:08:32.869Z")
-            .close()
-            .object("links")
-            .booleanValue("empty", true)
-            .close()
-            .asBody()
-            .stringValue("security_classification", "PRIVATE")
-            .stringValue("state", "string");
+            .stringType("id", "1593694526480034")
+            .stringValue("jurisdiction", "IA")
+            .stringValue("case_type", "Asylum")
+            .stringValue("security_classification", "PRIVATE");
+    }
 
+    private CaseDetails read(String caseData, String caseId) {
+        try {
+            return new ObjectMapper().readValue(caseData, CaseDetails.class);
+        } catch (JsonProcessingException ex) {
+            throw new IllegalStateException(
+                String.format("Cannot parse result from CCD for %s", caseId),
+                ex
+            );
+        }
     }
 }
 

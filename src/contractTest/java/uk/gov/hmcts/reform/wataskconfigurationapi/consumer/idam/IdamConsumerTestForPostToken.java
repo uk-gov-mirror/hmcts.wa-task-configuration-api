@@ -47,7 +47,7 @@ public class IdamConsumerTestForPostToken extends SpringBootContractBaseTest {
                   + "&password=" + PACT_TEST_PASSWORD_VALUE
                   + "&client_secret=" + PACT_TEST_CLIENT_SECRET_VALUE
                   + "&scope=" + PACT_TEST_SCOPES_VALUE,
-                  MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                MediaType.APPLICATION_FORM_URLENCODED_VALUE)
             .willRespondWith()
             .status(HttpStatus.OK.value())
             .headers(responseheaders)
@@ -61,7 +61,8 @@ public class IdamConsumerTestForPostToken extends SpringBootContractBaseTest {
 
         Map<String, String> tokenRequestMap = buildTokenRequestMap();
         Token token = idamApi.token(tokenRequestMap);
-        assertEquals("eyJ0eXAiOiJKV1QiLCJraWQiOiJiL082T3ZWdjEre", token.getAccessToken(), "Token is not expected");
+        assertEquals("eyJ0eXAiOiJKV1QiLCJraWQiOiJiL082T3ZWdjEre",
+            token.getAccessToken(), "Token is not expected");
     }
 
     private Map<String, String> buildTokenRequestMap() {
@@ -75,7 +76,7 @@ public class IdamConsumerTestForPostToken extends SpringBootContractBaseTest {
             .put("scope", PACT_TEST_SCOPES_VALUE)
             .build();
 
-        return  tokenRequestMap;
+        return tokenRequestMap;
     }
 
     private PactDslJsonBody createAuthResponse() {
