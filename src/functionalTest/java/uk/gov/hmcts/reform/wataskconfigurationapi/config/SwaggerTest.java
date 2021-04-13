@@ -22,18 +22,4 @@ public class SwaggerTest extends SpringBootFunctionalBaseTest {
             .statusCode(HttpStatus.OK.value());
 
     }
-
-    @Test
-    public void swagger_ui_should_be_accessible_with_no_auth_short_url() {
-
-        Response result = restApiActions.get(
-            SWAGGER_URL,
-            new Header("Content-type", "application/json")
-        );
-
-        result.then().assertThat()
-            .statusCode(HttpStatus.OK.value());
-
-    }
-
 }
