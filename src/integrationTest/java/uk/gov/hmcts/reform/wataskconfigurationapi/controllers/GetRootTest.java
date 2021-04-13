@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @WebMvcTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 @ContextConfiguration(classes = {RootController.class})
 @ActiveProfiles("integration")
 class GetRootTest {
