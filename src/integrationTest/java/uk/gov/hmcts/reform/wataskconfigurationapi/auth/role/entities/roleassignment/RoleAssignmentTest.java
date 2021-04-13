@@ -48,7 +48,7 @@ class RoleAssignmentTest {
                 RoleAttributeDefinition.CASE_ID.value(), "1604584759556245",
                 RoleAttributeDefinition.JURISDICTION.value(), "IA",
                 RoleAttributeDefinition.CASE_TYPE.value(), "Asylum"
-                ))
+            ))
             .authorisations(Collections.emptyList())
             .build();
 

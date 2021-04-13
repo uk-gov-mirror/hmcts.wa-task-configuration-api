@@ -143,7 +143,7 @@ public class RoleAssignmentServiceApiTest {
     private String loadJsonFileResourceWithUknownValues() throws IOException {
         return FileUtils.readFileToString(ResourceUtils.getFile(
             "classpath:uk/gov/hmcts/reform/wataskconfigurationapi/ccdmapping/variableextractors/"
-                + "roleAssignmentsResponseUnknownValues.json"));
+            + "roleAssignmentsResponseUnknownValues.json"));
     }
 
 }

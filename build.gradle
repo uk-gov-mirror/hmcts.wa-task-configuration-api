@@ -199,6 +199,10 @@ sonarqube {
     property "sonar.coverage.jacoco.xmlReportPaths", "${jacocoTestReport.reports.xml.destination.path}"
     property "sonar.pitest.mode", "reuseReport"
     property "sonar.pitest.reportsDirectory", "build/reports/pitest"
+    property "sonar.exclusions", "src/main/java/uk/gov/hmcts/reform/wataskconfigurationapi/config/**," +
+                                 "src/main/java/uk/gov/hmcts/reform/wataskconfigurationapi/Application.java" +
+                                 "src/testUtils/java/uk/gov/hmcts/reform/wataskconfigurationapi/**," +
+                                 "src/main/java/uk/gov/hmcts/reform/wataskconfigurationapi/clients/**"
   }
 }
 
@@ -268,10 +272,11 @@ ext.libraries = [
 ]
 
 dependencies {
-  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web'
-  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
-  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
-  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-json'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: versions.springBoot
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: versions.springBoot
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: versions.springBoot
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-json', version: versions.springBoot
+  compile group: 'org.springframework.boot', name: 'spring-boot-starter-oauth2-resource-server', version: versions.springBoot
 
   implementation group: 'io.springfox', name: 'springfox-boot-starter', version: versions.springfoxSwagger
   compile group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwagger
@@ -287,6 +292,9 @@ dependencies {
   compile group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.43'
   compile group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '9.0.43'
   compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '2.2.5.RELEASE'
+
+  compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.1.2'
+
   compile group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: '5.2.2'
 
   compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.1.2'
