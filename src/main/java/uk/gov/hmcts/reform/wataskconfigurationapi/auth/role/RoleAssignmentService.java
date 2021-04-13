@@ -15,9 +15,9 @@ import uk.gov.hmcts.reform.wataskconfigurationapi.exceptions.ServerErrorExceptio
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Collections.singletonList;
-import static java.util.Collections.singletonMap;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
@@ -43,18 +43,18 @@ public class RoleAssignmentService {
     public List<RoleAssignment> searchRolesByCaseId(String caseId) {
         requireNonNull(caseId, "caseId cannot be null");
 
-        RoleAssignmentResource roleAssignmentResponse = performSearch(caseId);
+        RoleAssignmentResource roleAssignmentResponse = performSearch(buildQueryRequest(caseId));
 
         return roleAssignmentResponse.getRoleAssignmentResponse();
     }
 
 
-    private RoleAssignmentResource performSearch(String caseId) {
+    public RoleAssignmentResource performSearch(QueryRequest queryRequest) {
         try {
             return roleAssignmentServiceApi.queryRoleAssignments(
                 systemUserIdamToken.generate(),
                 serviceAuthTokenGenerator.generate(),
-                buildQueryRequest(caseId)
+                queryRequest
             );
         } catch (FeignException ex) {
             throw new ServerErrorException(
@@ -67,7 +67,7 @@ public class RoleAssignmentService {
             .roleType(singletonList(RoleType.CASE))
             .roleName(singletonList("tribunal-caseworker"))
             .validAt(LocalDateTime.now())
-            .attributes(singletonMap("caseId", singletonList(caseId)))
+            .attributes(Map.of("caseId", List.of(caseId)))
             .build();
     }
 
