@@ -1,10 +1,11 @@
-package uk.gov.hmcts.reform.wataskconfigurationapi;
+package uk.gov.hmcts.reform.wataskconfigurationapi.controllers;
 
 import io.restassured.response.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.After;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
+import uk.gov.hmcts.reform.wataskconfigurationapi.SpringBootFunctionalBaseTest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.controllers.request.ConfigureTaskRequest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.services.CreateTaskMessage;
 
