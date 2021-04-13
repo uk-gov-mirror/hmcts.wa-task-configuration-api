@@ -9,17 +9,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import uk.gov.hmcts.reform.wataskconfigurationapi.SpringBootIntegrationBaseTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
-@WebMvcTest
-@AutoConfigureMockMvc(addFilters = false)
-@ContextConfiguration(classes = {RootController.class})
-@ActiveProfiles("integration")
-class GetRootTest {
+class GetRootTest extends SpringBootIntegrationBaseTest {
 
     @Autowired
     private MockMvc mockMvc;

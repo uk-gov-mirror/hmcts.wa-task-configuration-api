@@ -8,12 +8,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
+import uk.gov.hmcts.reform.wataskconfigurationapi.SpringBootIntegrationBaseTest;
 import uk.gov.hmcts.reform.wataskconfigurationapi.auth.idam.IdamTokenGenerator;
 import uk.gov.hmcts.reform.wataskconfigurationapi.auth.idam.entities.Token;
 import uk.gov.hmcts.reform.wataskconfigurationapi.auth.role.entities.RoleAssignment;
@@ -65,10 +63,7 @@ import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda
 import static uk.gov.hmcts.reform.wataskconfigurationapi.domain.entities.camunda.enums.TaskState.UNCONFIGURED;
 import static uk.gov.hmcts.reform.wataskconfigurationapi.services.DmnEvaluationService.WA_TASK_CONFIGURATION_DECISION_TABLE_NAME;
 
-@SpringBootTest
-@AutoConfigureMockMvc(addFilters = false)
-@ActiveProfiles("integration")
-class TaskConfigurationControllerTest {
+class TaskConfigurationControllerTest extends SpringBootIntegrationBaseTest {
 
     private static final String TASK_NAME = "taskName";
     private static final String BEARER_SERVICE_TOKEN = "Bearer service token";
