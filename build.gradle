@@ -249,7 +249,7 @@ def versions = [
   junitPlatform   : '1.7.0',
   reformLogging   : '5.1.5',
   springBoot      : '2.4.2',
-  springfoxSwagger: '2.9.2',
+  springfoxSwagger: '3.0.0',
   serenity        : '2.2.12',
   gradlePitest    : '1.5.1',
   pitest          : '1.5.2',
@@ -273,7 +273,7 @@ dependencies {
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-json'
 
-  implementation group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
+  implementation group: 'io.springfox', name: 'springfox-boot-starter', version: versions.springfoxSwagger
   compile group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwagger
 
   implementation group: 'uk.gov.hmcts.reform', name: 'logging', version: versions.reformLogging

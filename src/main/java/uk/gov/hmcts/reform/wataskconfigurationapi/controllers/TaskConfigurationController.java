@@ -44,7 +44,6 @@ public class TaskConfigurationController {
         this.configureTaskService = configureTaskService;
     }
 
-
     @ApiOperation("Given an existent task id configures a task over rest")
     @ApiResponses({
         @ApiResponse(
