@@ -1,5 +1,4 @@
 {
-
   "10096_Timestamp Disclosure - Unix_http://wa-task-configuration-api-aat.service.core-compute-aat.internal/_GET": "ignore",
   "10096_Timestamp Disclosure - Unix_http://wa-task-configuration-api-aat.service.core-compute-aat.internal/task/task-id_POST": "ignore",
   "10096_Timestamp Disclosure - Unix_http://wa-task-configuration-api-aat.service.core-compute-aat.internal/task/task-id/configuration_POST": "ignore",
@@ -12,6 +11,7 @@
   "10023_Information Disclosure - Debug Error Messages_http://wa-task-configuration-api-aat.service.core-compute-aat.internal/task/task-id/configuration_POST": "ignore",
   "10023_Information Disclosure - Debug Error Messages_http://wa-task-configuration-api-aat.service.core-compute-aat.internal/v2/api-docs_GET": "ignore",
   "100000_A Server Error response code was returned by the server_http://wa-task-configuration-api-aat.service.core-compute-aat.internal/task/task-id/configuration_POST": "ignore",
+  "100000_A Client Error response code was returned by the server_http://wa-task-configuration-api-aat.service.core-compute-aat.internal/task/task-id/configuration_POST": "ignore",
   "100000_A Client Error response code was returned by the server_http://wa-task-configuration-api-aat.service.core-compute-aat.internal/task/task-id_POST": "ignore",
   "10054_Cookie Without SameSite Attribute_http://wa-task-configuration-api-aat.service.core-compute-aat.internal/v2/api-docs_GET": "ignore",
   "10054_Cookie Without SameSite Attribute_http://wa-task-configuration-api-aat.service.core-compute-aat.internal/_GET": "ignore",
@@ -24,5 +24,4 @@
   "10021_X-Content-Type-Options Header Missing_http://wa-task-configuration-api-aat.service.core-compute-aat.internal/_GET": "ignore",
   "10054_Cookie Without SameSite Attribute_http://wa-task-configuration-api-aat.service.core-compute-aat.internal/task/task-id_POST": "ignore",
   "10021_X-Content-Type-Options Header Missing_http://wa-task-configuration-api-aat.service.core-compute-aat.internal/v2/api-docs_GET": "ignore"
-
 }
