@@ -39,7 +39,7 @@ public interface CamundaServiceApi {
         DmnRequest<DecisionTableRequest> requestParameters
     );
 
-    @PostMapping(value = "/task/{id}/localVariables", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/task/{id}/variables", produces = MediaType.APPLICATION_JSON_VALUE)
     void addLocalVariablesToTask(@RequestHeader(SERVICE_AUTHORIZATION) String serviceAuthorisation,
                                  @PathVariable("id") String taskId,
                                  AddLocalVariableRequest addLocalVariableRequest);
